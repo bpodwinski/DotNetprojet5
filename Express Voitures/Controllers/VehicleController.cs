@@ -22,9 +22,10 @@ namespace Express_Voitures.Controllers
 
         // GET: /Vehicle
         [HttpGet(Name = "GetVehicles")]
-        public async Task<IEnumerable<Vehicle>> Get()
+        public async Task<ActionResult<IEnumerable<Vehicle>>> Get()
         {
-            return await _vehicleService.GetAllVehiclesAsync();
+            var vehicles = await _vehicleService.GetAllVehiclesAsync();
+            return Ok(vehicles);
         }
 
         // GET: /Vehicle/{id}
@@ -34,15 +35,21 @@ namespace Express_Voitures.Controllers
             var vehicle = await _vehicleService.GetVehicleByIdAsync(id);
             if (vehicle == null)
             {
-                return NotFound();
+                _logger.LogWarning($"Vehicle with ID {id} not found.");
+                return NotFound(new { Message = $"Vehicle with ID {id} not found." });
             }
-            return vehicle;
+            return Ok(vehicle);
         }
 
         // POST: /Vehicle
         [HttpPost(Name = "AddVehicle")]
         public async Task<ActionResult> Post([FromBody] Vehicle vehicle)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             await _vehicleService.AddVehicleAsync(vehicle);
             return CreatedAtRoute("GetVehicleById", new { id = vehicle.Id }, vehicle);
         }
@@ -51,15 +58,16 @@ namespace Express_Voitures.Controllers
         [HttpPut("{id}", Name = "UpdateVehicle")]
         public async Task<IActionResult> Put(int id, [FromBody] Vehicle vehicle)
         {
-            if (vehicle == null)
+            if (vehicle == null || !ModelState.IsValid)
             {
-                return BadRequest("Vehicle data is missing");
+                return BadRequest(ModelState);
             }
 
             var updated = await _vehicleService.UpdateVehicleAsync(id, vehicle);
             if (!updated)
             {
-                return NotFound();
+                _logger.LogWarning($"Update failed. Vehicle with ID {id} not found.");
+                return NotFound(new { Message = $"Vehicle with ID {id} not found." });
             }
 
             return NoContent();
@@ -69,7 +77,15 @@ namespace Express_Voitures.Controllers
         [HttpDelete("{id}", Name = "DeleteVehicle")]
         public async Task<IActionResult> Delete(int id)
         {
+            var vehicle = await _vehicleService.GetVehicleByIdAsync(id);
+            if (vehicle == null)
+            {
+                _logger.LogWarning($"Delete failed. Vehicle with ID {id} not found.");
+                return NotFound(new { Message = $"Vehicle with ID {id} not found." });
+            }
+
             await _vehicleService.DeleteVehicleAsync(id);
+
             return NoContent();
         }
     }
