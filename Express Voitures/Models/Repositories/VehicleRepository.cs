@@ -25,6 +25,13 @@ namespace Express_Voitures.Repositories
             return await _context.Vehicles.FirstOrDefaultAsync(v => v.Id == id);
         }
 
+        public async Task<Vehicle> GetByIdWithPurchaseAsync(int id)
+        {
+            return await _context.Vehicles
+                .Include(v => v.Purchase)
+                .FirstOrDefaultAsync(v => v.Id == id);
+        }
+
         public async Task AddAsync(Vehicle vehicle)
         {
             _context.Vehicles.Add(vehicle);

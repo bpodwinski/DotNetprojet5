@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Express_Voitures.Models.Entities
@@ -32,5 +33,7 @@ namespace Express_Voitures.Models.Entities
 
         [StringLength(50, ErrorMessage = "Trim Level name cannot exceed 50 characters")]
         public string TrimLevel { get; set; }
+
+        public Purchase Purchase { get; set; }
     }
 }

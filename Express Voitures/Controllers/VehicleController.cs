@@ -1,7 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Express_Voitures.Models.Entities;
 using Express_Voitures.Services;
 
@@ -13,8 +10,10 @@ namespace Express_Voitures.Controllers
     {
         private readonly ILogger<VehicleController> _logger;
         private readonly IVehicleService _vehicleService;
-
-        public VehicleController(ILogger<VehicleController> logger, IVehicleService vehicleService)
+        public VehicleController(
+            ILogger<VehicleController> logger,
+            IVehicleService vehicleService
+            )
         {
             _logger = logger;
             _vehicleService = vehicleService;
@@ -41,6 +40,19 @@ namespace Express_Voitures.Controllers
             return Ok(vehicle);
         }
 
+        // GET: /Vehicle/{id}/Purchase
+        [HttpGet("{id}/Purchase", Name = "GetVehicleWithPurchaseById")]
+        public async Task<ActionResult<Vehicle>> GetVehicleWithPurchaseById(int id)
+        {
+            var vehicle = await _vehicleService.GetVehicleWithPurchaseByIdAsync(id);
+            if (vehicle == null)
+            {
+                _logger.LogWarning($"Vehicle with ID {id} not found.");
+                return NotFound(new { Message = $"Vehicle with ID {id} not found." });
+            }
+            return Ok(vehicle);
+        }
+
         // POST: /Vehicle
         [HttpPost(Name = "AddVehicle")]
         public async Task<ActionResult> Post([FromBody] Vehicle vehicle)
@@ -53,6 +65,19 @@ namespace Express_Voitures.Controllers
             await _vehicleService.AddVehicleAsync(vehicle);
             return CreatedAtRoute("GetVehicleById", new { id = vehicle.Id }, vehicle);
         }
+
+        // POST: /Purchase
+        //[HttpPost(Name = "AddPurchase")]
+        //public async Task<ActionResult> Post([FromBody] Purchase purchase)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
+
+        //   await _purchaseService.AddPurchaseAsync(purchase);
+        //    return Ok(purchase);
+        //}
 
         // PUT: /Vehicle/{id}
         [HttpPut("{id}", Name = "UpdateVehicle")]

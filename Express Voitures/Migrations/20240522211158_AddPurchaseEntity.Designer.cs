@@ -4,6 +4,7 @@ using Express_Voitures.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Express_Voitures.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240522211158_AddPurchaseEntity")]
+    partial class AddPurchaseEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,13 +44,7 @@ namespace Express_Voitures.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("VehicleId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("VehicleId")
-                        .IsUnique();
 
                     b.ToTable("Purchases");
                 });
@@ -91,23 +88,6 @@ namespace Express_Voitures.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Vehicles");
-                });
-
-            modelBuilder.Entity("Express_Voitures.Models.Entities.Purchase", b =>
-                {
-                    b.HasOne("Express_Voitures.Models.Entities.Vehicle", "Vehicle")
-                        .WithOne("Purchase")
-                        .HasForeignKey("Express_Voitures.Models.Entities.Purchase", "VehicleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Vehicle");
-                });
-
-            modelBuilder.Entity("Express_Voitures.Models.Entities.Vehicle", b =>
-                {
-                    b.Navigation("Purchase")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

@@ -8,6 +8,7 @@ namespace Express_Voitures.Repositories
     {
         Task<IEnumerable<Vehicle>> GetAllAsync();
         Task<Vehicle> GetByIdAsync(int id);
+        Task<Vehicle> GetByIdWithPurchaseAsync(int id);
         Task AddAsync(Vehicle vehicle);
         Task<bool> UpdateAsync(Vehicle vehicle);
         Task DeleteAsync(int id);
