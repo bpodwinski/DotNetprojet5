@@ -68,6 +68,32 @@ namespace Express_Voitures.Controllers
             return CreatedAtRoute("GetVehicleById", new { id = vehicle.Id }, vehicle);
         }
 
+        // POST: /Vehicle/{id}/Purchase
+        [HttpPost("{id}/Purchase", Name = "AddPurchaseToVehicle")]
+        public async Task<ActionResult> AddPurchaseToVehicle(int id, [FromBody] PurchaseDto purchaseDto)
+        {
+            try
+            {
+                await _vehicleService.AddPurchaseToVehicleAsync(id, purchaseDto);
+                return Ok(new { Message = "Purchase added successfully." });
+            }
+            catch (ArgumentException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return NotFound(new { Message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while adding the purchase.");
+                return StatusCode(500, new { Message = "An error occurred while adding the purchase." });
+            }
+        }
+
         // PUT: /Vehicle/{id}
         [HttpPut("{id}", Name = "UpdateVehicle")]
         public async Task<IActionResult> Put(int id, [FromBody] Vehicle vehicle)

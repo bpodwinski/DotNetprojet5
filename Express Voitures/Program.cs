@@ -20,6 +20,7 @@ builder.Services.AddDbContext<Express_Voitures.Data.ApplicationDbContext>(option
 
 // Add repositories and services
 builder.Services.AddScoped<Express_Voitures.Repositories.IVehicleRepository, Express_Voitures.Repositories.VehicleRepository>();
+builder.Services.AddScoped<Express_Voitures.Repositories.IPurchaseRepository, Express_Voitures.Repositories.PurchaseRepository>();
 builder.Services.AddScoped<Express_Voitures.Services.IVehicleService, Express_Voitures.Services.VehicleService>();
 
 var app = builder.Build();

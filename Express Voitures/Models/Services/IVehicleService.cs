@@ -11,6 +11,7 @@ namespace Express_Voitures.Services
         Task<IEnumerable<VehicleDto>> GetAllVehiclesAsync();
         Task<VehicleDto> GetVehicleByIdAsync(int id);
         Task<VehicleWithPurchaseDto> GetVehicleWithPurchaseByIdAsync(int id);
+        Task AddPurchaseToVehicleAsync(int vehicleId, PurchaseDto purchaseDto);
         Task AddVehicleAsync(Vehicle vehicle);
         Task<bool> UpdateVehicleAsync(int id, Vehicle vehicle);
         Task DeleteVehicleAsync(int id);

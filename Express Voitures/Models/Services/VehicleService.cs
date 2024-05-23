@@ -11,10 +11,15 @@ namespace Express_Voitures.Services
     public class VehicleService : IVehicleService
     {
         private readonly IVehicleRepository _vehicleRepository;
+        private readonly IPurchaseRepository _purchaseRepository;
 
-        public VehicleService(IVehicleRepository vehicleRepository)
+        public VehicleService(
+            IVehicleRepository vehicleRepository,
+            IPurchaseRepository purchaseRepository
+            )
         {
             _vehicleRepository = vehicleRepository;
+            _purchaseRepository = purchaseRepository;
         }
 
         public async Task<IEnumerable<VehicleDto>> GetAllVehiclesAsync()
@@ -81,6 +86,29 @@ namespace Express_Voitures.Services
         public async Task AddVehicleAsync(Vehicle vehicle)
         {
             await _vehicleRepository.AddAsync(vehicle);
+        }
+
+        public async Task AddPurchaseToVehicleAsync(int vehicleId, PurchaseDto purchaseDto)
+        {
+            var vehicle = await _vehicleRepository.GetByIdWithPurchaseAsync(vehicleId);
+            if (vehicle == null)
+            {
+                throw new ArgumentException($"Vehicle with ID {vehicleId} not found");
+            }
+
+            if (vehicle.Purchase != null)
+            {
+                throw new InvalidOperationException("The vehicle already has a purchase");
+            }
+
+            var purchase = new Purchase
+            {
+                Date = purchaseDto.Date,
+                Price = purchaseDto.Price,
+                VehicleId = vehicleId
+            };
+
+            await _purchaseRepository.AddAsync(purchase);
         }
 
         public async Task<bool> UpdateVehicleAsync(int id, Vehicle vehicle)
