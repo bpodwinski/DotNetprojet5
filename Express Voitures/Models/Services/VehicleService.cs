@@ -17,9 +17,19 @@ namespace Express_Voitures.Services
             _vehicleRepository = vehicleRepository;
         }
 
-        public async Task<IEnumerable<Vehicle>> GetAllVehiclesAsync()
+        public async Task<IEnumerable<VehicleDto>> GetAllVehiclesAsync()
         {
-            return await _vehicleRepository.GetAllAsync();
+            var vehicles = await _vehicleRepository.GetAllAsync();
+            return vehicles.Select(vehicle => new VehicleDto
+            {
+                Id = vehicle.Id,
+                CreateDate = vehicle.CreateDate,
+                Vin = vehicle.Vin,
+                Year = vehicle.Year,
+                Brand = vehicle.Brand,
+                Model = vehicle.Model,
+                TrimLevel = vehicle.TrimLevel
+            }).ToList();
         }
 
         public async Task<VehicleDto> GetVehicleByIdAsync(int id)
@@ -33,7 +43,12 @@ namespace Express_Voitures.Services
             return new VehicleDto
             {
                 Id = vehicle.Id,
-                Brand = vehicle.Brand
+                CreateDate = vehicle.CreateDate,
+                Vin = vehicle.Vin,
+                Year = vehicle.Year,
+                Brand = vehicle.Brand,
+                Model = vehicle.Model,
+                TrimLevel = vehicle.TrimLevel
             };
         }
 
@@ -48,7 +63,12 @@ namespace Express_Voitures.Services
             return new VehicleWithPurchaseDto
             {
                 Id = vehicle.Id,
+                CreateDate = vehicle.CreateDate,
+                Vin = vehicle.Vin,
+                Year = vehicle.Year,
                 Brand = vehicle.Brand,
+                Model = vehicle.Model,
+                TrimLevel = vehicle.TrimLevel,
                 Purchase = vehicle.Purchase != null ? new PurchaseDto
                 {
                     Id = vehicle.Purchase.Id,

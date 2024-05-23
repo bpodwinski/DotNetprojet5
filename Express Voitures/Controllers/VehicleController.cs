@@ -23,7 +23,7 @@ namespace Express_Voitures.Controllers
 
         // GET: /Vehicle
         [HttpGet(Name = "GetVehicles")]
-        public async Task<ActionResult<IEnumerable<Vehicle>>> Get()
+        public async Task<ActionResult<IEnumerable<VehicleDto>>> Get()
         {
             var vehicles = await _vehicleService.GetAllVehiclesAsync();
             return Ok(vehicles);
