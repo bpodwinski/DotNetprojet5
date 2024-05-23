@@ -1,4 +1,5 @@
-﻿using Swashbuckle.AspNetCore.Annotations;
+﻿using System.Text.Json.Serialization;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Express_Voitures.Dtos
 {

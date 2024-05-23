@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Express_Voitures.Dtos;
+using Express_Voitures.DTOs;
 using Express_Voitures.Models.Entities;
 using Express_Voitures.Repositories;
 
@@ -21,12 +22,22 @@ namespace Express_Voitures.Services
             return await _vehicleRepository.GetAllAsync();
         }
 
-        public async Task<Vehicle> GetVehicleByIdAsync(int id)
+        public async Task<VehicleDto> GetVehicleByIdAsync(int id)
         {
-            return await _vehicleRepository.GetByIdAsync(id);
+            var vehicle = await _vehicleRepository.GetByIdAsync(id);
+            if (vehicle == null)
+            {
+                return null;
+            }
+
+            return new VehicleDto
+            {
+                Id = vehicle.Id,
+                Brand = vehicle.Brand
+            };
         }
 
-        public async Task<VehicleDto> GetVehicleWithPurchaseByIdAsync(int id)
+        public async Task<VehicleWithPurchaseDto> GetVehicleWithPurchaseByIdAsync(int id)
         {
             var vehicle = await _vehicleRepository.GetByIdWithPurchaseAsync(id);
             if (vehicle == null)
@@ -34,7 +45,7 @@ namespace Express_Voitures.Services
                 return null;
             }
 
-            return new VehicleDto
+            return new VehicleWithPurchaseDto
             {
                 Id = vehicle.Id,
                 Brand = vehicle.Brand,

@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Express_Voitures.Models.Entities;
 using Express_Voitures.Services;
+using Express_Voitures.Dtos;
+using Express_Voitures.DTOs;
 
 namespace Express_Voitures.Controllers
 {
@@ -29,7 +31,7 @@ namespace Express_Voitures.Controllers
 
         // GET: /Vehicle/{id}
         [HttpGet("{id}", Name = "GetVehicleById")]
-        public async Task<ActionResult<Vehicle>> Get(int id)
+        public async Task<ActionResult<VehicleDto>> Get(int id)
         {
             var vehicle = await _vehicleService.GetVehicleByIdAsync(id);
             if (vehicle == null)
@@ -42,7 +44,7 @@ namespace Express_Voitures.Controllers
 
         // GET: /Vehicle/{id}/Purchase
         [HttpGet("{id}/Purchase", Name = "GetVehicleWithPurchaseById")]
-        public async Task<ActionResult<Vehicle>> GetVehicleWithPurchaseById(int id)
+        public async Task<ActionResult<VehicleWithPurchaseDto>> GetVehicleWithPurchaseById(int id)
         {
             var vehicle = await _vehicleService.GetVehicleWithPurchaseByIdAsync(id);
             if (vehicle == null)
@@ -65,19 +67,6 @@ namespace Express_Voitures.Controllers
             await _vehicleService.AddVehicleAsync(vehicle);
             return CreatedAtRoute("GetVehicleById", new { id = vehicle.Id }, vehicle);
         }
-
-        // POST: /Purchase
-        //[HttpPost(Name = "AddPurchase")]
-        //public async Task<ActionResult> Post([FromBody] Purchase purchase)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
-
-        //   await _purchaseService.AddPurchaseAsync(purchase);
-        //    return Ok(purchase);
-        //}
 
         // PUT: /Vehicle/{id}
         [HttpPut("{id}", Name = "UpdateVehicle")]

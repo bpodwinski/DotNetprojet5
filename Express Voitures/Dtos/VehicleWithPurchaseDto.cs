@@ -1,6 +1,8 @@
-﻿namespace Express_Voitures.Dtos
+﻿using Express_Voitures.Dtos;
+
+namespace Express_Voitures.DTOs
 {
-    public class VehicleDto
+    public class VehicleWithPurchaseDto
     {
         public int Id { get; set; }
 
@@ -15,5 +17,6 @@
         public string Model { get; set; }
 
         public string TrimLevel { get; set; }
+        public PurchaseDto Purchase { get; set; }
     }
 }

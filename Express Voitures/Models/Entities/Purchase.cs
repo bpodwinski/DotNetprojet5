@@ -31,6 +31,7 @@ namespace Express_Voitures.Models.Entities
         public int VehicleId { get; set; }
 
         [ForeignKey("VehicleId")]
+        [JsonIgnore]
         public Vehicle Vehicle { get; set; }
     }
 }
