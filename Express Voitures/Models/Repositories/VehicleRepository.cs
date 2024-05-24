@@ -14,10 +14,9 @@ namespace Express_Voitures.Repositories
         {
             _context = context;
         }
-
-        public async Task<IEnumerable<Vehicle>> GetAllAsync()
+        public IQueryable<Vehicle> GetAll()
         {
-            return await _context.Vehicles.ToListAsync();
+            return _context.Vehicles.AsQueryable();
         }
 
         public async Task<Vehicle> GetByIdAsync(int id)

@@ -22,18 +22,51 @@ namespace Express_Voitures.Controllers
         }
 
         /// <summary>
-        /// Retrieves a list of vehicles.
+        /// Retrieves a list of vehicles with optional pagination, filtering, and sorting.
         /// </summary>
+        /// <param name="pageNumber">The page number for pagination (default is 1).</param>
+        /// <param name="pageSize">The page size for pagination (default is 25).</param>
+        /// <param name="filter">Optional filter criteria.</param>
+        /// <param name="sortOrder">Optional sort order ("id", "year", "brand", "model").</param>
         /// <returns>A list of vehicles.</returns>
         /// <response code="200">Returns the list of vehicles.</response>
+        /// <response code="400">If the request parameters are invalid.</response>
         /// <response code="500">If there is an internal server error.</response>
         // GET: /Vehicle
         [HttpGet(Name = "GetVehicles")]
-        public async Task<ActionResult<IEnumerable<VehicleDto>>> Get()
+        public async Task<ActionResult<IEnumerable<VehicleDto>>> Get(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 25,
+            [FromQuery] string brand = null,
+            [FromQuery] string sortOrder = null)
         {
-            var vehicles = await _vehicleService.GetAllVehiclesAsync();
-            return Ok(vehicles);
+            if (pageNumber < 1)
+            {
+                return BadRequest(new { Message = "Page number must be greater than or equal to 1" });
+            }
+
+            if (pageSize < 1)
+            {
+                return BadRequest(new { Message = "Page size must be greater than or equal to 1" });
+            }
+
+            try
+            {
+                var vehicles = await _vehicleService.GetVehiclesAsync(pageNumber, pageSize, brand, sortOrder);
+                return Ok(vehicles);
+            }
+            catch (ArgumentException ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while retrieving the vehicles.");
+                return StatusCode(500, new { Message = "An error occurred while retrieving the vehicles." });
+            }
         }
+
 
         /// <summary>
         /// Retrieves a vehicle by ID.

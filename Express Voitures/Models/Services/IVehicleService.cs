@@ -8,7 +8,7 @@ namespace Express_Voitures.Services
 {
     public interface IVehicleService
     {
-        Task<IEnumerable<VehicleDto>> GetAllVehiclesAsync();
+        Task<IEnumerable<VehicleDto>> GetVehiclesAsync(int pageNumber, int pageSize, string brand, string sortOrder);
         Task<VehicleDto> GetVehicleByIdAsync(int id);
         Task<VehicleWithPurchaseDto> GetVehicleWithPurchaseByIdAsync(int id);
         Task AddPurchaseToVehicleAsync(int vehicleId, PurchaseDto purchaseDto);

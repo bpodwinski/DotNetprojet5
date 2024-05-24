@@ -23,19 +23,43 @@ namespace Express_Voitures.Services
             _purchaseRepository = purchaseRepository;
         }
 
-        public async Task<IEnumerable<VehicleDto>> GetAllVehiclesAsync()
+        public async Task<IEnumerable<VehicleDto>> GetVehiclesAsync(int pageNumber, int pageSize, string brand, string sortOrder)
         {
-            var vehicles = await _vehicleRepository.GetAllAsync();
-            return vehicles.Select(vehicle => new VehicleDto
+            var query = _vehicleRepository.GetAll();
+
+            if (!string.IsNullOrEmpty(brand))
             {
-                Id = vehicle.Id,
-                CreateDate = vehicle.CreateDate,
-                Vin = vehicle.Vin,
-                Year = vehicle.Year,
-                Brand = vehicle.Brand,
-                Model = vehicle.Model,
-                TrimLevel = vehicle.TrimLevel
-            }).ToList();
+                query = query.Where(v => v.Brand.Contains(brand));
+            }
+
+            if (!string.IsNullOrEmpty(sortOrder))
+            {
+                query = sortOrder.ToLower() switch
+                {
+                    "brand" => query.OrderBy(v => v.Brand),
+                    "model" => query.OrderBy(v => v.Model),
+                    "year" => query.OrderBy(v => v.Year),
+                    "id" => query.OrderBy(v => v.Id),
+                    _ => query.OrderBy(v => v.Id),
+                };
+            }
+
+            var vehicles = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(v => new VehicleDto
+                {
+                    Id = v.Id,
+                    CreateDate = v.CreateDate,
+                    Vin = v.Vin,
+                    Year = v.Year,
+                    Brand = v.Brand,
+                    Model = v.Model,
+                    TrimLevel = v.TrimLevel
+                })
+                .ToListAsync();
+
+            return vehicles;
         }
 
         public async Task<VehicleDto> GetVehicleByIdAsync(int id)

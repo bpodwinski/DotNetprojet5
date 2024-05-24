@@ -6,7 +6,7 @@ namespace Express_Voitures.Repositories
 {
     public interface IVehicleRepository
     {
-        Task<IEnumerable<Vehicle>> GetAllAsync();
+        IQueryable<Vehicle> GetAll();
         Task<Vehicle> GetByIdAsync(int id);
         Task<Vehicle> GetByIdWithPurchaseAsync(int id);
         Task AddAsync(Vehicle vehicle);
