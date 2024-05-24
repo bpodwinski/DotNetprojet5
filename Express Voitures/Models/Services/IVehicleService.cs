@@ -12,7 +12,7 @@ namespace Express_Voitures.Services
         Task<VehicleDto> GetVehicleByIdAsync(int id);
         Task<VehicleWithPurchaseDto> GetVehicleWithPurchaseByIdAsync(int id);
         Task AddPurchaseToVehicleAsync(int vehicleId, PurchaseDto purchaseDto);
-        Task AddVehicleAsync(Vehicle vehicle);
+        Task AddVehicleAsync(VehicleDto vehicleDto);
         Task<bool> UpdateVehicleAsync(int id, Vehicle vehicle);
         Task DeleteVehicleAsync(int id);
     }

@@ -5,6 +5,7 @@ using Express_Voitures.Dtos;
 using Express_Voitures.DTOs;
 using Express_Voitures.Models.Entities;
 using Express_Voitures.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Express_Voitures.Services
 {
@@ -83,9 +84,33 @@ namespace Express_Voitures.Services
             };
         }
 
-        public async Task AddVehicleAsync(Vehicle vehicle)
+        public async Task AddVehicleAsync(VehicleDto vehicleDto)
         {
-            await _vehicleRepository.AddAsync(vehicle);
+            try
+            {
+                var vehicle = new Vehicle
+                {
+                    Id = vehicleDto.Id,
+                    CreateDate = vehicleDto.CreateDate,
+                    Vin = vehicleDto.Vin,
+                    Year = vehicleDto.Year,
+                    Brand = vehicleDto.Brand,
+                    Model = vehicleDto.Model,
+                    TrimLevel = vehicleDto.TrimLevel
+                };
+
+                await _vehicleRepository.AddAsync(vehicle);
+            }
+            catch (DbUpdateException ex)
+            {
+                // Log the detailed error and throw a custom exception or handle it as needed
+                throw new InvalidOperationException("An error occurred while adding the vehicle to the database.", ex);
+            }
+            catch (Exception ex)
+            {
+                // Log the detailed error and throw a custom exception or handle it as needed
+                throw new InvalidOperationException("An unexpected error occurred while adding the vehicle.", ex);
+            }
         }
 
         public async Task AddPurchaseToVehicleAsync(int vehicleId, PurchaseDto purchaseDto)
