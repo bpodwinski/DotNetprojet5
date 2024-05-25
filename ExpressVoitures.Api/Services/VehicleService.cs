@@ -122,7 +122,7 @@ namespace ExpressVoituresApi.Services
         /// </summary>
         /// <param name="id">The ID of the vehicle to retrieve.</param>
         /// <returns>The vehicle with purchase DTO with the specified ID, or null if not found.</returns>
-        public async Task<VehicleWithPurchaseDto> GetVehicleWithPurchaseByIdAsync(int id)
+        public async Task<VehicleDto> GetVehicleWithPurchaseByIdAsync(int id)
         {
             try
             {
@@ -132,7 +132,7 @@ namespace ExpressVoituresApi.Services
                     throw new InvalidOperationException($"Vehicle ID {id} not found");
                 }
 
-                return new VehicleWithPurchaseDto
+                return new VehicleDto
                 {
                     Id = vehicle.Id,
                     CreateDate = vehicle.CreateDate,
@@ -141,12 +141,12 @@ namespace ExpressVoituresApi.Services
                     Brand = vehicle.Brand,
                     Model = vehicle.Model,
                     TrimLevel = vehicle.TrimLevel,
-                    Purchase = vehicle.Purchase != null ? new PurchaseDto
+                    Purchase = vehicle.Purchase == null ? null : new PurchaseDto
                     {
                         Id = vehicle.Purchase.Id,
                         Date = vehicle.Purchase.Date,
                         Price = vehicle.Purchase.Price,
-                    } : null
+                    }
                 };
             }
             catch (Exception)
@@ -276,6 +276,39 @@ namespace ExpressVoituresApi.Services
             catch (Exception)
             {
                 throw new InvalidOperationException("An error occurred while updating the vehicle");
+            }
+        }
+
+        /// <summary>
+        /// Deletes the purchase associated with a vehicle by vehicle ID.
+        /// </summary>
+        /// <param name="vehicleId">The ID of the vehicle whose purchase will be deleted.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when the vehicle with the specified ID is not found,
+        /// or when no purchase is found for the specified vehicle.
+        /// </exception>
+        public async Task DeletePurchaseByVehicleIdAsync(int vehicleId)
+        {
+            try
+            {
+                var vehicle = await _vehicleRepository.GetByIdWithPurchaseAsync(vehicleId);
+                if (vehicle == null)
+                {
+                    throw new InvalidOperationException($"Vehicle with ID {vehicleId} not found");
+                }
+
+                if (vehicle.Purchase == null)
+                {
+                    throw new InvalidOperationException($"No purchase found for Vehicle ID {vehicleId}");
+                }
+
+                await _purchaseRepository.DeleteAsync(vehicle.Purchase.Id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"An error occurred while deleting purchase with ID {vehicleId}");
+                throw new InvalidOperationException("An error occurred while deleting the purchase");
             }
         }
     }

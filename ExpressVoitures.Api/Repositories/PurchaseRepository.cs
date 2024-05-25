@@ -1,5 +1,6 @@
 ﻿using ExpressVoituresApi.Data;
 using ExpressVoituresApi.Models.Entities;
+using System.Threading.Tasks;
 
 namespace ExpressVoituresApi.Repositories
 {
@@ -28,6 +29,31 @@ namespace ExpressVoituresApi.Repositories
         {
             await _context.Purchases.AddAsync(purchase);
             await _context.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Retrieves a purchase by ID.
+        /// </summary>
+        /// <param name="purchaseId">The ID of the purchase to retrieve.</param>
+        /// <returns>The purchase entity with the specified ID, or null if not found.</returns>
+        public async Task<Purchase> GetByIdAsync(int purchaseId)
+        {
+            return await _context.Purchases.FindAsync(purchaseId);
+        }
+
+        /// <summary>
+        /// Deletes a purchase by ID.
+        /// </summary>
+        /// <param name="purchaseId">The ID of the purchase to delete.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task DeleteAsync(int purchaseId)
+        {
+            var purchase = await GetByIdAsync(purchaseId);
+            if (purchase != null)
+            {
+                _context.Purchases.Remove(purchase);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

@@ -30,7 +30,7 @@ namespace ExpressVoituresApi.Services
         /// </summary>
         /// <param name="id">The ID of the vehicle to retrieve.</param>
         /// <returns>The vehicle with purchase DTO with the specified ID, or null if not found.</returns>
-        Task<VehicleWithPurchaseDto> GetVehicleWithPurchaseByIdAsync(int id);
+        Task<VehicleDto> GetVehicleWithPurchaseByIdAsync(int id);
 
         /// <summary>
         /// Adds a new purchase to a vehicle.
@@ -61,5 +61,13 @@ namespace ExpressVoituresApi.Services
         /// <param name="id">The ID of the vehicle to delete.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         Task DeleteVehicleAsync(int id);
+
+        /// <summary>
+        /// Deletes a purchase by ID.
+        /// </summary>
+        /// <param name="vehicleId">The ID of the purchase to delete.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        Task DeletePurchaseByVehicleIdAsync(int vehicleId);
+
     }
 }
