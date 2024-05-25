@@ -21,7 +21,7 @@ namespace ExpressVoituresApi.Models.Entities
 
         [Required]
         [Range(1886, 9999, ErrorMessage = "Please enter a valid year between 1886 and 9999")]
-        public string Year { get; set; }
+        public int Year { get; set; }
 
         [Required]
         [StringLength(50, MinimumLength = 1, ErrorMessage = "Brand name must be between 1 and 50 characters")]

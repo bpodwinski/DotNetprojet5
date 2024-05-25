@@ -22,7 +22,7 @@ namespace ExpressVoituresApi.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Express_Voitures.Models.Entities.Purchase", b =>
+            modelBuilder.Entity("ExpressVoituresApi.Models.Entities.Purchase", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -52,7 +52,7 @@ namespace ExpressVoituresApi.Migrations
                     b.ToTable("Purchases");
                 });
 
-            modelBuilder.Entity("Express_Voitures.Models.Entities.Vehicle", b =>
+            modelBuilder.Entity("ExpressVoituresApi.Models.Entities.Vehicle", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -84,27 +84,26 @@ namespace ExpressVoituresApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Year")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.ToTable("Vehicles");
                 });
 
-            modelBuilder.Entity("Express_Voitures.Models.Entities.Purchase", b =>
+            modelBuilder.Entity("ExpressVoituresApi.Models.Entities.Purchase", b =>
                 {
-                    b.HasOne("Express_Voitures.Models.Entities.Vehicle", "Vehicle")
+                    b.HasOne("ExpressVoituresApi.Models.Entities.Vehicle", "Vehicle")
                         .WithOne("Purchase")
-                        .HasForeignKey("Express_Voitures.Models.Entities.Purchase", "VehicleId")
+                        .HasForeignKey("ExpressVoituresApi.Models.Entities.Purchase", "VehicleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Vehicle");
                 });
 
-            modelBuilder.Entity("Express_Voitures.Models.Entities.Vehicle", b =>
+            modelBuilder.Entity("ExpressVoituresApi.Models.Entities.Vehicle", b =>
                 {
                     b.Navigation("Purchase")
                         .IsRequired();
