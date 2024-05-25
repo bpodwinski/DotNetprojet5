@@ -39,18 +39,18 @@ namespace ExpressVoituresApi.Controllers
             [FromQuery] string brand = null,
             [FromQuery] string sortOrder = null)
         {
-            if (pageNumber < 1)
-            {
-                return BadRequest(new { Message = "Page number must be greater than or equal to 1" });
-            }
-
-            if (pageSize < 1)
-            {
-                return BadRequest(new { Message = "Page size must be greater than or equal to 1" });
-            }
-
             try
             {
+                if (pageNumber < 1)
+                {
+                    return BadRequest(new { Message = "Page number must be greater than or equal to 1" });
+                }
+
+                if (pageSize < 1)
+                {
+                    return BadRequest(new { Message = "Page size must be greater than or equal to 1" });
+                }
+
                 var vehicles = await _vehicleService.GetVehiclesAsync(pageNumber, pageSize, brand, sortOrder);
                 return Ok(vehicles);
             }
@@ -79,14 +79,14 @@ namespace ExpressVoituresApi.Controllers
         [HttpGet("{id}", Name = "GetVehicleById")]
         public async Task<ActionResult<VehicleDto>> Get(int id)
         {
-            if (id <= 0)
-            {
-                _logger.LogWarning($"Invalid ID: {id}");
-                return BadRequest(new { Message = "ID must be greater than 0" });
-            }
-
             try
             {
+                if (id <= 0)
+                {
+                    _logger.LogWarning($"Invalid ID: {id}");
+                    return BadRequest(new { Message = "ID must be greater than 0" });
+                }
+
                 var vehicle = await _vehicleService.GetVehicleByIdAsync(id);
                 if (vehicle == null)
                 {
@@ -114,14 +114,14 @@ namespace ExpressVoituresApi.Controllers
         [HttpGet("{id}/Purchase", Name = "GetVehicleWithPurchaseById")]
         public async Task<ActionResult<VehicleWithPurchaseDto>> GetVehicleWithPurchaseById(int id)
         {
-            if (id <= 0)
-            {
-                _logger.LogWarning($"Invalid ID: {id}");
-                return BadRequest(new { Message = "ID must be greater than 0" });
-            }
-
             try
             {
+                if (id <= 0)
+                {
+                    _logger.LogWarning($"Invalid ID: {id}");
+                    return BadRequest(new { Message = "ID must be greater than 0" });
+                }
+
                 var vehicle = await _vehicleService.GetVehicleWithPurchaseByIdAsync(id);
                 if (vehicle == null)
                 {
@@ -149,14 +149,14 @@ namespace ExpressVoituresApi.Controllers
         [HttpPost(Name = "AddVehicle")]
         public async Task<ActionResult> Post([FromBody] VehicleDto vehicleDto)
         {
-            if (vehicleDto == null)
-            {
-                _logger.LogWarning("VehicleDto is null");
-                return BadRequest(new { Message = "Vehicle data is required" });
-            }
-
             try
             {
+                if (vehicleDto == null)
+                {
+                    _logger.LogWarning("VehicleDto is null");
+                    return BadRequest(new { Message = "Vehicle data is required" });
+                }
+
                 await _vehicleService.AddVehicleAsync(vehicleDto);
                 return CreatedAtRoute("GetVehicleById", new { id = vehicleDto.Id }, vehicleDto);
             }
@@ -186,20 +186,20 @@ namespace ExpressVoituresApi.Controllers
         [HttpPost("{id}/Purchase", Name = "AddPurchaseToVehicle")]
         public async Task<ActionResult> AddPurchaseToVehicle(int id, [FromBody] PurchaseDto purchaseDto)
         {
-            if (id <= 0)
-            {
-                _logger.LogWarning($"Invalid ID: {id}");
-                return BadRequest(new { Message = "ID must be greater than 0" });
-            }
-
-            if (purchaseDto == null)
-            {
-                _logger.LogWarning("PurchaseDto is null");
-                return BadRequest(new { Message = "Purchase data is required" });
-            }
-
             try
             {
+                if (id <= 0)
+                {
+                    _logger.LogWarning($"Invalid ID: {id}");
+                    return BadRequest(new { Message = "ID must be greater than 0" });
+                }
+
+                if (purchaseDto == null)
+                {
+                    _logger.LogWarning("PurchaseDto is null");
+                    return BadRequest(new { Message = "Purchase data is required" });
+                }
+
                 await _vehicleService.AddPurchaseToVehicleAsync(id, purchaseDto);
                 return Ok(new { Message = "Purchase added successfully" });
             }
@@ -224,7 +224,7 @@ namespace ExpressVoituresApi.Controllers
         /// Updates a vehicle by ID.
         /// </summary>
         /// <param name="id">The ID of the vehicle to update.</param>
-        /// <param name="vehicle">The vehicle data transfer object.</param>
+        /// <param name="vehicleDto">The vehicle data transfer object.</param>
         /// <returns>A status indicating the result of the operation.</returns>
         /// <response code="204">Vehicle updated successfully.</response>
         /// <response code="400">If the request parameters are invalid.</response>
@@ -232,28 +232,28 @@ namespace ExpressVoituresApi.Controllers
         /// <response code="500">If there is an internal server error.</response>
         // PUT: /Vehicle/{id}
         [HttpPut("{id}", Name = "UpdateVehicle")]
-        public async Task<IActionResult> Put(int id, [FromBody] Vehicle vehicle)
+        public async Task<IActionResult> Put(int id, [FromBody] VehicleDto vehicleDto)
         {
-            if (id <= 0)
-            {
-                _logger.LogWarning($"Invalid ID: {id}");
-                return BadRequest(new { Message = "ID must be greater than 0" });
-            }
-
-            if (vehicle == null)
-            {
-                _logger.LogWarning("Vehicle data is null.");
-                return BadRequest(new { Message = "Vehicle data is required" });
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             try
             {
-                var updated = await _vehicleService.UpdateVehicleAsync(id, vehicle);
+                if (id <= 0)
+                {
+                    _logger.LogWarning($"Invalid ID: {id}");
+                    return BadRequest(new { Message = "ID must be greater than 0" });
+                }
+
+                if (vehicleDto == null)
+                {
+                    _logger.LogWarning("Vehicle data is null.");
+                    return BadRequest(new { Message = "Vehicle data is required" });
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var updated = await _vehicleService.UpdateVehicleAsync(id, vehicleDto);
                 if (!updated)
                 {
                     _logger.LogWarning($"Update failed. Vehicle with ID {id} not found");
@@ -282,14 +282,14 @@ namespace ExpressVoituresApi.Controllers
         [HttpDelete("{id}", Name = "DeleteVehicle")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (id <= 0)
-            {
-                _logger.LogWarning($"Invalid ID: {id}");
-                return BadRequest(new { Message = "ID must be greater than 0" });
-            }
-
             try
             {
+                if (id <= 0)
+                {
+                    _logger.LogWarning($"Invalid ID: {id}");
+                    return BadRequest(new { Message = "ID must be greater than 0" });
+                }
+
                 var vehicle = await _vehicleService.GetVehicleByIdAsync(id);
                 if (vehicle == null)
                 {

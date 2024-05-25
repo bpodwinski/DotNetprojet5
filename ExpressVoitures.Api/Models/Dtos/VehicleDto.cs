@@ -1,4 +1,6 @@
-﻿namespace ExpressVoituresApi.Models.Dtos
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ExpressVoituresApi.Models.Dtos
 {
     public class VehicleDto
     {
@@ -8,6 +10,8 @@
 
         public string Vin { get; set; }
 
+        [Required]
+        [Range(1886, 9999, ErrorMessage = "Please enter a valid year between 1886 and 9999")]
         public int Year { get; set; }
 
         public string Brand { get; set; }
