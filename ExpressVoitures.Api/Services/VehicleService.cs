@@ -447,11 +447,24 @@ namespace ExpressVoituresApi.Services
             }
         }
 
+        /// <summary>
+        /// Deletes a sale by its ID.
+        /// </summary>
+        /// <param name="saleId">The ID of the sale to delete.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
         public async Task DeleteSaleAsync(int saleId)
         {
             await _saleRepository.DeleteAsync(saleId);
         }
 
+        /// <summary>
+        /// Retrieves a sale by its ID.
+        /// </summary>
+        /// <param name="saleId">The ID of the sale to retrieve.</param>
+        /// <returns>The sale DTO with the specified ID, or null if not found.</returns>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when the sale with the specified ID is not found.
+        /// </exception>
         public async Task<SaleDto> GetSaleByIdAsync(int saleId)
         {
             var sale = await _saleRepository.GetByIdAsync(saleId);
