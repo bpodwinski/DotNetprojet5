@@ -103,9 +103,9 @@ namespace ExpressVoituresApi.Controllers
         }
 
         /// <summary>
-        /// Adds a new vehicle.
+        /// Adds a new vehicle
         /// </summary>
-        /// <param name="vehicleDto">The vehicle data transfer object.</param>
+        /// <param name="vehicleAddDto">The vehicle data transfer object.</param>
         /// <returns>A status indicating the result of the operation.</returns>
         /// <response code="201">Vehicle created successfully.</response>
         /// <response code="400">If the request parameters are invalid.</response>

@@ -236,7 +236,7 @@ namespace ExpressVoituresApi.Services
         /// <summary>
         /// Adds a new vehicle
         /// </summary>
-        /// <param name="vehicleDto">The vehicle data transfer object.</param>
+        /// <param name="vehicleAddDto">The vehicle data transfer object.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         /// <exception cref="InvalidOperationException">Thrown when an error occurs while adding the vehicle.</exception>
         public async Task AddVehicleAsync(VehicleAddDto vehicleAddDto)
@@ -246,7 +246,6 @@ namespace ExpressVoituresApi.Services
                 var vehicle = new Vehicle
                 {
                     id = vehicleAddDto.id,
-                    create_date = vehicleAddDto.create_date,
                     vin = vehicleAddDto.vin,
                     year = vehicleAddDto.year,
                     brand = vehicleAddDto.brand,
