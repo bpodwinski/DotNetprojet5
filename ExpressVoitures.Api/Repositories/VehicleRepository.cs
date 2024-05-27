@@ -2,6 +2,7 @@
 using ExpressVoituresApi.Data;
 using ExpressVoituresApi.Models.Entities;
 using ExpressVoituresApi.Repositories.Interfaces;
+using ExpressVoituresApi.Services;
 
 namespace ExpressVoituresApi.Repositories
 {
@@ -11,14 +12,19 @@ namespace ExpressVoituresApi.Repositories
     public class VehicleRepository : IVehicleRepository
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<VehicleRepository> _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="VehicleRepository"/> class.
         /// </summary>
         /// <param name="context">The application database context.</param>
-        public VehicleRepository(ApplicationDbContext context)
+        public VehicleRepository(
+            ApplicationDbContext context,
+            ILogger<VehicleRepository> logger
+            )
         {
             _context = context;
+            _logger = logger;
         }
 
         /// <summary>
@@ -27,7 +33,15 @@ namespace ExpressVoituresApi.Repositories
         /// <returns>An IQueryable of vehicles.</returns>
         public IQueryable<Vehicle> GetAll()
         {
-            return _context.Vehicles.AsQueryable();
+            try
+            {
+                return _context.Vehicles.AsQueryable();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"An error occurred while retrieving vehicles");
+                throw new InvalidOperationException($"An error occurred while retrieving vehicles", ex);
+            }
         }
 
         /// <summary>
@@ -37,7 +51,16 @@ namespace ExpressVoituresApi.Repositories
         /// <returns>The vehicle with the specified ID, or null if not found.</returns>
         public async Task<Vehicle?> GetById(int id)
         {
-            return await _context.Vehicles.FirstOrDefaultAsync(v => v.id == id);
+            try
+            {
+                var vehicle = await _context.Vehicles.FirstOrDefaultAsync(v => v.id == id);
+                return vehicle;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"An error occurred while retrieving vehicle with ID {id}");
+                throw new InvalidOperationException($"An error occurred while retrieving vehicle with ID {id}", ex);
+            }
         }
 
         /// <summary>
@@ -47,8 +70,16 @@ namespace ExpressVoituresApi.Repositories
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task Add(Vehicle vehicle)
         {
-            _context.Vehicles.Add(vehicle);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Vehicles.Add(vehicle);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while adding a new vehicle");
+                throw new InvalidOperationException("An error occurred while adding a new vehicle", ex);
+            }
         }
 
         /// <summary>
@@ -58,24 +89,18 @@ namespace ExpressVoituresApi.Repositories
         /// <returns>True if the update was successful, false otherwise.</returns>
         public async Task<bool> Update(Vehicle vehicle)
         {
-            _context.Vehicles.Attach(vehicle);
-            _context.Entry(vehicle).State = EntityState.Modified;
-
             try
             {
+                _context.Vehicles.Attach(vehicle);
+                _context.Entry(vehicle).State = EntityState.Modified;
+
                 await _context.SaveChangesAsync();
                 return true;
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!VehicleExists(vehicle.id))
-                {
-                    return false;
-                }
-                else
-                {
-                    throw;
-                }
+                _logger.LogError(ex, "An error occurred while uptading the vehicle");
+                throw new InvalidOperationException("An error occurred while uptading the vehicle", ex);
             }
         }
 
@@ -86,11 +111,22 @@ namespace ExpressVoituresApi.Repositories
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task Delete(int id)
         {
-            var vehicle = await _context.Vehicles.FindAsync(id);
-            if (vehicle != null)
+            try
             {
+                var vehicle = await _context.Vehicles.FindAsync(id);
+
+                if (vehicle == null)
+                {
+                    throw new InvalidOperationException($"Vehicle with ID {id} not found");
+                }
+
                 _context.Vehicles.Remove(vehicle);
                 await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while deleting the vehicle");
+                throw new InvalidOperationException("An error occurred while deleting the vehicle", ex);
             }
         }
 

@@ -309,9 +309,10 @@ namespace ExpressVoituresApi.Services
 
                 await _vehicleRepository.Delete(id);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new InvalidOperationException("An error occurred while updating the vehicle");
+                _logger.LogError(ex, "An error occurred while deleting the vehicle");
+                throw new InvalidOperationException("An error occurred while deleting the vehicle", ex);
             }
         }
 

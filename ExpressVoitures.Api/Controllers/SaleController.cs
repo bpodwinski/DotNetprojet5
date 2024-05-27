@@ -36,7 +36,7 @@ namespace ExpressVoituresApi.Controllers
 
                 saleAddDto.vehicle_id = id;
                 await _vehicleService.AddSale(saleAddDto);
-                return CreatedAtRoute("GetSaleById", new { vehicleId = id, saleId = saleAddDto.id }, saleAddDto);
+                return StatusCode(201);
             }
             catch (Exception ex)
             {

@@ -37,7 +37,7 @@ namespace ExpressVoituresApi.Controllers
 
                 repairAddDto.vehicle_id = id;
                 await _vehicleService.AddRepair(id, repairAddDto);
-                return Ok(new { Message = "Repair added successfully" });
+                return Ok();
             }
             catch (Exception ex)
             {

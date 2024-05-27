@@ -48,7 +48,7 @@ namespace ExpressVoituresApi.Controllers
                 }
 
                 await _vehicleService.AddPurchase(id, purchaseDto);
-                return Ok(new { Message = "Purchase added successfully" });
+                return Ok();
             }
             catch (ArgumentException ex)
             {

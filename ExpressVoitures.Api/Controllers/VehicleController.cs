@@ -122,12 +122,7 @@ namespace ExpressVoituresApi.Controllers
                 }
 
                 await _vehicleService.AddVehicle(vehicleAddDto);
-                return CreatedAtRoute("GetVehicleById", new { id = vehicleAddDto.id }, vehicleAddDto);
-            }
-            catch (InvalidOperationException ex)
-            {
-                _logger.LogError(ex, "An error occurred while adding the vehicle");
-                return StatusCode(500, new { Message = ex.Message });
+                return StatusCode(201);
             }
             catch (Exception ex)
             {
