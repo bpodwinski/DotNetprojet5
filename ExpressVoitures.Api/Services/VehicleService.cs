@@ -49,7 +49,7 @@ namespace ExpressVoituresApi.Services
         /// <param name="brand">Optional filter by brand.</param>
         /// <param name="sortOrder">Optional sort order.</param>
         /// <returns>A list of vehicle DTOs.</returns>
-        public async Task<IEnumerable<VehicleDto>> GetVehiclesAsync(int pageNumber, int pageSize, string brand, string sortOrder)
+        public async Task<IEnumerable<VehicleDto>> GetAllVehicles(int pageNumber, int pageSize, string brand, string sortOrder)
         {
             try
             {
@@ -136,7 +136,7 @@ namespace ExpressVoituresApi.Services
         /// Thrown when the vehicle with the specified ID is not found, 
         /// or when an error occurs while retrieving the vehicle.
         /// </exception>
-        public async Task<VehicleDto> GetVehicleByIdAsync(int id)
+        public async Task<VehicleDto> GetVehicleById(int id)
         {
             try
             {
@@ -196,50 +196,12 @@ namespace ExpressVoituresApi.Services
         }
 
         /// <summary>
-        /// Retrieves a vehicle by ID with its purchase information
-        /// </summary>
-        /// <param name="id">The ID of the vehicle to retrieve.</param>
-        /// <returns>The vehicle with purchase DTO with the specified ID, or null if not found.</returns>
-        public async Task<VehicleDto> GetVehicleWithPurchaseByIdAsync(int id)
-        {
-            try
-            {
-                var vehicle = await _vehicleRepository.GetByIdWithPurchaseAsync(id);
-                if (vehicle == null)
-                {
-                    throw new InvalidOperationException($"Vehicle ID {id} not found");
-                }
-
-                return new VehicleDto
-                {
-                    id = vehicle.id,
-                    create_date = vehicle.create_date,
-                    vin = vehicle.vin,
-                    year = vehicle.year,
-                    brand = vehicle.brand,
-                    model = vehicle.model,
-                    trim_level = vehicle.trim_level,
-                    purchase = vehicle.purchase == null ? null : new PurchaseDto
-                    {
-                        id = vehicle.purchase.id,
-                        date = vehicle.purchase.date,
-                        price = vehicle.purchase.price,
-                    }
-                };
-            }
-            catch (Exception)
-            {
-                throw new InvalidOperationException("An error occurred while updating the vehicle");
-            }
-        }
-
-        /// <summary>
         /// Adds a new vehicle
         /// </summary>
         /// <param name="vehicleAddDto">The vehicle data transfer object.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         /// <exception cref="InvalidOperationException">Thrown when an error occurs while adding the vehicle.</exception>
-        public async Task AddVehicleAsync(VehicleAddDto vehicleAddDto)
+        public async Task AddVehicle(VehicleAddDto vehicleAddDto)
         {
             try
             {
@@ -269,7 +231,7 @@ namespace ExpressVoituresApi.Services
         /// <returns>A task representing the asynchronous operation.</returns>
         /// <exception cref="ArgumentException">Thrown when the vehicle is not found.</exception>
         /// <exception cref="InvalidOperationException">Thrown when the vehicle already has a purchase.</exception>
-        public async Task AddPurchaseToVehicleAsync(int vehicleId, PurchaseDto purchaseDto)
+        public async Task AddPurchase(int vehicleId, PurchaseDto purchaseDto)
         {
             try
             {
@@ -305,7 +267,7 @@ namespace ExpressVoituresApi.Services
         /// <param name="id">The ID of the vehicle to update.</param>
         /// <param name="vehicleAddDto">The updated vehicle entity.</param>
         /// <returns>True if the update was successful, false otherwise.</returns>
-        public async Task<bool> UpdateVehicleAsync(int id, VehicleAddDto vehicleAddDto)
+        public async Task<bool> UpdateVehicle(int id, VehicleAddDto vehicleAddDto)
         {
             try
             {
@@ -335,7 +297,7 @@ namespace ExpressVoituresApi.Services
         /// </summary>
         /// <param name="id">The ID of the vehicle to delete.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task DeleteVehicleAsync(int id)
+        public async Task DeleteVehicle(int id)
         {
             try
             {
@@ -362,7 +324,7 @@ namespace ExpressVoituresApi.Services
         /// Thrown when the vehicle with the specified ID is not found,
         /// or when no purchase is found for the specified vehicle.
         /// </exception>
-        public async Task DeletePurchaseByVehicleIdAsync(int vehicleId)
+        public async Task DeletePurchase(int vehicleId)
         {
             try
             {
@@ -386,7 +348,17 @@ namespace ExpressVoituresApi.Services
             }
         }
 
-        public async Task AddRepairToVehicleAsync(int vehicleId, RepairAddDto repairAddDto)
+        /// <summary>
+        /// Adds a new repair to a vehicle.
+        /// </summary>
+        /// <param name="vehicleId">The ID of the vehicle to add the repair to.</param>
+        /// <param name="repairAddDto">The repair data transfer object containing the details of the repair.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when the vehicle with the specified ID is not found,
+        /// or when an error occurs while adding the repair.
+        /// </exception>
+        public async Task AddRepair(int vehicleId, RepairAddDto repairAddDto)
         {
             try
             {
@@ -412,7 +384,17 @@ namespace ExpressVoituresApi.Services
             }
         }
 
-        public async Task AddSaleAsync(SaleAddDto saleAddDto)
+        /// <summary>
+        /// Adds a new sale to a vehicle.
+        /// </summary>
+        /// <param name="saleAddDto">The sale data transfer object containing the details of the sale.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when the vehicle with the specified ID is not found,
+        /// when the vehicle already has a sale,
+        /// or when an error occurs while adding the sale.
+        /// </exception>
+        public async Task AddSale(SaleAddDto saleAddDto)
         {
             try
             {
@@ -452,52 +434,9 @@ namespace ExpressVoituresApi.Services
         /// </summary>
         /// <param name="saleId">The ID of the sale to delete.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task DeleteSaleAsync(int saleId)
+        public async Task DeleteSale(int saleId)
         {
             await _saleRepository.DeleteAsync(saleId);
-        }
-
-        /// <summary>
-        /// Retrieves a sale by its ID.
-        /// </summary>
-        /// <param name="saleId">The ID of the sale to retrieve.</param>
-        /// <returns>The sale DTO with the specified ID, or null if not found.</returns>
-        /// <exception cref="InvalidOperationException">
-        /// Thrown when the sale with the specified ID is not found.
-        /// </exception>
-        public async Task<SaleDto> GetSaleByIdAsync(int saleId)
-        {
-            var sale = await _saleRepository.GetByIdAsync(saleId);
-            if (sale == null)
-            {
-                throw new InvalidOperationException($"Sale with ID {saleId} not found");
-            }
-
-            return new SaleDto
-            {
-                id = sale.id,
-                create_date = sale.create_date,
-                availability_date = sale.availability_date,
-                sale_date = sale.sale_date,
-                price = sale.price,
-                title = sale.title,
-                description = sale.description
-            };
-        }
-
-        public async Task<IEnumerable<SaleDto>> GetSalesByVehicleIdAsync(int vehicleId)
-        {
-            var sales = await _saleRepository.GetSalesByVehicleIdAsync(vehicleId);
-            return sales.Select(sale => new SaleDto
-            {
-                id = sale.id,
-                create_date = sale.create_date,
-                availability_date = sale.availability_date,
-                sale_date = sale.sale_date,
-                price = sale.price,
-                title = sale.title,
-                description = sale.description
-            }).ToList();
         }
     }
 }

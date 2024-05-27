@@ -16,21 +16,21 @@ namespace ExpressVoituresApi.Services.Interfaces
         /// <param name="brand">Optional filter by brand.</param>
         /// <param name="sortOrder">Optional sort order.</param>
         /// <returns>A list of vehicle DTOs.</returns>
-        Task<IEnumerable<VehicleDto>> GetVehiclesAsync(int pageNumber, int pageSize, string brand, string sortOrder);
+        Task<IEnumerable<VehicleDto>> GetAllVehicles(int pageNumber, int pageSize, string brand, string sortOrder);
 
         /// <summary>
         /// Retrieves a vehicle by ID.
         /// </summary>
         /// <param name="id">The ID of the vehicle to retrieve.</param>
         /// <returns>The vehicle DTO with the specified ID, or null if not found.</returns>
-        Task<VehicleDto> GetVehicleByIdAsync(int id);
+        Task<VehicleDto> GetVehicleById(int id);
 
         /// <summary>
-        /// Retrieves a vehicle by ID with its purchase information.
+        /// Adds a new vehicle.
         /// </summary>
-        /// <param name="id">The ID of the vehicle to retrieve.</param>
-        /// <returns>The vehicle with purchase DTO with the specified ID, or null if not found.</returns>
-        Task<VehicleDto> GetVehicleWithPurchaseByIdAsync(int id);
+        /// <param name="vehicleAddDto">The vehicle data transfer object.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        Task AddVehicle(VehicleAddDto vehicleAddDto);
 
         /// <summary>
         /// Adds a new purchase to a vehicle.
@@ -38,14 +38,29 @@ namespace ExpressVoituresApi.Services.Interfaces
         /// <param name="vehicleId">The ID of the vehicle.</param>
         /// <param name="purchaseDto">The purchase data transfer object.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        Task AddPurchaseToVehicleAsync(int vehicleId, PurchaseDto purchaseDto);
+        Task AddPurchase(int vehicleId, PurchaseDto purchaseDto);
 
         /// <summary>
-        /// Adds a new vehicle.
+        /// Adds a new sale.
         /// </summary>
-        /// <param name="vehicleDto">The vehicle data transfer object.</param>
+        /// <param name="saleAddDto">The sale data transfer object containing the details of the sale.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        Task AddVehicleAsync(VehicleAddDto vehicleAddDto);
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when an error occurs while adding the sale.
+        /// </exception>
+        Task AddSale(SaleAddDto saleAddDto);
+
+        /// <summary>
+        /// Adds a new repair to a vehicle.
+        /// </summary>
+        /// <param name="vehicleId">The ID of the vehicle to add the repair to.</param>
+        /// <param name="repairAddDto">The repair data transfer object containing the details of the repair.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when the vehicle with the specified ID is not found,
+        /// or when an error occurs while adding the repair.
+        /// </exception>
+        Task AddRepair(int vehicleId, RepairAddDto repairAddDto);
 
         /// <summary>
         /// Updates a vehicle by ID.
@@ -53,26 +68,27 @@ namespace ExpressVoituresApi.Services.Interfaces
         /// <param name="id">The ID of the vehicle to update.</param>
         /// <param name="vehicleAddDto">The updated vehicle entity.</param>
         /// <returns>True if the update was successful, false otherwise.</returns>
-        Task<bool> UpdateVehicleAsync(int id, VehicleAddDto vehicleAddDto);
+        Task<bool> UpdateVehicle(int id, VehicleAddDto vehicleAddDto);
 
         /// <summary>
         /// Deletes a vehicle by ID.
         /// </summary>
         /// <param name="id">The ID of the vehicle to delete.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        Task DeleteVehicleAsync(int id);
+        Task DeleteVehicle(int id);
 
         /// <summary>
         /// Deletes a purchase by ID.
         /// </summary>
-        /// <param name="vehicleId">The ID of the purchase to delete.</param>
+        /// <param name="id">The ID of the purchase to delete.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        Task DeletePurchaseByVehicleIdAsync(int vehicleId);
+        Task DeletePurchase(int id);
 
-        Task AddRepairToVehicleAsync(int vehicleId, RepairAddDto repairAddDto);
-        Task<IEnumerable<SaleDto>> GetSalesByVehicleIdAsync(int vehicleId);
-        Task<SaleDto> GetSaleByIdAsync(int saleId);
-        Task AddSaleAsync(SaleAddDto saleAddDto);
-        Task DeleteSaleAsync(int saleId);
+        /// <summary>
+        /// Deletes a sale by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the sale to delete.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        Task DeleteSale(int id);
     }
 }

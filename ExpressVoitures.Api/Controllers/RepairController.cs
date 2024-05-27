@@ -20,13 +20,12 @@ namespace ExpressVoituresApi.Controllers
         }
 
         /// <summary>
-        /// Adds a new repair to a vehicle.
+        /// Adds a new repair to a vehicle
         /// </summary>
-        /// <param name="vehicleId">The ID of the vehicle.</param>
         /// <param name="repairAddDto">The repair data transfer object.</param>
         /// <returns>A status indicating the result of the operation.</returns>
-        [HttpPost(Name = "AddRepairToVehicle")]
-        public async Task<ActionResult> AddRepairToVehicle(int id, [FromBody] RepairAddDto repairAddDto)
+        [HttpPost(Name = "AddRepair")]
+        public async Task<ActionResult> AddRepair(int id, [FromBody] RepairAddDto repairAddDto)
         {
             try
             {
@@ -37,7 +36,7 @@ namespace ExpressVoituresApi.Controllers
                 }
 
                 repairAddDto.vehicle_id = id;
-                await _vehicleService.AddRepairToVehicleAsync(id, repairAddDto);
+                await _vehicleService.AddRepair(id, repairAddDto);
                 return Ok(new { Message = "Repair added successfully" });
             }
             catch (Exception ex)

@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using ExpressVoituresApi.Models.Dtos;
-using ExpressVoituresApi.Models.Entities;
 using ExpressVoituresApi.Services.Interfaces;
 
 namespace ExpressVoituresApi.Controllers
@@ -51,7 +50,7 @@ namespace ExpressVoituresApi.Controllers
                     return BadRequest(new { Message = "Page size must be greater than or equal to 1" });
                 }
 
-                var vehicles = await _vehicleService.GetVehiclesAsync(pageNumber, pageSize, brand, sortOrder);
+                var vehicles = await _vehicleService.GetAllVehicles(pageNumber, pageSize, brand, sortOrder);
                 return Ok(vehicles);
             }
             catch (ArgumentException ex)
@@ -87,7 +86,7 @@ namespace ExpressVoituresApi.Controllers
                     return BadRequest(new { Message = "ID must be greater than 0" });
                 }
 
-                var vehicle = await _vehicleService.GetVehicleByIdAsync(id);
+                var vehicle = await _vehicleService.GetVehicleById(id);
                 if (vehicle == null)
                 {
                     _logger.LogWarning($"Vehicle with ID {id} not found");
@@ -122,7 +121,7 @@ namespace ExpressVoituresApi.Controllers
                     return BadRequest(new { Message = "Vehicle data is required" });
                 }
 
-                await _vehicleService.AddVehicleAsync(vehicleAddDto);
+                await _vehicleService.AddVehicle(vehicleAddDto);
                 return CreatedAtRoute("GetVehicleById", new { id = vehicleAddDto.id }, vehicleAddDto);
             }
             catch (InvalidOperationException ex)
@@ -170,7 +169,7 @@ namespace ExpressVoituresApi.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var updated = await _vehicleService.UpdateVehicleAsync(id, vehicleAddDto);
+                var updated = await _vehicleService.UpdateVehicle(id, vehicleAddDto);
                 if (!updated)
                 {
                     _logger.LogWarning($"Update failed. Vehicle with ID {id} not found");
@@ -187,7 +186,7 @@ namespace ExpressVoituresApi.Controllers
         }
 
         /// <summary>
-        /// Deletes a vehicle by ID.
+        /// Deletes a vehicle by ID
         /// </summary>
         /// <param name="id">The ID of the vehicle to delete.</param>
         /// <returns>A status indicating the result of the operation.</returns>
@@ -207,14 +206,14 @@ namespace ExpressVoituresApi.Controllers
                     return BadRequest(new { Message = "ID must be greater than 0" });
                 }
 
-                var vehicle = await _vehicleService.GetVehicleByIdAsync(id);
+                var vehicle = await _vehicleService.GetVehicleById(id);
                 if (vehicle == null)
                 {
                     _logger.LogWarning($"Delete failed. Vehicle with ID {id} not found");
                     return NotFound(new { Message = $"Vehicle with ID {id} not found" });
                 }
 
-                await _vehicleService.DeleteVehicleAsync(id);
+                await _vehicleService.DeleteVehicle(id);
 
                 return NoContent();
             }
