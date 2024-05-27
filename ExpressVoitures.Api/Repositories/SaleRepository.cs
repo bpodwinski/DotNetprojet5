@@ -17,27 +17,20 @@ namespace ExpressVoituresApi.Repositories
             _context = context;
         }
 
-        public async Task AddAsync(Sale sale)
+        public async Task Add(Sale sale)
         {
             await _context.Sales.AddAsync(sale);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Sale> GetByIdAsync(int saleId)
+        public async Task<Sale> GetById(int saleId)
         {
             return await _context.Sales.FindAsync(saleId);
         }
 
-        public async Task<List<Sale>> GetSalesByVehicleIdAsync(int vehicleId)
+        public async Task Delete(int saleId)
         {
-            return await _context.Sales
-                .Where(s => s.vehicle_id == vehicleId)
-                .ToListAsync();
-        }
-
-        public async Task DeleteAsync(int saleId)
-        {
-            var sale = await GetByIdAsync(saleId);
+            var sale = await GetById(saleId);
             if (sale != null)
             {
                 _context.Sales.Remove(sale);

@@ -215,7 +215,7 @@ namespace ExpressVoituresApi.Services
                     trim_level = vehicleAddDto.trim_level
                 };
 
-                await _vehicleRepository.AddAsync(vehicle);
+                await _vehicleRepository.Add(vehicle);
             }
             catch (Exception)
             {
@@ -235,7 +235,7 @@ namespace ExpressVoituresApi.Services
         {
             try
             {
-                var vehicle = await _vehicleRepository.GetByIdWithPurchaseAsync(vehicleId);
+                var vehicle = await _vehicleRepository.GetById(vehicleId);
                 if (vehicle == null)
                 {
                     throw new InvalidOperationException($"Vehicle with ID {vehicleId} not found");
@@ -253,7 +253,7 @@ namespace ExpressVoituresApi.Services
                     vehicle_id = vehicleId
                 };
 
-                await _purchaseRepository.AddAsync(purchase);
+                await _purchaseRepository.Add(purchase);
             }
             catch (Exception)
             {
@@ -271,7 +271,7 @@ namespace ExpressVoituresApi.Services
         {
             try
             {
-                var existingVehicle = await _vehicleRepository.GetByIdAsync(id);
+                var existingVehicle = await _vehicleRepository.GetById(id);
                 if (existingVehicle == null)
                 {
                     throw new InvalidOperationException($"Vehicle ID {id} not found");
@@ -283,7 +283,7 @@ namespace ExpressVoituresApi.Services
                 existingVehicle.model = vehicleAddDto.model;
                 existingVehicle.trim_level = vehicleAddDto.trim_level;
 
-                return await _vehicleRepository.UpdateAsync(existingVehicle);
+                return await _vehicleRepository.Update(existingVehicle);
             }
             catch (Exception ex)
             {
@@ -301,13 +301,13 @@ namespace ExpressVoituresApi.Services
         {
             try
             {
-                var existingVehicle = await _vehicleRepository.GetByIdAsync(id);
+                var existingVehicle = await _vehicleRepository.GetById(id);
                 if (existingVehicle == null)
                 {
                     throw new InvalidOperationException($"Vehicle ID {id} not found");
                 }
 
-                await _vehicleRepository.DeleteAsync(id);
+                await _vehicleRepository.Delete(id);
             }
             catch (Exception)
             {
@@ -328,7 +328,7 @@ namespace ExpressVoituresApi.Services
         {
             try
             {
-                var vehicle = await _vehicleRepository.GetByIdWithPurchaseAsync(vehicleId);
+                var vehicle = await _vehicleRepository.GetById(vehicleId);
                 if (vehicle == null)
                 {
                     throw new InvalidOperationException($"Vehicle with ID {vehicleId} not found");
@@ -339,7 +339,7 @@ namespace ExpressVoituresApi.Services
                     throw new InvalidOperationException($"No purchase found for Vehicle ID {vehicleId}");
                 }
 
-                await _purchaseRepository.DeleteAsync(vehicle.purchase.id);
+                await _purchaseRepository.Delete(vehicle.purchase.id);
             }
             catch (Exception ex)
             {
@@ -362,7 +362,7 @@ namespace ExpressVoituresApi.Services
         {
             try
             {
-                var vehicle = await _vehicleRepository.GetByIdAsync(vehicleId);
+                var vehicle = await _vehicleRepository.GetById(vehicleId);
                 if (vehicle == null)
                 {
                     throw new InvalidOperationException($"Vehicle with ID {vehicleId} not found");
@@ -375,7 +375,7 @@ namespace ExpressVoituresApi.Services
                     cost = repairAddDto.cost
                 };
 
-                await _repairRepository.AddAsync(repair);
+                await _repairRepository.Add(repair);
             }
             catch (Exception ex)
             {
@@ -398,7 +398,7 @@ namespace ExpressVoituresApi.Services
         {
             try
             {
-                var vehicle = await _vehicleRepository.GetByIdAsync(saleAddDto.vehicle_id);
+                var vehicle = await _vehicleRepository.GetById(saleAddDto.vehicle_id);
                 if (vehicle == null)
                 {
                     throw new InvalidOperationException($"Vehicle with ID {saleAddDto.vehicle_id} not found");
@@ -420,7 +420,7 @@ namespace ExpressVoituresApi.Services
                     description = saleAddDto.description
                 };
 
-                await _saleRepository.AddAsync(sale);
+                await _saleRepository.Add(sale);
             }
             catch (Exception ex)
             {
@@ -436,7 +436,7 @@ namespace ExpressVoituresApi.Services
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task DeleteSale(int saleId)
         {
-            await _saleRepository.DeleteAsync(saleId);
+            await _saleRepository.Delete(saleId);
         }
     }
 }

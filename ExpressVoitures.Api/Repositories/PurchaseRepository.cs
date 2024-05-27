@@ -26,7 +26,7 @@ namespace ExpressVoituresApi.Repositories
         /// </summary>
         /// <param name="purchase">The purchase entity to add.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddAsync(Purchase purchase)
+        public async Task Add(Purchase purchase)
         {
             await _context.Purchases.AddAsync(purchase);
             await _context.SaveChangesAsync();
@@ -37,7 +37,7 @@ namespace ExpressVoituresApi.Repositories
         /// </summary>
         /// <param name="purchaseId">The ID of the purchase to retrieve.</param>
         /// <returns>The purchase entity with the specified ID, or null if not found.</returns>
-        public async Task<Purchase> GetByIdAsync(int purchaseId)
+        public async Task<Purchase> GetById(int purchaseId)
         {
             return await _context.Purchases.FindAsync(purchaseId);
         }
@@ -47,9 +47,9 @@ namespace ExpressVoituresApi.Repositories
         /// </summary>
         /// <param name="purchaseId">The ID of the purchase to delete.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task DeleteAsync(int purchaseId)
+        public async Task Delete(int purchaseId)
         {
-            var purchase = await GetByIdAsync(purchaseId);
+            var purchase = await GetById(purchaseId);
             if (purchase != null)
             {
                 _context.Purchases.Remove(purchase);

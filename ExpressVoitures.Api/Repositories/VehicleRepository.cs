@@ -35,21 +35,9 @@ namespace ExpressVoituresApi.Repositories
         /// </summary>
         /// <param name="id">The ID of the vehicle to retrieve.</param>
         /// <returns>The vehicle with the specified ID, or null if not found.</returns>
-        public async Task<Vehicle> GetByIdAsync(int id)
+        public async Task<Vehicle> GetById(int id)
         {
             return await _context.Vehicles.FirstOrDefaultAsync(v => v.id == id);
-        }
-
-        /// <summary>
-        /// Retrieves a vehicle by ID with its purchase information.
-        /// </summary>
-        /// <param name="id">The ID of the vehicle to retrieve.</param>
-        /// <returns>The vehicle with the specified ID and its purchase information, or null if not found.</returns>
-        public async Task<Vehicle> GetByIdWithPurchaseAsync(int id)
-        {
-            return await _context.Vehicles
-                .Include(v => v.purchase)
-                .FirstOrDefaultAsync(v => v.id == id);
         }
 
         /// <summary>
@@ -57,7 +45,7 @@ namespace ExpressVoituresApi.Repositories
         /// </summary>
         /// <param name="vehicle">The vehicle entity to add.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddAsync(Vehicle vehicle)
+        public async Task Add(Vehicle vehicle)
         {
             _context.Vehicles.Add(vehicle);
             await _context.SaveChangesAsync();
@@ -68,7 +56,7 @@ namespace ExpressVoituresApi.Repositories
         /// </summary>
         /// <param name="vehicle">The vehicle entity to update.</param>
         /// <returns>True if the update was successful, false otherwise.</returns>
-        public async Task<bool> UpdateAsync(Vehicle vehicle)
+        public async Task<bool> Update(Vehicle vehicle)
         {
             _context.Vehicles.Attach(vehicle);
             _context.Entry(vehicle).State = EntityState.Modified;
@@ -96,7 +84,7 @@ namespace ExpressVoituresApi.Repositories
         /// </summary>
         /// <param name="id">The ID of the vehicle to delete.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task DeleteAsync(int id)
+        public async Task Delete(int id)
         {
             var vehicle = await _context.Vehicles.FindAsync(id);
             if (vehicle != null)

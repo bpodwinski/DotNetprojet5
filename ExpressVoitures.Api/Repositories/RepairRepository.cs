@@ -13,7 +13,7 @@ namespace ExpressVoituresApi.Repositories
             _context = context;
         }
 
-        public async Task AddAsync(Repair repair)
+        public async Task Add(Repair repair)
         {
             await _context.Repairs.AddAsync(repair);
             await _context.SaveChangesAsync();
