@@ -300,12 +300,12 @@ namespace ExpressVoituresApi.Services
         }
 
         /// <summary>
-        /// Updates an existing vehicle by ID.
+        /// Updates an existing vehicle by ID
         /// </summary>
         /// <param name="id">The ID of the vehicle to update.</param>
-        /// <param name="vehicleDto">The updated vehicle entity.</param>
+        /// <param name="vehicleAddDto">The updated vehicle entity.</param>
         /// <returns>True if the update was successful, false otherwise.</returns>
-        public async Task<bool> UpdateVehicleAsync(int id, VehicleDto vehicleDto)
+        public async Task<bool> UpdateVehicleAsync(int id, VehicleAddDto vehicleAddDto)
         {
             try
             {
@@ -315,22 +315,18 @@ namespace ExpressVoituresApi.Services
                     throw new InvalidOperationException($"Vehicle ID {id} not found");
                 }
 
-                var vehicle = new Vehicle
-                {
-                    id = vehicleDto.id,
-                    create_date = vehicleDto.create_date,
-                    vin = vehicleDto.vin,
-                    year = vehicleDto.year,
-                    brand = vehicleDto.brand,
-                    model = vehicleDto.model,
-                    trim_level = vehicleDto.trim_level
-                };
+                existingVehicle.vin = vehicleAddDto.vin;
+                existingVehicle.year = vehicleAddDto.year;
+                existingVehicle.brand = vehicleAddDto.brand;
+                existingVehicle.model = vehicleAddDto.model;
+                existingVehicle.trim_level = vehicleAddDto.trim_level;
 
-                return await _vehicleRepository.UpdateAsync(vehicle);
+                return await _vehicleRepository.UpdateAsync(existingVehicle);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new InvalidOperationException("An error occurred while updating the vehicle");
+                _logger.LogError(ex, "An error occurred while retrieving vehicles");
+                throw new InvalidOperationException("An error occurred while retrieving vehicles", ex);
             }
         }
 

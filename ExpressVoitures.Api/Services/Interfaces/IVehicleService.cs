@@ -51,9 +51,9 @@ namespace ExpressVoituresApi.Services.Interfaces
         /// Updates a vehicle by ID.
         /// </summary>
         /// <param name="id">The ID of the vehicle to update.</param>
-        /// <param name="vehicleDto">The updated vehicle entity.</param>
+        /// <param name="vehicleAddDto">The updated vehicle entity.</param>
         /// <returns>True if the update was successful, false otherwise.</returns>
-        Task<bool> UpdateVehicleAsync(int id, VehicleDto vehicleDto);
+        Task<bool> UpdateVehicleAsync(int id, VehicleAddDto vehicleAddDto);
 
         /// <summary>
         /// Deletes a vehicle by ID.

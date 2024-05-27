@@ -138,10 +138,10 @@ namespace ExpressVoituresApi.Controllers
         }
 
         /// <summary>
-        /// Updates a vehicle by ID.
+        /// Updates a vehicle by ID
         /// </summary>
         /// <param name="id">The ID of the vehicle to update.</param>
-        /// <param name="vehicleDto">The vehicle data transfer object.</param>
+        /// <param name="vehicleAddDto">The vehicle data transfer object.</param>
         /// <returns>A status indicating the result of the operation.</returns>
         /// <response code="204">Vehicle updated successfully.</response>
         /// <response code="400">If the request parameters are invalid.</response>
@@ -149,7 +149,7 @@ namespace ExpressVoituresApi.Controllers
         /// <response code="500">If there is an internal server error.</response>
         // PUT: /vehicle/{id}
         [HttpPut("{id}", Name = "UpdateVehicle")]
-        public async Task<IActionResult> Put(int id, [FromBody] VehicleDto vehicleDto)
+        public async Task<IActionResult> Put(int id, [FromBody] VehicleAddDto vehicleAddDto)
         {
             try
             {
@@ -159,7 +159,7 @@ namespace ExpressVoituresApi.Controllers
                     return BadRequest(new { Message = "ID must be greater than 0" });
                 }
 
-                if (vehicleDto == null)
+                if (vehicleAddDto == null)
                 {
                     _logger.LogWarning("Vehicle data is null.");
                     return BadRequest(new { Message = "Vehicle data is required" });
@@ -170,7 +170,7 @@ namespace ExpressVoituresApi.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var updated = await _vehicleService.UpdateVehicleAsync(id, vehicleDto);
+                var updated = await _vehicleService.UpdateVehicleAsync(id, vehicleAddDto);
                 if (!updated)
                 {
                     _logger.LogWarning($"Update failed. Vehicle with ID {id} not found");
@@ -181,8 +181,8 @@ namespace ExpressVoituresApi.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"An error occurred while updating vehicle with ID {id}");
-                return StatusCode(500, new { Message = "An error occurred while updating the vehicle" });
+                _logger.LogError(ex, "An error occurred while retrieving vehicles");
+                throw new InvalidOperationException("An error occurred while retrieving vehicles", ex);
             }
         }
 
