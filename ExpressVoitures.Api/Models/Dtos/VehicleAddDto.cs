@@ -5,7 +5,7 @@ using ExpressVoituresApi.Models.Entities;
 
 namespace ExpressVoituresApi.Models.Dtos
 {
-    public class VehicleDto
+    public class VehicleAddDto
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -33,14 +33,5 @@ namespace ExpressVoituresApi.Models.Dtos
 
         [StringLength(50, ErrorMessage = "Trim Level name cannot exceed 50 characters")]
         public string trim_level { get; set; }
-
-        [SwaggerSchema(Description = "List of purchase associated with the vehicle")]
-        public PurchaseDto purchase { get; set; }
-
-        [SwaggerSchema(Description = "List of sale associated with the vehicle")]
-        public SaleDto sale { get; set; }
-
-        [SwaggerSchema(Description = "List of repairs associated with the vehicle")]
-        public virtual ICollection<RepairDto> repair { get; set; }
     }
 }

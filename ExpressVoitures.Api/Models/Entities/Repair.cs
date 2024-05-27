@@ -5,24 +5,25 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace ExpressVoituresApi.Models.Entities
 {
-    public class Purchase
+    public class Repair
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int id { get; set; }
 
+        [JsonIgnore]
         public int vehicle_id { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         [SwaggerSchema(ReadOnly = true)]
         public DateTime create_date { get; set; }
 
-        public DateTime date { get; set; }
+        public string description { get; set; }
 
-        public decimal price { get; set; }
+        public decimal cost { get; set; }
 
         [ForeignKey("vehicle_id")]
         [JsonIgnore]
-        public Vehicle vehicle { get; set; }
+        public virtual Vehicle vehicle { get; set; }
     }
 }

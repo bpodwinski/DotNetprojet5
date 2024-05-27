@@ -1,7 +1,7 @@
 ﻿using ExpressVoituresApi.Models.Dtos;
 using ExpressVoituresApi.Models.Entities;
 
-namespace ExpressVoituresApi.Services
+namespace ExpressVoituresApi.Services.Interfaces
 {
     /// <summary>
     /// Interface for vehicle service.
@@ -45,7 +45,7 @@ namespace ExpressVoituresApi.Services
         /// </summary>
         /// <param name="vehicleDto">The vehicle data transfer object.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        Task AddVehicleAsync(VehicleDto vehicleDto);
+        Task AddVehicleAsync(VehicleAddDto vehicleAddDto);
 
         /// <summary>
         /// Updates a vehicle by ID.
@@ -69,5 +69,10 @@ namespace ExpressVoituresApi.Services
         /// <returns>A task representing the asynchronous operation.</returns>
         Task DeletePurchaseByVehicleIdAsync(int vehicleId);
 
+        Task AddRepairToVehicleAsync(int vehicleId, RepairAddDto repairAddDto);
+        Task<IEnumerable<SaleDto>> GetSalesByVehicleIdAsync(int vehicleId);
+        Task<SaleDto> GetSaleByIdAsync(int saleId);
+        Task AddSaleAsync(SaleAddDto saleAddDto);
+        Task DeleteSaleAsync(int saleId);
     }
 }

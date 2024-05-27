@@ -1,4 +1,6 @@
 using System.Reflection;
+using ExpressVoituresApi.Repositories.Interfaces;
+using ExpressVoituresApi.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,9 +27,11 @@ builder.Services.AddDbContext<ExpressVoituresApi.Data.ApplicationDbContext>(opti
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add repositories and services
-builder.Services.AddScoped<ExpressVoituresApi.Repositories.IVehicleRepository, ExpressVoituresApi.Repositories.VehicleRepository>();
-builder.Services.AddScoped<ExpressVoituresApi.Repositories.IPurchaseRepository, ExpressVoituresApi.Repositories.PurchaseRepository>();
-builder.Services.AddScoped<ExpressVoituresApi.Services.IVehicleService, ExpressVoituresApi.Services.VehicleService>();
+builder.Services.AddScoped<IVehicleRepository, ExpressVoituresApi.Repositories.VehicleRepository>();
+builder.Services.AddScoped<IPurchaseRepository, ExpressVoituresApi.Repositories.PurchaseRepository>();
+builder.Services.AddScoped<IRepairRepository, ExpressVoituresApi.Repositories.RepairRepository>();
+builder.Services.AddScoped<ISaleRepository, ExpressVoituresApi.Repositories.SaleRepository>();
+builder.Services.AddScoped<IVehicleService, ExpressVoituresApi.Services.VehicleService>();
 
 var app = builder.Build();
 

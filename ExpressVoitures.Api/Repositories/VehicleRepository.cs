@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ExpressVoituresApi.Data;
 using ExpressVoituresApi.Models.Entities;
+using ExpressVoituresApi.Repositories.Interfaces;
 
 namespace ExpressVoituresApi.Repositories
 {
@@ -36,7 +37,7 @@ namespace ExpressVoituresApi.Repositories
         /// <returns>The vehicle with the specified ID, or null if not found.</returns>
         public async Task<Vehicle> GetByIdAsync(int id)
         {
-            return await _context.Vehicles.FirstOrDefaultAsync(v => v.Id == id);
+            return await _context.Vehicles.FirstOrDefaultAsync(v => v.id == id);
         }
 
         /// <summary>
@@ -47,8 +48,8 @@ namespace ExpressVoituresApi.Repositories
         public async Task<Vehicle> GetByIdWithPurchaseAsync(int id)
         {
             return await _context.Vehicles
-                .Include(v => v.Purchase)
-                .FirstOrDefaultAsync(v => v.Id == id);
+                .Include(v => v.purchase)
+                .FirstOrDefaultAsync(v => v.id == id);
         }
 
         /// <summary>
@@ -79,7 +80,7 @@ namespace ExpressVoituresApi.Repositories
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!VehicleExists(vehicle.Id))
+                if (!VehicleExists(vehicle.id))
                 {
                     return false;
                 }
@@ -112,7 +113,7 @@ namespace ExpressVoituresApi.Repositories
         /// <returns>True if the vehicle exists, false otherwise.</returns>
         private bool VehicleExists(int id)
         {
-            return _context.Vehicles.Any(e => e.Id == id);
+            return _context.Vehicles.Any(e => e.id == id);
         }
     }
 }

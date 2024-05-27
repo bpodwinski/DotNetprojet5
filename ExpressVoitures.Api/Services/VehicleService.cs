@@ -1,6 +1,8 @@
 ﻿using ExpressVoituresApi.Models.Dtos;
 using ExpressVoituresApi.Models.Entities;
 using ExpressVoituresApi.Repositories;
+using ExpressVoituresApi.Repositories.Interfaces;
+using ExpressVoituresApi.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExpressVoituresApi.Services
@@ -12,6 +14,8 @@ namespace ExpressVoituresApi.Services
     {
         private readonly IVehicleRepository _vehicleRepository;
         private readonly IPurchaseRepository _purchaseRepository;
+        private readonly IRepairRepository _repairRepository;
+        private readonly ISaleRepository _saleRepository;
         private readonly ILogger<VehicleService> _logger;
 
         /// <summary>
@@ -19,15 +23,21 @@ namespace ExpressVoituresApi.Services
         /// </summary>
         /// <param name="vehicleRepository">The vehicle repository.</param>
         /// <param name="purchaseRepository">The purchase repository.</param>
+        /// <param name="repairRepository">The repair repository.</param>
+        /// <param name="saleRepository">The sale repository.</param>
         /// <param name="logger">The logger.</param>
         public VehicleService(
             IVehicleRepository vehicleRepository,
             IPurchaseRepository purchaseRepository,
+            IRepairRepository repairRepository,
+            ISaleRepository saleRepository,
             ILogger<VehicleService> logger
             )
         {
             _vehicleRepository = vehicleRepository;
             _purchaseRepository = purchaseRepository;
+            _repairRepository = repairRepository;
+            _saleRepository = saleRepository;
             _logger = logger;
         }
 
@@ -44,44 +54,73 @@ namespace ExpressVoituresApi.Services
             try
             {
                 var query = _vehicleRepository.GetAll();
+
                 if (!string.IsNullOrEmpty(brand))
                 {
-                    query = query.Where(v => v.Brand.Contains(brand));
+                    query = query.Where(v => v.brand.Contains(brand));
                 }
 
                 if (!string.IsNullOrEmpty(sortOrder))
                 {
                     query = sortOrder.ToLower() switch
                     {
-                        "brand" => query.OrderBy(v => v.Brand),
-                        "model" => query.OrderBy(v => v.Model),
-                        "year" => query.OrderBy(v => v.Year),
-                        "id" => query.OrderBy(v => v.Id),
-                        _ => query.OrderBy(v => v.Id),
+                        "brand" => query.OrderBy(vehicle => vehicle.brand),
+                        "model" => query.OrderBy(vehicle => vehicle.model),
+                        "year" => query.OrderBy(vehicle => vehicle.year),
+                        "id" => query.OrderBy(vehicle => vehicle.id),
+                        _ => query.OrderBy(vehicle => vehicle.id),
                     };
                 }
+
+                query = query
+                    .Include(v => v.purchase)
+                    .Include(v => v.sale)
+                    .Include(v => v.repair);
 
                 var vehicles = await query
                     .Skip((pageNumber - 1) * pageSize)
                     .Take(pageSize)
-                    .Select(v => new VehicleDto
+                    .Select(vehicle => new VehicleDto
                     {
-                        Id = v.Id,
-                        CreateDate = v.CreateDate,
-                        Vin = v.Vin,
-                        Year = v.Year,
-                        Brand = v.Brand,
-                        Model = v.Model,
-                        TrimLevel = v.TrimLevel
+                        id = vehicle.id,
+                        create_date = vehicle.create_date,
+                        vin = vehicle.vin,
+                        year = vehicle.year,
+                        brand = vehicle.brand,
+                        model = vehicle.model,
+                        trim_level = vehicle.trim_level,
+                        purchase = vehicle.purchase == null ? null : new PurchaseDto
+                        {
+                            id = vehicle.purchase.id,
+                            date = vehicle.purchase.date,
+                            price = vehicle.purchase.price
+                        },
+                        sale = vehicle.sale == null ? null : new SaleDto
+                        {
+                            id = vehicle.sale.id,
+                            create_date = vehicle.sale.create_date,
+                            availability_date = vehicle.sale.availability_date,
+                            sale_date = vehicle.sale.sale_date,
+                            price = vehicle.sale.price,
+                            title = vehicle.sale.title,
+                            description = vehicle.sale.description
+                        },
+                        repair = vehicle.repair.Select(repair => new RepairDto
+                        {
+                            id = repair.id,
+                            create_date = repair.create_date,
+                            description = repair.description,
+                            cost = repair.cost
+                        }).ToList()
                     })
                     .ToListAsync();
 
                 return vehicles;
-
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new InvalidOperationException("An error occurred while updating the vehicle");
+                _logger.LogError(ex, "An error occurred while retrieving vehicles");
+                throw new InvalidOperationException("An error occurred while retrieving vehicles", ex);
             }
         }
 
@@ -102,13 +141,13 @@ namespace ExpressVoituresApi.Services
 
                 return new VehicleDto
                 {
-                    Id = vehicle.Id,
-                    CreateDate = vehicle.CreateDate,
-                    Vin = vehicle.Vin,
-                    Year = vehicle.Year,
-                    Brand = vehicle.Brand,
-                    Model = vehicle.Model,
-                    TrimLevel = vehicle.TrimLevel
+                    id = vehicle.id,
+                    create_date = vehicle.create_date,
+                    vin = vehicle.vin,
+                    year = vehicle.year,
+                    brand = vehicle.brand,
+                    model = vehicle.model,
+                    trim_level = vehicle.trim_level
                 };
             }
             catch (Exception)
@@ -134,18 +173,18 @@ namespace ExpressVoituresApi.Services
 
                 return new VehicleDto
                 {
-                    Id = vehicle.Id,
-                    CreateDate = vehicle.CreateDate,
-                    Vin = vehicle.Vin,
-                    Year = vehicle.Year,
-                    Brand = vehicle.Brand,
-                    Model = vehicle.Model,
-                    TrimLevel = vehicle.TrimLevel,
-                    Purchase = vehicle.Purchase == null ? null : new PurchaseDto
+                    id = vehicle.id,
+                    create_date = vehicle.create_date,
+                    vin = vehicle.vin,
+                    year = vehicle.year,
+                    brand = vehicle.brand,
+                    model = vehicle.model,
+                    trim_level = vehicle.trim_level,
+                    purchase = vehicle.purchase == null ? null : new PurchaseDto
                     {
-                        Id = vehicle.Purchase.Id,
-                        Date = vehicle.Purchase.Date,
-                        Price = vehicle.Purchase.Price,
+                        id = vehicle.purchase.id,
+                        date = vehicle.purchase.date,
+                        price = vehicle.purchase.price,
                     }
                 };
             }
@@ -161,19 +200,19 @@ namespace ExpressVoituresApi.Services
         /// <param name="vehicleDto">The vehicle data transfer object.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         /// <exception cref="InvalidOperationException">Thrown when an error occurs while adding the vehicle.</exception>
-        public async Task AddVehicleAsync(VehicleDto vehicleDto)
+        public async Task AddVehicleAsync(VehicleAddDto vehicleAddDto)
         {
             try
             {
                 var vehicle = new Vehicle
                 {
-                    Id = vehicleDto.Id,
-                    CreateDate = vehicleDto.CreateDate,
-                    Vin = vehicleDto.Vin,
-                    Year = vehicleDto.Year,
-                    Brand = vehicleDto.Brand,
-                    Model = vehicleDto.Model,
-                    TrimLevel = vehicleDto.TrimLevel
+                    id = vehicleAddDto.id,
+                    create_date = vehicleAddDto.create_date,
+                    vin = vehicleAddDto.vin,
+                    year = vehicleAddDto.year,
+                    brand = vehicleAddDto.brand,
+                    model = vehicleAddDto.model,
+                    trim_level = vehicleAddDto.trim_level
                 };
 
                 await _vehicleRepository.AddAsync(vehicle);
@@ -202,16 +241,16 @@ namespace ExpressVoituresApi.Services
                     throw new InvalidOperationException($"Vehicle with ID {vehicleId} not found");
                 }
 
-                if (vehicle.Purchase != null)
+                if (vehicle.purchase != null)
                 {
                     throw new InvalidOperationException("The vehicle already has a purchase");
                 }
 
                 var purchase = new Purchase
                 {
-                    Date = purchaseDto.Date,
-                    Price = purchaseDto.Price,
-                    VehicleId = vehicleId
+                    date = purchaseDto.date,
+                    price = purchaseDto.price,
+                    vehicle_id = vehicleId
                 };
 
                 await _purchaseRepository.AddAsync(purchase);
@@ -240,12 +279,13 @@ namespace ExpressVoituresApi.Services
 
                 var vehicle = new Vehicle
                 {
-                    Id = id,
-                    Vin = vehicleDto.Vin,
-                    Year = vehicleDto.Year,
-                    Brand = vehicleDto.Brand,
-                    Model = vehicleDto.Model,
-                    TrimLevel = vehicleDto.TrimLevel
+                    id = vehicleDto.id,
+                    create_date = vehicleDto.create_date,
+                    vin = vehicleDto.vin,
+                    year = vehicleDto.year,
+                    brand = vehicleDto.brand,
+                    model = vehicleDto.model,
+                    trim_level = vehicleDto.trim_level
                 };
 
                 return await _vehicleRepository.UpdateAsync(vehicle);
@@ -298,18 +338,119 @@ namespace ExpressVoituresApi.Services
                     throw new InvalidOperationException($"Vehicle with ID {vehicleId} not found");
                 }
 
-                if (vehicle.Purchase == null)
+                if (vehicle.purchase == null)
                 {
                     throw new InvalidOperationException($"No purchase found for Vehicle ID {vehicleId}");
                 }
 
-                await _purchaseRepository.DeleteAsync(vehicle.Purchase.Id);
+                await _purchaseRepository.DeleteAsync(vehicle.purchase.id);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"An error occurred while deleting purchase with ID {vehicleId}");
                 throw new InvalidOperationException("An error occurred while deleting the purchase");
             }
+        }
+
+        public async Task AddRepairToVehicleAsync(int vehicleId, RepairAddDto repairAddDto)
+        {
+            try
+            {
+                var vehicle = await _vehicleRepository.GetByIdAsync(vehicleId);
+                if (vehicle == null)
+                {
+                    throw new InvalidOperationException($"Vehicle with ID {vehicleId} not found");
+                }
+
+                var repair = new Repair
+                {
+                    vehicle_id = vehicleId,
+                    description = repairAddDto.description,
+                    cost = repairAddDto.cost
+                };
+
+                await _repairRepository.AddAsync(repair);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"An error occurred while adding a repair to vehicle with ID {vehicleId}");
+                throw new InvalidOperationException("An error occurred while adding the repair");
+            }
+        }
+
+        public async Task AddSaleAsync(SaleAddDto saleAddDto)
+        {
+            try
+            {
+                var vehicle = await _vehicleRepository.GetByIdAsync(saleAddDto.vehicle_id);
+                if (vehicle == null)
+                {
+                    throw new InvalidOperationException($"Vehicle with ID {saleAddDto.vehicle_id} not found");
+                }
+
+                if (vehicle.sale != null)
+                {
+                    throw new InvalidOperationException("The vehicle already has a sale");
+                }
+
+                var sale = new Sale
+                {
+                    vehicle_id = saleAddDto.vehicle_id,
+                    create_date = saleAddDto.create_date,
+                    availability_date = saleAddDto.availability_date,
+                    sale_date = saleAddDto.sale_date,
+                    price = saleAddDto.price,
+                    title = saleAddDto.title,
+                    description = saleAddDto.description
+                };
+
+                await _saleRepository.AddAsync(sale);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"An error occurred while adding a sale to vehicle with ID {saleAddDto.vehicle_id}");
+                throw new InvalidOperationException("An error occurred while adding the sale");
+            }
+        }
+
+        public async Task DeleteSaleAsync(int saleId)
+        {
+            await _saleRepository.DeleteAsync(saleId);
+        }
+
+        public async Task<SaleDto> GetSaleByIdAsync(int saleId)
+        {
+            var sale = await _saleRepository.GetByIdAsync(saleId);
+            if (sale == null)
+            {
+                throw new InvalidOperationException($"Sale with ID {saleId} not found");
+            }
+
+            return new SaleDto
+            {
+                id = sale.id,
+                create_date = sale.create_date,
+                availability_date = sale.availability_date,
+                sale_date = sale.sale_date,
+                price = sale.price,
+                title = sale.title,
+                description = sale.description
+            };
+        }
+
+        public async Task<IEnumerable<SaleDto>> GetSalesByVehicleIdAsync(int vehicleId)
+        {
+            var sales = await _saleRepository.GetSalesByVehicleIdAsync(vehicleId);
+            return sales.Select(sale => new SaleDto
+            {
+                id = sale.id,
+                create_date = sale.create_date,
+                availability_date = sale.availability_date,
+                sale_date = sale.sale_date,
+                price = sale.price,
+                title = sale.title,
+                description = sale.description
+            }).ToList();
         }
     }
 }

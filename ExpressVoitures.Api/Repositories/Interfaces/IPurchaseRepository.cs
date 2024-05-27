@@ -1,6 +1,6 @@
 ﻿using ExpressVoituresApi.Models.Entities;
 
-namespace ExpressVoituresApi.Repositories
+namespace ExpressVoituresApi.Repositories.Interfaces
 {
     /// <summary>
     /// Interface for purchase repository.

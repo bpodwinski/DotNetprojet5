@@ -1,14 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace ExpressVoituresApi.Models.Entities
+namespace ExpressVoituresApi.Models.Dtos
 {
-    public class Purchase
+    public class RepairDto
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [SwaggerSchema(ReadOnly = true)]
         public int id { get; set; }
 
         public int vehicle_id { get; set; }
@@ -17,12 +17,12 @@ namespace ExpressVoituresApi.Models.Entities
         [SwaggerSchema(ReadOnly = true)]
         public DateTime create_date { get; set; }
 
-        public DateTime date { get; set; }
+        [Required]
+        [StringLength(200, ErrorMessage = "Repair description cannot exceed 200 characters")]
+        public string description { get; set; }
 
-        public decimal price { get; set; }
-
-        [ForeignKey("vehicle_id")]
-        [JsonIgnore]
-        public Vehicle vehicle { get; set; }
+        [Required]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Cost must be a positive value")]
+        public decimal cost { get; set; }
     }
 }

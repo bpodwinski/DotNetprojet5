@@ -1,5 +1,6 @@
 ﻿using ExpressVoituresApi.Data;
 using ExpressVoituresApi.Models.Entities;
+using ExpressVoituresApi.Repositories.Interfaces;
 using System.Threading.Tasks;
 
 namespace ExpressVoituresApi.Repositories

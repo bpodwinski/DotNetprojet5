@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ExpressVoituresApi.Models.Entities;
+using ExpressVoituresApi.Models.Dtos;
 
 namespace ExpressVoituresApi.Data
 {
@@ -26,6 +27,16 @@ namespace ExpressVoituresApi.Data
         public DbSet<Purchase> Purchases { get; set; }
 
         /// <summary>
+        /// Gets or sets the Repairs DbSet.
+        /// </summary>
+        public DbSet<Repair> Repairs { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Sales DbSet.
+        /// </summary>
+        public DbSet<Sale> Sales { get; set; }
+
+        /// <summary>
         /// Configures the schema needed for the application.
         /// </summary>
         /// <param name="modelBuilder">The builder used to construct the model for the context.</param>
@@ -33,21 +44,45 @@ namespace ExpressVoituresApi.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Set default value for Vehicle.CreateDate
+            // Set default value for Vehicle.create_date
             modelBuilder.Entity<Vehicle>()
-                .Property(v => v.CreateDate)
+                .Property(v => v.create_date)
                 .HasDefaultValueSql("GETDATE()");
 
-            // Set default value for Purchase.CreateDate
+            // Set default value for Purchase.date
             modelBuilder.Entity<Purchase>()
-                .Property(p => p.CreateDate)
+                .Property(p => p.date)
+                .HasDefaultValueSql("GETDATE()");
+
+            // Set default value for Repair.create_date
+            modelBuilder.Entity<Repair>()
+                .Property(r => r.create_date)
+                .HasDefaultValueSql("GETDATE()");
+
+            // Set default value for Sale.create_date
+            modelBuilder.Entity<Sale>()
+                .Property(s => s.create_date)
                 .HasDefaultValueSql("GETDATE()");
 
             // Configure one-to-one relationship between Vehicle and Purchase
             modelBuilder.Entity<Vehicle>()
-                .HasOne(v => v.Purchase)
-                .WithOne(p => p.Vehicle)
-                .HasForeignKey<Purchase>(p => p.VehicleId)
+                .HasOne(v => v.purchase)
+                .WithOne(p => p.vehicle)
+                .HasForeignKey<Purchase>(p => p.vehicle_id)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Configure one-to-one relationship between Vehicle and Sale
+            modelBuilder.Entity<Vehicle>()
+                .HasOne(v => v.sale)
+                .WithOne(s => s.vehicle)
+                .HasForeignKey<Sale>(s => s.vehicle_id)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Configure one-to-many relationship between Vehicle and Repairs
+            modelBuilder.Entity<Vehicle>()
+                .HasMany(v => v.repair)
+                .WithOne(r => r.vehicle)
+                .HasForeignKey(r => r.vehicle_id)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

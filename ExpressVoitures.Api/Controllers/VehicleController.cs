@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ExpressVoituresApi.Models.Dtos;
 using ExpressVoituresApi.Models.Entities;
-using ExpressVoituresApi.Services;
+using ExpressVoituresApi.Services.Interfaces;
 
 namespace ExpressVoituresApi.Controllers
 {
@@ -112,18 +112,18 @@ namespace ExpressVoituresApi.Controllers
         /// <response code="500">If there is an internal server error.</response>
         // POST: /vehicle
         [HttpPost(Name = "AddVehicle")]
-        public async Task<ActionResult> Post([FromBody] VehicleDto vehicleDto)
+        public async Task<ActionResult> Post([FromBody] VehicleAddDto vehicleAddDto)
         {
             try
             {
-                if (vehicleDto == null)
+                if (vehicleAddDto == null)
                 {
                     _logger.LogWarning("VehicleDto is null");
                     return BadRequest(new { Message = "Vehicle data is required" });
                 }
 
-                await _vehicleService.AddVehicleAsync(vehicleDto);
-                return CreatedAtRoute("GetVehicleById", new { id = vehicleDto.Id }, vehicleDto);
+                await _vehicleService.AddVehicleAsync(vehicleAddDto);
+                return CreatedAtRoute("GetVehicleById", new { id = vehicleAddDto.id }, vehicleAddDto);
             }
             catch (InvalidOperationException ex)
             {
