@@ -21,7 +21,7 @@ namespace ExpressVoituresApi.Controllers
         }
 
         /// <summary>
-        /// Retrieves a list of vehicles with optional pagination, filtering, and sorting.
+        /// Retrieves a list of vehicles with optional pagination, filtering, and sorting
         /// </summary>
         /// <param name="pageNumber">The page number for pagination (default is 1).</param>
         /// <param name="pageSize">The page size for pagination (default is 25).</param>

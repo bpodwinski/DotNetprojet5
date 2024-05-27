@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace ExpressVoituresApi.Models.Dtos
@@ -11,6 +12,7 @@ namespace ExpressVoituresApi.Models.Dtos
         [SwaggerSchema(ReadOnly = true)]
         public int id { get; set; }
 
+        [JsonIgnore]
         public int vehicle_id { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]

@@ -12,6 +12,7 @@ namespace ExpressVoituresApi.Models.Dtos
         [SwaggerSchema(ReadOnly = true)]
         public int id { get; set; }
 
+        [JsonIgnore]
         public int vehicle_id { get; set; }
 
         [Required]

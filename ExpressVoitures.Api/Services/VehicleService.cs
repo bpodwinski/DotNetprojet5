@@ -92,12 +92,14 @@ namespace ExpressVoituresApi.Services
                         purchase = vehicle.purchase == null ? null : new PurchaseDto
                         {
                             id = vehicle.purchase.id,
+                            vehicle_id = vehicle.id,
                             date = vehicle.purchase.date,
                             price = vehicle.purchase.price
                         },
                         sale = vehicle.sale == null ? null : new SaleDto
                         {
                             id = vehicle.sale.id,
+                            vehicle_id = vehicle.id,
                             create_date = vehicle.sale.create_date,
                             availability_date = vehicle.sale.availability_date,
                             sale_date = vehicle.sale.sale_date,
@@ -108,6 +110,7 @@ namespace ExpressVoituresApi.Services
                         repair = vehicle.repair.Select(repair => new RepairDto
                         {
                             id = repair.id,
+                            vehicle_id = vehicle.id,
                             create_date = repair.create_date,
                             description = repair.description,
                             cost = repair.cost
