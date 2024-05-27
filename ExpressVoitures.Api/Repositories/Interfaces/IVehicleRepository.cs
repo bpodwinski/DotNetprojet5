@@ -18,7 +18,7 @@ namespace ExpressVoituresApi.Repositories.Interfaces
         /// </summary>
         /// <param name="id">The ID of the vehicle to retrieve.</param>
         /// <returns>The vehicle with the specified ID, or null if not found.</returns>
-        Task<Vehicle> GetById(int id);
+        Task<Vehicle?> GetById(int id);
 
         /// <summary>
         /// Adds a new vehicle.

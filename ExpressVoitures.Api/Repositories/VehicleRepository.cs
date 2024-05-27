@@ -35,7 +35,7 @@ namespace ExpressVoituresApi.Repositories
         /// </summary>
         /// <param name="id">The ID of the vehicle to retrieve.</param>
         /// <returns>The vehicle with the specified ID, or null if not found.</returns>
-        public async Task<Vehicle> GetById(int id)
+        public async Task<Vehicle?> GetById(int id)
         {
             return await _context.Vehicles.FirstOrDefaultAsync(v => v.id == id);
         }
