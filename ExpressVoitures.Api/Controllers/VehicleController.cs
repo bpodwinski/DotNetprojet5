@@ -67,7 +67,7 @@ namespace ExpressVoituresApi.Controllers
         }
 
         /// <summary>
-        /// Retrieves a vehicle by ID.
+        /// Retrieves a vehicle by ID
         /// </summary>
         /// <param name="id">The ID of the vehicle to retrieve.</param>
         /// <returns>The vehicle with the specified ID.</returns>

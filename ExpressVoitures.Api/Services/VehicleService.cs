@@ -128,15 +128,24 @@ namespace ExpressVoituresApi.Services
         }
 
         /// <summary>
-        /// Retrieves a vehicle by ID.
+        /// Retrieves a vehicle by ID with its purchase, sale, and repair information
         /// </summary>
         /// <param name="id">The ID of the vehicle to retrieve.</param>
         /// <returns>The vehicle DTO with the specified ID, or null if not found.</returns>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when the vehicle with the specified ID is not found, 
+        /// or when an error occurs while retrieving the vehicle.
+        /// </exception>
         public async Task<VehicleDto> GetVehicleByIdAsync(int id)
         {
             try
             {
-                var vehicle = await _vehicleRepository.GetByIdAsync(id);
+                var vehicle = await _vehicleRepository.GetAll()
+                    .Include(v => v.purchase)
+                    .Include(v => v.sale)
+                    .Include(v => v.repair)
+                    .FirstOrDefaultAsync(v => v.id == id);
+
                 if (vehicle == null)
                 {
                     throw new InvalidOperationException($"Vehicle ID {id} not found");
@@ -150,12 +159,39 @@ namespace ExpressVoituresApi.Services
                     year = vehicle.year,
                     brand = vehicle.brand,
                     model = vehicle.model,
-                    trim_level = vehicle.trim_level
+                    trim_level = vehicle.trim_level,
+                    purchase = vehicle.purchase == null ? null : new PurchaseDto
+                    {
+                        id = vehicle.purchase.id,
+                        vehicle_id = vehicle.id,
+                        date = vehicle.purchase.date,
+                        price = vehicle.purchase.price
+                    },
+                    sale = vehicle.sale == null ? null : new SaleDto
+                    {
+                        id = vehicle.sale.id,
+                        vehicle_id = vehicle.id,
+                        create_date = vehicle.sale.create_date,
+                        availability_date = vehicle.sale.availability_date,
+                        sale_date = vehicle.sale.sale_date,
+                        price = vehicle.sale.price,
+                        title = vehicle.sale.title,
+                        description = vehicle.sale.description
+                    },
+                    repair = vehicle.repair.Select(repair => new RepairDto
+                    {
+                        id = repair.id,
+                        vehicle_id = vehicle.id,
+                        create_date = repair.create_date,
+                        description = repair.description,
+                        cost = repair.cost
+                    }).ToList()
                 };
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new InvalidOperationException("An error occurred while updating the vehicle");
+                _logger.LogError(ex, $"An error occurred while retrieving vehicle with ID {id}");
+                throw new InvalidOperationException("An error occurred while retrieving the vehicle", ex);
             }
         }
 
