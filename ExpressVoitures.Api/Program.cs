@@ -2,6 +2,11 @@ using System.Reflection;
 using ExpressVoituresApi.Repositories.Interfaces;
 using ExpressVoituresApi.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,22 +21,79 @@ builder.Services.AddSwaggerGen(c =>
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
-});
 
-// Swagger/OpenAPI https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+    // Configure Swagger to include Authorization input
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                },
+                Scheme = "oauth2",
+                Name = "Bearer",
+                In = ParameterLocation.Header,
+            },
+            new List<string>()
+        }
+    });
+});
 
 // Add DbContext with SQL Server
 builder.Services.AddDbContext<ExpressVoituresApi.Data.ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add repositories and services
+builder.Services.AddScoped<IUserRepository, ExpressVoituresApi.Repositories.UserRepository>();
 builder.Services.AddScoped<IVehicleRepository, ExpressVoituresApi.Repositories.VehicleRepository>();
 builder.Services.AddScoped<IPurchaseRepository, ExpressVoituresApi.Repositories.PurchaseRepository>();
 builder.Services.AddScoped<IRepairRepository, ExpressVoituresApi.Repositories.RepairRepository>();
 builder.Services.AddScoped<ISaleRepository, ExpressVoituresApi.Repositories.SaleRepository>();
+builder.Services.AddScoped<IUserService, ExpressVoituresApi.Services.UserService>();
 builder.Services.AddScoped<IVehicleService, ExpressVoituresApi.Services.VehicleService>();
+
+// Add TokenService for generating JWT tokens
+builder.Services.AddSingleton<TokenService>();
+
+// Configure JWT authentication
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+    };
+});
+
+// Configure Authorization to apply [Authorize] globally
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+});
 
 var app = builder.Build();
 
@@ -42,10 +104,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseRouting();
 app.UseHttpsRedirection();
 
+// JWT authentication
+app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
+app.UseMiddleware<ExceptionMiddleware>();
 
+app.MapControllers();
 app.Run();

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ExpressVoituresApi.Models.Dtos;
 using ExpressVoituresApi.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ExpressVoituresApi.Controllers
 {

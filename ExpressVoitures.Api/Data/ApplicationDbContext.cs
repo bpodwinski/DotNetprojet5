@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ExpressVoituresApi.Models.Entities;
-using ExpressVoituresApi.Models.Dtos;
 
 namespace ExpressVoituresApi.Data
 {
@@ -37,12 +36,22 @@ namespace ExpressVoituresApi.Data
         public DbSet<Sale> Sales { get; set; }
 
         /// <summary>
+        /// Gets or sets the UserAccounts DbSet.
+        /// </summary>
+        public DbSet<User> Users { get; set; }
+
+        /// <summary>
         /// Configures the schema needed for the application.
         /// </summary>
         /// <param name="modelBuilder">The builder used to construct the model for the context.</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            // Set default value for User.create_date
+            modelBuilder.Entity<User>()
+                .Property(v => v.create_date)
+                .HasDefaultValueSql("GETDATE()");
 
             // Set default value for Vehicle.create_date
             modelBuilder.Entity<Vehicle>()
