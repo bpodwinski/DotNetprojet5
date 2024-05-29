@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpressVoitures.Api", "Expr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2C5B49DE-C078-4861-B754-902ABDA8B3FA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpressVoitures.Api.Tests", "ExpressVoituresApi.Tests\ExpressVoitures.Api.Tests.csproj", "{BE740F09-C36D-4ABC-AD8B-9CDF07C370BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpressVoitures.Api.Tests", "ExpressVoitures.Api.Tests\ExpressVoitures.Api.Tests.csproj", "{BE740F09-C36D-4ABC-AD8B-9CDF07C370BB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
