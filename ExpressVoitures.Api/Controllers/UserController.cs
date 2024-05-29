@@ -27,6 +27,15 @@ namespace ExpressVoituresApi.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// Authenticates a user based on email and password
+        /// </summary>
+        /// <param name="userLoginDto">The user login data transfer object containing the user's email and password.</param>
+        /// <returns>An IActionResult that may contain a JWT token if authentication is successful, a bad request response if input is invalid, or an unauthorized response if authentication fails.</returns>
+        /// <remarks>
+        /// This method allows anonymous access and is typically used to handle the initial login process for a user.
+        /// It checks if the provided userLoginDto is null, authenticates the user, and generates a JWT token for authenticated users.
+        /// </remarks>
         [HttpPost("login")]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] UserLoginDto userLoginDto)
@@ -54,7 +63,6 @@ namespace ExpressVoituresApi.Controllers
                 return StatusCode(500, new { Message = "An error occurred while logging in the user" });
             }
         }
-
 
         /// <summary>
         /// Creates a new user account.
