@@ -87,6 +87,17 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+// Configure CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
+
 // Configure Authorization to apply [Authorize] globally
 builder.Services.AddAuthorization(options =>
 {
@@ -105,9 +116,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseRouting();
+
+// Use CORS
+app.UseCors("AllowAll");
+
 app.UseHttpsRedirection();
 
-// JWT authentication
+// Use JWT authentication
 app.UseAuthentication();
 app.UseAuthorization();
 
