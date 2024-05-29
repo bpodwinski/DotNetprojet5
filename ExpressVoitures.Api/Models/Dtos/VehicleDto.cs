@@ -20,7 +20,7 @@ namespace ExpressVoituresApi.Models.Dtos
         public string vin { get; set; }
 
         [Required]
-        [Range(1886, 9999, ErrorMessage = "Please enter a valid year between 1886 and 9999")]
+        [Range(1990, 9999, ErrorMessage = "Please enter a valid year between 1886 and 9999")]
         public int year { get; set; }
 
         [Required]
