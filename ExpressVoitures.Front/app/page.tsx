@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useEffect, useState, useMemo } from "react";
+import { useRouter } from 'next/navigation';
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyValue } from "@nextui-org/table";
 import { Pagination } from "@nextui-org/pagination";
+import {EditIcon} from "../app/Editicon";
 
 interface Vehicle {
   id: number;
@@ -20,25 +22,38 @@ const columns = [
 ];
 
 export default function App() {
+  const router = useRouter()
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [page, setPage] = useState(1);
   const rowsPerPage: number = 10;
   const pages: number = Math.ceil(vehicles.length / rowsPerPage);
 
   useEffect(() => {
-    fetch('/api/vehicles')
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Failed to fetch: ${response.statusText}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setVehicles(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching vehicles:", error);
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
+      const headers = new Headers({
+        'Content-Type': 'application/json',
+        'Authorization': token ? `Bearer ${token}` : ''
       });
+
+      if (!token) {
+        router.push('/login');
+      }
+
+      fetch('http://192.168.1.101:5000/vehicle', { headers })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`Failed to fetch: ${response.statusText}`);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          setVehicles(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching vehicles:", error);
+        });
+    }
   }, []);
 
   const items = useMemo(() => {
