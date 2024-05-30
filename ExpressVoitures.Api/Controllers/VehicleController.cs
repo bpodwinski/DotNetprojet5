@@ -112,6 +112,7 @@ namespace ExpressVoituresApi.Controllers
         /// <response code="500">If there is an internal server error.</response>
         // POST: /vehicle
         [HttpPost(Name = "AddVehicle")]
+        [AllowAnonymous]
         public async Task<ActionResult> Post([FromBody] VehicleAddDto vehicleAddDto)
         {
             try

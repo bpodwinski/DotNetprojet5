@@ -55,7 +55,7 @@ namespace ExpressVoituresApi.Controllers
                 }
 
                 var token = _tokenService.GenerateToken(userDto);
-                return Ok(new { Token = token });
+                return Ok(new { Id = userDto.id, Token = token });
             }
             catch (Exception ex)
             {
