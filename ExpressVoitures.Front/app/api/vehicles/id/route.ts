@@ -3,7 +3,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
   const secret = process.env.NEXTAUTH_SECRET;
   const token = await getToken({ req: request, secret });
 
@@ -12,7 +12,8 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const res = await fetch("http://localhost:5000/vehicle", {
+    const { id } = await request.json();
+    const res = await fetch(`http://localhost:5000/vehicle/${id}`, {
       headers: {
         Authorization: `Bearer ${token.accessToken}`,
       },
@@ -22,8 +23,8 @@ export async function GET(request: NextRequest) {
       throw new Error("Failed to fetch vehicles");
     }
 
-    const vehicles = await res.json();
-    return NextResponse.json(vehicles);
+    const vehicle = await res.json();
+    return NextResponse.json(vehicle);
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

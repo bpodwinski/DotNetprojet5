@@ -1,64 +1,100 @@
 "use client";
 
-import { NextResponse } from 'next/server';
-import { useRouter } from 'next/navigation';
-import React, { useState, useEffect } from 'react';
-import {Card, CardHeader, CardBody, CardFooter} from "@nextui-org/card";
-import {Input} from "@nextui-org/input";
-import {Button, ButtonGroup} from "@nextui-org/button";
+import { useState, useMemo } from "react";
+import { signIn } from "next-auth/react";
+
+import { title } from "@/components/primitives";
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  Input,
+  Button,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@nextui-org/react";
 
 export default function LoginPage() {
-  const router = useRouter()
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
+  const [isPopoverVisible, setPopoverVisible] = useState<boolean>(false);
 
-  const handleLogin = async () => {
-    try {
-      const response = await fetch('http://localhost:5000/user/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password
-        })
-      });
+  // Validations
+  const validateEmail = (email: string) =>
+    email.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i);
+  const isInvalid = useMemo(() => {
+    if (email === "") return false;
 
-      const responseData = await response.json();
+    return validateEmail(email) ? false : true;
+  }, [email]);
 
-      if (response.ok && responseData.token) {
-        const id = responseData.id;
-        const token = responseData.token;
-        localStorage.setItem('id', id);
-        localStorage.setItem('token', token);
-        console.log('responseData :', responseData);
-        router.push('/');
-      }
-      
-      if (responseData.errors) {
-        console.error('Erreur lors de la connexion :', responseData.errors);
-      }
+  const handleSignIn = async () => {
+    setError(null);
+    setPopoverVisible(false);
+    const result = await signIn("credentials", {
+      redirect: false,
+      email,
+      password,
+    });
 
-    } catch (error) {
-      console.error('Erreur lors de l\'appel de l\'API :', error);
+    if (result?.error) {
+      setError(result.error);
+      setPopoverVisible(true);
+      console.error(result);
     }
   };
 
   return (
-    <div className="w-full flex items-center justify-center">
-        <Card className="w-[600px] p-6">
-          <CardBody>
-            <div className="flex flex-col items-center gap-4">
-              <h1 className="pb-6 text-4xl" >Sign in</h1>
-              
-              <Input type="email" label="Email" value={email} onChange={(e) => setEmail(e.target.value)}  />
-              <Input type="password" label="Password" value={password} onChange={(e) => setPassword(e.target.value)}  />
-
-              <Button className="w-[120px]" onClick={handleLogin}>Sign in</Button>
-            </div>
-          </CardBody>
-        </Card>
-    </div>
+    <Card className="w-[600px] p-6">
+      <CardHeader>
+        <h1 className={title()}>Sign in</h1>
+      </CardHeader>
+      <CardBody className="gap-4">
+        <Input
+          type="email"
+          label="Email"
+          value={email}
+          isInvalid={isInvalid}
+          color={isInvalid ? "danger" : "default"}
+          errorMessage="Please enter a valid email"
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <Input
+          type="password"
+          label="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        <div className="flex justify-center">
+          <Popover
+            placement="bottom"
+            showArrow={true}
+            color="danger"
+            isOpen={isPopoverVisible}
+            onClose={() => setPopoverVisible(false)}
+          >
+            <PopoverTrigger>
+              <Button
+                onClick={handleSignIn}
+                className="w-[120px]"
+                color="primary"
+              >
+                Sign in
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent>
+              <div className="px-1 py-2">
+                <div className="text-small font-bold">Error</div>
+                <div className="text-tiny">{error}</div>
+              </div>
+            </PopoverContent>
+          </Popover>
+        </div>
+      </CardBody>
+    </Card>
   );
 }

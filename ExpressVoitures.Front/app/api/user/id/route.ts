@@ -12,18 +12,19 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const res = await fetch("http://localhost:5000/vehicle", {
+    const id = token.id;
+    const res = await fetch(`http://localhost:5000/user/${id}`, {
       headers: {
         Authorization: `Bearer ${token.accessToken}`,
       },
     });
 
     if (!res.ok) {
-      throw new Error("Failed to fetch vehicles");
+      throw new Error("Failed to fetch user");
     }
 
-    const vehicles = await res.json();
-    return NextResponse.json(vehicles);
+    const user = await res.json();
+    return NextResponse.json(user);
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

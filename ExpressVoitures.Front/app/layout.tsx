@@ -1,5 +1,6 @@
 import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
+import { Link } from "@nextui-org/link";
 import clsx from "clsx";
 
 import { Providers } from "./providers";
@@ -9,7 +10,6 @@ import { fontSans } from "@/config/fonts";
 import { Navbar } from "@/components/navbar";
 
 export const metadata: Metadata = {
-  manifest: '/manifest.json',
   title: {
     default: siteConfig.name,
     template: `%s - ${siteConfig.name}`,
@@ -48,7 +48,15 @@ export default function RootLayout({
               {children}
             </main>
             <footer className="w-full flex items-center justify-center py-3">
-                <p className="text-default-600">Créé par Benoit Podwinski</p>
+              <Link
+                isExternal
+                className="flex items-center gap-1 text-current"
+                href="https://nextui-docs-v2.vercel.app?utm_source=next-app-template"
+                title="nextui.org homepage"
+              >
+                <span className="text-default-600">Powered by</span>
+                <p className="text-primary">NextUI</p>
+              </Link>
             </footer>
           </div>
         </Providers>

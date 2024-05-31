@@ -1,22 +1,29 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: "Express Voitures - Inventaire",
-  description: "Gestion d'inventaire de Express Voiture",
+  name: "Express Voitures",
+  description: "...",
   navItems: [
     {
       label: "Dashboard",
-      href: "/",
-    }
+      href: "/dashboard",
+    },
+    {
+      label: "About",
+      href: "/about",
+    },
   ],
   navMenuItems: [
     {
-      label: "Profil",
+      label: "Profile",
       href: "/profile",
     },
     {
-      label: "Se déconnecter",
+      label: "Logout",
       href: "/logout",
     },
   ],
+  links: {
+    github: "https://github.com/bpodwinski/DotNetprojet5",
+  },
 };
