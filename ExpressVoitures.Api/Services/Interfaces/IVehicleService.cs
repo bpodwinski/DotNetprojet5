@@ -31,6 +31,7 @@ namespace ExpressVoituresApi.Services.Interfaces
         /// <param name="vehicleAddDto">The vehicle data transfer object.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         Task AddVehicle(VehicleAddDto vehicleAddDto);
+        Task AddVehicles(IEnumerable<VehicleAddDto> vehicleAddDto);
 
         /// <summary>
         /// Adds a new purchase to a vehicle.

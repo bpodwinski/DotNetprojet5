@@ -1,4 +1,5 @@
-﻿using ExpressVoituresApi.Models.Dtos;
+﻿using System.Linq;
+using ExpressVoituresApi.Models.Dtos;
 using ExpressVoituresApi.Models.Entities;
 using ExpressVoituresApi.Repositories;
 using ExpressVoituresApi.Repositories.Interfaces;
@@ -221,6 +222,21 @@ namespace ExpressVoituresApi.Services
             {
                 throw new InvalidOperationException("An error occurred while updating the vehicle");
             }
+        }
+
+        public async Task AddVehicles(IEnumerable<VehicleAddDto> vehicleAddDto)
+        {
+            var vehicleList = vehicleAddDto.Select(dto => new Vehicle
+            {
+                id = dto.id,
+                vin = dto.vin,
+                year = dto.year,
+                brand = dto.brand,
+                model = dto.model,
+                trim_level = dto.trim_level
+            }).ToList();
+
+            await _vehicleRepository.AddBulk(vehicleList);
         }
 
         /// <summary>

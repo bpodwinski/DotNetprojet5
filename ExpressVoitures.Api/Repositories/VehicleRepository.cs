@@ -82,6 +82,12 @@ namespace ExpressVoituresApi.Repositories
             }
         }
 
+        public async Task AddBulk(IEnumerable<Vehicle> vehicles)
+        {
+            await _context.Vehicles.AddRangeAsync(vehicles);
+            await _context.SaveChangesAsync();
+        }
+
         /// <summary>
         /// Updates an existing vehicle.
         /// </summary>

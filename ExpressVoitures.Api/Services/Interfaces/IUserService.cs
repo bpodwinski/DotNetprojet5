@@ -4,8 +4,10 @@ namespace ExpressVoituresApi.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<UserDto> Authenticate(string email, string password);
-        Task<UserDto> CreateUser(UserDto userDto);
+        Task<UserDto> CreateUser(UserCreateDto userAddDto);
+        Task<UserUpdateDto> UpdateUser(UserUpdateDto userUpdateDto);
+        Task UpdateUserToken(TokenDto tokenDto);
         Task<UserDto> GetUserById(int id);
+        Task<bool> EmailExist(string email);
     }
 }

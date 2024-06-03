@@ -6,12 +6,10 @@ namespace ExpressVoituresApi.Models.Entities
 {
     public class UserDto
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
         [SwaggerSchema(ReadOnly = true)]
         public int id { get; set; }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         [SwaggerSchema(ReadOnly = true)]
         public DateTime create_date { get; set; }
 
@@ -30,5 +28,11 @@ namespace ExpressVoituresApi.Models.Entities
         [Required]
         [StringLength(255, MinimumLength = 6, ErrorMessage = "Password must be at least 6 characters long")]
         public string password { get; set; }
+
+        public string? token { get; set; }
+
+        public string? refresh_token { get; set; }
+
+        public DateTime? refresh_token_expiry_time { get; set; }
     }
 }

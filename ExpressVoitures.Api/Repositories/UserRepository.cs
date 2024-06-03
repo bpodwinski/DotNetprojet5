@@ -14,20 +14,37 @@ namespace ExpressVoituresApi.Repositories
             _context = context;
         }
 
-        public async Task<User> GetByEmail(string email)
-        {
-            return await _context.Users.SingleOrDefaultAsync(u => u.email == email);
-        }
-
-        public async Task Add(User user)
+        public async Task AddUser(User user)
         {
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<User> GetById(int id)
+        public async Task UpdateUser(User user)
+        {
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateUserToken(TokenDto tokenDto)
+        {
+            var user = await _context.Users.FindAsync(tokenDto.id);
+
+            user.refresh_token = tokenDto.refresh_token;
+            user.refresh_token_expiry_time = tokenDto.refresh_token_expiry_time;
+
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<User> GetUserById(int id)
         {
             return await _context.Users.FindAsync(id);
+        }
+
+        public async Task<User> GetUserByEmail(string email)
+        {
+            return await _context.Users.SingleOrDefaultAsync(u => u.email == email);
         }
     }
 }

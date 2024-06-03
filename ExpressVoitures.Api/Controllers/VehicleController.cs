@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using ExpressVoituresApi.Models.Dtos;
 using ExpressVoituresApi.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using ExpressVoituresApi.Models.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace ExpressVoituresApi.Controllers
 {
@@ -130,6 +132,36 @@ namespace ExpressVoituresApi.Controllers
             {
                 _logger.LogError(ex, "An unexpected error occurred while adding the vehicle");
                 return StatusCode(500, new { Message = "An unexpected error occurred while adding the vehicle" });
+            }
+        }
+
+        /// <summary>
+        /// Adds multiple new vehicles
+        /// </summary>
+        /// <param name="vehicleAddDtos">The list of vehicle data transfer objects.</param>
+        /// <returns>A status indicating the result of the operation.</returns>
+        /// <response code="201">Vehicles created successfully.</response>
+        /// <response code="400">If the request parameters are invalid.</response>
+        /// <response code="500">If there is an internal server error.</response>
+        [HttpPost("bulk", Name = "AddVehicles")]
+        [AllowAnonymous]
+        public async Task<ActionResult> Post([FromBody] List<VehicleAddDto> vehicleAddDto)
+        {
+            try
+            {
+                if (vehicleAddDto == null || !vehicleAddDto.Any())
+                {
+                    _logger.LogWarning("VehicleAddDto is null or empty");
+                    return BadRequest(new { Message = "Vehicle data is required" });
+                }
+
+                await _vehicleService.AddVehicles(vehicleAddDto);
+                return StatusCode(201);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unexpected error occurred while adding the vehicles");
+                return StatusCode(500, new { Message = "An unexpected error occurred while adding the vehicles" });
             }
         }
 

@@ -3,6 +3,7 @@ using ExpressVoituresApi.Models.Entities;
 using ExpressVoituresApi.Repositories.Interfaces;
 using ExpressVoituresApi.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json.Linq;
 
 namespace ExpressVoituresApi.Services
 {
@@ -13,6 +14,7 @@ namespace ExpressVoituresApi.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly IUserRepository _userRepository;
+        private readonly IAuthService _authService;
         private readonly IPasswordHasher<User> _passwordHasher;
         private readonly ILogger<UserService> _logger;
 
@@ -25,11 +27,13 @@ namespace ExpressVoituresApi.Services
         public UserService(
             ApplicationDbContext context,
             IUserRepository userRepository,
+            IAuthService authService,
             ILogger<UserService> logger
             )
         {
             _context = context;
             _userRepository = userRepository;
+            _authService = authService;
             _passwordHasher = new PasswordHasher<User>();
             _logger = logger;
         }
@@ -50,7 +54,7 @@ namespace ExpressVoituresApi.Services
 
             try
             {
-                var user = await _userRepository.GetByEmail(email);
+                var user = await _userRepository.GetUserByEmail(email);
                 return user != null;
             }
             catch (Exception ex)
@@ -63,19 +67,34 @@ namespace ExpressVoituresApi.Services
         /// <summary>
         /// Creates a new user in the database.
         /// </summary>
-        /// <param name="userDto">The user data transfer object containing the user's details for creation.</param>
-        /// <returns>A newly created UserDto with ID and creation date filled.</returns>
-        /// <exception cref="EmailExistsException">Thrown when an attempt is made to create a user with an email that already exists in the database.</exception>
-        /// <exception cref="Exception">General exceptions are caught and rethrown, indicating an unexpected error occurred during the operation.</exception>
-        public async Task<UserDto> Authenticate(string email, string password)
+        /// <param name="userDto">Data transfer object containing user details.</param>
+        /// <returns>The created UserDto with ID and creation date set.</returns>
+        /// <exception cref="EmailExistsException">Thrown when an attempt is made to create a user with an email that already exists.</exception>
+        /// <exception cref="Exception">General exceptions are caught and logged, and then rethrown.</exception>
+        public async Task<UserDto> CreateUser(UserCreateDto userCreateDto)
         {
             try
             {
-                var user = await _userRepository.GetByEmail(email);
-                if (user == null || _passwordHasher.VerifyHashedPassword(user, user.password, password) == PasswordVerificationResult.Failed)
+                if (await EmailExist(userCreateDto.email))
                 {
-                    return null;
+                    _logger.LogWarning("Attempt to create a user with an existing email: {Email}", userCreateDto.email);
+                    throw new EmailExistsException();
                 }
+                
+                var user = new User
+                {
+                    firstname = userCreateDto.firstname,
+                    lastname = userCreateDto.lastname,
+                    email = userCreateDto.email,
+                    password = userCreateDto.password,
+                    //refresh_token = _authService.GenerateRefreshToken(),
+                    refresh_token_expiry_time = DateTime.UtcNow.AddDays(1)
+                };
+
+                user.password = _passwordHasher.HashPassword(user, userCreateDto.password);
+
+                await _userRepository.AddUser(user);
+
                 return new UserDto
                 {
                     id = user.id,
@@ -83,50 +102,10 @@ namespace ExpressVoituresApi.Services
                     firstname = user.firstname,
                     lastname = user.lastname,
                     email = user.email,
-                    password = user.password
+                    password = user.password,
+                    refresh_token = user.refresh_token,
+                    refresh_token_expiry_time = user.refresh_token_expiry_time
                 };
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while authenticating the user");
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Creates a new user in the database.
-        /// </summary>
-        /// <param name="userDto">Data transfer object containing user details.</param>
-        /// <returns>The created UserDto with ID and creation date set.</returns>
-        /// <exception cref="EmailExistsException">Thrown when an attempt is made to create a user with an email that already exists.</exception>
-        /// <exception cref="Exception">General exceptions are caught and logged, and then rethrown.</exception>
-        public async Task<UserDto> CreateUser(UserDto userDto)
-        {
-            try
-            {
-                if (await EmailExist(userDto.email))
-                {
-                    _logger.LogWarning("Attempt to create a user with an existing email: {Email}", userDto.email);
-                    throw new EmailExistsException();
-                }
-                
-                var user = new User
-                {
-                    firstname = userDto.firstname,
-                    lastname = userDto.lastname,
-                    email = userDto.email,
-                    password = userDto.password
-                };
-
-                user.password = _passwordHasher.HashPassword(user, userDto.password);
-
-                _context.Users.Add(user);
-                await _context.SaveChangesAsync();
-
-                userDto.id = user.id;
-                userDto.create_date = user.create_date;
-
-                return userDto;
             }
             catch (EmailExistsException)
             {
@@ -139,6 +118,50 @@ namespace ExpressVoituresApi.Services
             }
         }
 
+        public async Task<UserUpdateDto> UpdateUser(UserUpdateDto userUpdateDto)
+        {
+            try
+            {
+                var user = await _userRepository.GetUserById(userUpdateDto.id);
+
+                if (user == null)
+                {
+                    throw new InvalidOperationException($"User with ID {userUpdateDto.id} not found");
+                }
+
+                if (user.email != userUpdateDto.email && await EmailExist(userUpdateDto.email))
+                {
+                    _logger.LogWarning("Attempt to update a user with an existing email: {Email}", userUpdateDto.email);
+                    throw new EmailExistsException();
+                }
+
+                user.id = userUpdateDto.id;
+                user.firstname = userUpdateDto.firstname;
+                user.lastname = userUpdateDto.lastname;
+                user.email = userUpdateDto.email;
+                user.token = userUpdateDto.token;
+                user.refresh_token = userUpdateDto.refresh_token;
+
+                await _userRepository.UpdateUser(user);
+
+                return userUpdateDto;
+            }
+            catch (EmailExistsException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while updating the user account");
+                throw;
+            }
+        }
+
+        public async Task UpdateUserToken(TokenDto tokenDto)
+        {
+            await _userRepository.UpdateUserToken(tokenDto);
+        }
+
         /// <summary>
         /// Retrieves a user by their unique identifier.
         /// </summary>
@@ -149,21 +172,23 @@ namespace ExpressVoituresApi.Services
         {
             try
             {
-                var userAccount = await _context.Users.FindAsync(id);
+                var user = await _context.Users.FindAsync(id);
 
-                if (userAccount == null)
+                if (user == null)
                 {
                     throw new InvalidOperationException($"User with ID {id} not found");
                 }
 
                 return new UserDto
                 {
-                    id = userAccount.id,
-                    create_date = userAccount.create_date,
-                    firstname = userAccount.firstname,
-                    lastname = userAccount.lastname,
-                    email = userAccount.email,
-                    password = userAccount.password
+                    id = user.id,
+                    create_date = user.create_date,
+                    firstname = user.firstname,
+                    lastname = user.lastname,
+                    email = user.email,
+                    password = user.password,
+                    refresh_token = user.refresh_token,
+                    refresh_token_expiry_time = user.refresh_token_expiry_time,
                 };
             }
             catch (Exception ex)

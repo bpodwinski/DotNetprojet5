@@ -26,6 +26,7 @@ namespace ExpressVoituresApi.Repositories.Interfaces
         /// <param name="vehicle">The vehicle entity to add.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         Task Add(Vehicle vehicle);
+        Task AddBulk(IEnumerable<Vehicle> vehicles);
 
         /// <summary>
         /// Updates an existing vehicle.

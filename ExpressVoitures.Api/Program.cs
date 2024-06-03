@@ -5,8 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using ExpressVoituresApi.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
+using ExpressVoituresApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,17 +57,20 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddDbContext<ExpressVoituresApi.Data.ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Add repositories and services
-builder.Services.AddScoped<IUserRepository, ExpressVoituresApi.Repositories.UserRepository>();
-builder.Services.AddScoped<IVehicleRepository, ExpressVoituresApi.Repositories.VehicleRepository>();
-builder.Services.AddScoped<IPurchaseRepository, ExpressVoituresApi.Repositories.PurchaseRepository>();
-builder.Services.AddScoped<IRepairRepository, ExpressVoituresApi.Repositories.RepairRepository>();
-builder.Services.AddScoped<ISaleRepository, ExpressVoituresApi.Repositories.SaleRepository>();
-builder.Services.AddScoped<IUserService, ExpressVoituresApi.Services.UserService>();
-builder.Services.AddScoped<IVehicleService, ExpressVoituresApi.Services.VehicleService>();
+// Add repositories
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
+builder.Services.AddScoped<IPurchaseRepository, PurchaseRepository>();
+builder.Services.AddScoped<IRepairRepository, RepairRepository>();
+builder.Services.AddScoped<ISaleRepository, SaleRepository>();
 
-// Add TokenService for generating JWT tokens
-builder.Services.AddSingleton<TokenService>();
+// Add services
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IVehicleService, VehicleService>();
+
+// Add AuthService for generating JWT tokens
+//builder.Services.AddSingleton<AuthService>();
 
 // Configure JWT authentication
 builder.Services.AddAuthentication(options =>
