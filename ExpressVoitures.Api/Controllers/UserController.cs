@@ -95,7 +95,6 @@ namespace ExpressVoituresApi.Controllers
                     email = createdUser.email
                 };
 
-
                 var token = _authService.GenerateToken(userDto);
                 var refreshToken = _authService.GenerateRefreshToken(userDto);
 
@@ -118,7 +117,7 @@ namespace ExpressVoituresApi.Controllers
                     firstname = updatedUser.firstname,
                     lastname = updatedUser.lastname,
                     email = updatedUser.email,
-                    token = updatedUser.token,
+                    token = token,
                     refresh_token = updatedUser.refresh_token,
                     refresh_token_expiry_time = updatedUser.refresh_token_expiry_time
                 });

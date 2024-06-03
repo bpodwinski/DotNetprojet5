@@ -87,8 +87,6 @@ namespace ExpressVoituresApi.Services
                     lastname = userCreateDto.lastname,
                     email = userCreateDto.email,
                     password = userCreateDto.password,
-                    //refresh_token = _authService.GenerateRefreshToken(),
-                    refresh_token_expiry_time = DateTime.UtcNow.AddDays(1)
                 };
 
                 user.password = _passwordHasher.HashPassword(user, userCreateDto.password);

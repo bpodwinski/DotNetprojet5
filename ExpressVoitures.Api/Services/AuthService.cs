@@ -94,17 +94,6 @@ namespace ExpressVoituresApi.Services
 
                 var token = tokenHandler.CreateToken(tokenDescriptor);
 
-                //userDto.refresh_token = refreshToken;
-                //userDto.refresh_token_expiry_time = DateTime.UtcNow.AddDays(1);
-
-                //_userService.UpdateUserToken(new UserTokenUpdateDto
-                //{
-                //    id = userDto.id,
-                //    token = token,
-                //    refresh_token = userDto.refresh_token,
-                //    refresh_token_expiry_time = userDto.refresh_token_expiry_time
-                //}).Wait();
-
                 return tokenHandler.WriteToken(token);
             }
             catch (Exception ex)
