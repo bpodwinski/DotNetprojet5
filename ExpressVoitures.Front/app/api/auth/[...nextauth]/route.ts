@@ -3,6 +3,40 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { JWT } from "next-auth/jwt";
 import { Session } from "next-auth";
 
+const refreshAccessToken = async (token: JWT) => {
+  try {
+    const response = await fetch("http://localhost:5000/user/refresh-token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        refreshToken: token.refreshToken,
+      }),
+    });
+
+    const refreshedTokens = await response.json();
+
+    if (!response.ok) {
+      throw refreshedTokens;
+    }
+
+    return {
+      ...token,
+      accessToken: refreshedTokens.accessToken,
+      accessTokenExpires: Date.now() + refreshedTokens.expiresIn * 1000,
+      refreshToken: refreshedTokens.refreshToken ?? token.refreshToken,
+    };
+  } catch (error) {
+    console.error("Error refreshing access token:", error);
+
+    return {
+      ...token,
+      error: "RefreshAccessTokenError",
+    };
+  }
+};
+
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -31,12 +65,12 @@ export const authOptions: NextAuthOptions = {
           }
 
           const user = await response.json();
-          //console.log('API response:', user);
 
           if (user && user.token) {
             return {
               id: String(user.id),
               accessToken: String(user.token),
+              refreshToken: String(user.refreshToken),
               name: `${user.firstname} ${user.lastname}`,
               email: user.email,
             };
@@ -51,19 +85,24 @@ export const authOptions: NextAuthOptions = {
   ],
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-    async jwt({ token, user }: { token: JWT; user?: any }) {
+    async jwt({ token, user, account }) {
       if (user && typeof user.accessToken === "string") {
         token.id = user.id;
         token.accessToken = user.accessToken;
+        token.refreshToken = user.refreshToken;
+        token.accessTokenExpires = Date.now() + 3600 * 1000; // 1 hour
         token.name = user.name;
         token.email = user.email;
       }
 
-      console.log("JWT Callback:", token);
-      return token;
+      if (Date.now() < (token.accessTokenExpires as number)) {
+        return token;
+      }
+
+      return refreshAccessToken(token);
     },
 
-    async session({ session, token }: { session: Session; token: JWT }) {
+    async session({ session, token }) {
       if (typeof token.accessToken === "string") {
         session.accessToken = token.accessToken;
       }
@@ -71,7 +110,6 @@ export const authOptions: NextAuthOptions = {
       session.user.name = token.name as string;
       session.user.email = token.email as string;
 
-      console.log("Session Callback:", session);
       return session;
     },
   },

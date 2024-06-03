@@ -3,8 +3,6 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-import { Spinner } from "@nextui-org/react";
-
 export default function DashboardLayout({
   children,
 }: {
@@ -14,11 +12,7 @@ export default function DashboardLayout({
   const router = useRouter();
 
   if (status === "loading") {
-    return (
-      <div className="fixed inset-0 flex justify-center items-center">
-        <Spinner />
-      </div>
-    );
+    return null;
   }
 
   if (!session) {
@@ -27,7 +21,7 @@ export default function DashboardLayout({
   }
 
   return (
-    <section className="flex flex-row items-center justify-center gap-4">
+    <section className="flex flex-row items-center justify-center">
       <div className="display-block w-full">{children}</div>
     </section>
   );

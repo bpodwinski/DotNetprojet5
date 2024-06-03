@@ -12,11 +12,15 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const res = await fetch("http://localhost:5000/vehicle", {
-      headers: {
-        Authorization: `Bearer ${token.accessToken}`,
-      },
-    });
+    const res = await fetch(
+      "http://localhost:5000/vehicle?pageNumber=1&pageSize=1000",
+      {
+        headers: {
+          Authorization: `Bearer ${token.accessToken}`,
+        },
+        next: { revalidate: 5 },
+      }
+    );
 
     if (!res.ok) {
       throw new Error("Failed to fetch vehicles");

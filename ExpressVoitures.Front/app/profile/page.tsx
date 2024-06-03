@@ -1,9 +1,17 @@
 "use client";
 
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 
-import { Input, Button, Spinner } from "@nextui-org/react";
+import { Spacer } from "@nextui-org/react";
 import { title } from "@/components/primitives";
+import Loading from "./loading";
+
+// Import component
+const UserForm = dynamic(() => import("./_components/profileForm"), {
+  ssr: false,
+  loading: () => <Loading />,
+});
 
 interface User {
   id: number;
@@ -14,48 +22,34 @@ interface User {
 }
 
 export default function ProfilePage() {
-  const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    // Get user info
     async function fetchUser() {
       const response = await fetch("/api/user/id");
       const user = await response.json();
       setUser(user);
-      setLoading(false);
     }
     fetchUser();
   }, []);
 
-  if (loading || !user) {
-    return (
-      <div className="fixed inset-0 flex justify-center items-center">
-        <Spinner />
-      </div>
-    );
+  const handleSubmit = () => {
+    console.log("Form submitted");
+  };
+
+  if (!user) {
+    return null;
   }
 
   return (
     <div>
-      <h1 className={title()}>Profile</h1>
-
-      <div className="w-full flex flex-col flex-wrap gap-4 pt-8">
-        <Input
-          type="fristname"
-          label="Firstname"
-          defaultValue={user.firstname}
-        />
-        <Input type="lastname" label="Lastname" defaultValue={user.lastname} />
-        <Input type="email" label="Email" defaultValue={user.email} />
-        <Input type="password" label="Password" defaultValue={user.password} />
-
-        <div className="flex justify-center">
-          <Button className="w-[120px]" color="primary">
-            Confirm
-          </Button>
-        </div>
+      <div className="text-center">
+        <h1 className={title()}>Profile</h1>
       </div>
+
+      <Spacer y={8} />
+
+      <UserForm user={user} onSubmit={handleSubmit} />
     </div>
   );
 }

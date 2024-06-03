@@ -15,6 +15,7 @@ export async function POST(request: NextRequest) {
     const { id } = await request.json();
     const res = await fetch(`http://localhost:5000/vehicle/${id}`, {
       headers: {
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token.accessToken}`,
       },
     });

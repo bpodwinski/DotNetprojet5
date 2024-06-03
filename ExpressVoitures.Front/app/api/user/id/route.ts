@@ -15,6 +15,7 @@ export async function GET(request: NextRequest) {
     const id = token.id;
     const res = await fetch(`http://localhost:5000/user/${id}`, {
       headers: {
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token.accessToken}`,
       },
     });
