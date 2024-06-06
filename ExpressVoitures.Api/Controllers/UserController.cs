@@ -168,7 +168,12 @@ namespace ExpressVoituresApi.Controllers
                     return Unauthorized(new { Message = "Invalid token" });
                 }
 
-                var userId = int.Parse(principal.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (userIdClaim == null || !int.TryParse(userIdClaim, out var userId))
+                {
+                    return NotFound(new { Message = "User not found" });
+                }
+
                 var user = await _userService.GetUserById(userId);
                 if (user == null || user.refresh_token != tokenDto.refresh_token || user.refresh_token_expiry_time <= DateTime.Now)
                 {
@@ -200,10 +205,12 @@ namespace ExpressVoituresApi.Controllers
             try
             {
                 var user = await _userService.GetUserById(id);
+
                 if (user == null)
                 {
                     return NotFound(new { Message = $"User with ID {id} not found" });
                 }
+
                 return Ok(user);
             }
             catch (Exception ex)

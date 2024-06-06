@@ -197,7 +197,7 @@ namespace ExpressVoituresApi.Services
         /// <param name="id">The unique identifier for the user.</param>
         /// <returns>A data transfer object representing the user.</returns>
         /// <exception cref="InvalidOperationException">Thrown when no user is found with the provided ID.</exception>
-        public async Task<UserDto> GetUserById(int id)
+        public async Task<UserDto?> GetUserById(int id)
         {
             try
             {
@@ -205,7 +205,7 @@ namespace ExpressVoituresApi.Services
 
                 if (user == null)
                 {
-                    throw new InvalidOperationException($"User with ID {id} not found");
+                    return null;
                 }
 
                 return new UserDto
