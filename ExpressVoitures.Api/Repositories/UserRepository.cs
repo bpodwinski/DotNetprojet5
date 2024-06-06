@@ -26,14 +26,14 @@ namespace ExpressVoituresApi.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateUserToken(TokenDto tokenDto)
+        public async Task UpdateUserToken(User user)
         {
-            var user = await _context.Users.FindAsync(tokenDto.id);
+            var _user = await _context.Users.FindAsync(user.id);
 
-            user.refresh_token = tokenDto.refresh_token;
-            user.refresh_token_expiry_time = tokenDto.refresh_token_expiry_time;
+            _user.refresh_token = user.refresh_token;
+            _user.refresh_token_expiry_time = user.refresh_token_expiry_time;
 
-            _context.Users.Update(user);
+            _context.Users.Update(_user);
             await _context.SaveChangesAsync();
         }
 

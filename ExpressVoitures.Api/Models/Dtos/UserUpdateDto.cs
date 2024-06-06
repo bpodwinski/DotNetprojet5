@@ -6,10 +6,8 @@ namespace ExpressVoituresApi.Models.Entities
 {
     public class UserUpdateDto
     {
-        [SwaggerSchema(ReadOnly = true)]
         public int id { get; set; }
 
-        [SwaggerSchema(ReadOnly = true)]
         public DateTime create_date { get; set; }
 
         [Required]

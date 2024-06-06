@@ -1,16 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace ExpressVoituresApi.Models.Entities
 {
     public class UserDto
     {
-
-        [SwaggerSchema(ReadOnly = true)]
         public int id { get; set; }
 
-        [SwaggerSchema(ReadOnly = true)]
         public DateTime create_date { get; set; }
 
         [Required]

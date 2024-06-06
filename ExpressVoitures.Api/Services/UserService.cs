@@ -155,21 +155,40 @@ namespace ExpressVoituresApi.Services
             }
         }
 
-        public async Task UpdateUserToken(TokenDto tokenDto)
+        public async Task<TokenDto> UpdateUserToken(int id)
         {
-            var user = await _userRepository.GetUserById(tokenDto.id);
+            var user = await _userRepository.GetUserById(id);
 
             if (user == null)
             {
-                throw new InvalidOperationException($"User with ID {tokenDto.id} not found");
+                throw new InvalidOperationException($"User with ID {id} not found");
             }
 
-            user.token = tokenDto.token;
-            user.refresh_token = tokenDto.refresh_token;
-            user.refresh_token_expiry_time = tokenDto.refresh_token_expiry_time;
+            var userDto = new UserDto
+            {
+                id = user.id,
+                email = user.email
+            };
 
-            await _userRepository.UpdateUserToken(tokenDto);
+            var token = _authService.GenerateToken(userDto);
+            var refreshToken = _authService.GenerateRefreshToken(userDto);
+            var refreshTokenExpiryTime = DateTime.UtcNow.AddDays(1);
 
+            user.token = token;
+            user.refresh_token = refreshToken;
+            user.refresh_token_expiry_time = refreshTokenExpiryTime;
+
+            await _userRepository.UpdateUser(user);
+
+            var tokenDto = new TokenDto
+            {
+                id = id,
+                token = token,
+                refresh_token = refreshToken,
+                refresh_token_expiry_time = refreshTokenExpiryTime
+            };
+
+            return tokenDto;
         }
 
         /// <summary>
@@ -197,6 +216,7 @@ namespace ExpressVoituresApi.Services
                     lastname = user.lastname,
                     email = user.email,
                     password = user.password,
+                    token = user.token,
                     refresh_token = user.refresh_token,
                     refresh_token_expiry_time = user.refresh_token_expiry_time,
                 };

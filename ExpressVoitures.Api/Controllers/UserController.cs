@@ -55,28 +55,9 @@ namespace ExpressVoituresApi.Controllers
                     return Unauthorized(new { Message = "Invalid email or password" });
                 }
 
-                var userDto = new UserDto
-                {
-                    id = user.id,
-                    email = user.email
-                };
+                await _userService.UpdateUserToken(user.id);
 
-                var token = _authService.GenerateToken(userDto);
-                var refreshToken = _authService.GenerateRefreshToken(userDto);
-                var refreshTokenExpiryTime = DateTime.UtcNow.AddDays(1);
-
-                user.refresh_token = refreshToken;
-                user.refresh_token_expiry_time = refreshTokenExpiryTime;
-
-                await _userService.UpdateUserToken(new TokenDto
-                {
-                    id = userDto.id,
-                    token = token,
-                    refresh_token = refreshToken,
-                    refresh_token_expiry_time = refreshTokenExpiryTime
-                });
-
-                return Ok(user);
+                return Ok(await _userService.GetUserById(user.id));
             }
             catch (Exception ex)
             {
@@ -86,7 +67,7 @@ namespace ExpressVoituresApi.Controllers
         }
 
         /// <summary>
-        /// Creates a new user account.
+        /// Creates a new user account
         /// </summary>
         /// <param name="userDto">The user data transfer object.</param>
         /// <returns>A status indicating the result of the operation.</returns>
@@ -112,23 +93,9 @@ namespace ExpressVoituresApi.Controllers
 
                 var user = await _userService.CreateUser(userCreateDto);
 
-                var token = _authService.GenerateToken(user);
-                var refreshToken = _authService.GenerateRefreshToken(user);
-                var refreshTokenExpiryTime = DateTime.UtcNow.AddDays(1);
-
-                user.token = token;
-                user.refresh_token = refreshToken;
-                user.refresh_token_expiry_time = refreshTokenExpiryTime;
-
-                await _userService.UpdateUserToken(new TokenDto
-                {
-                    id = user.id,
-                    token = token,
-                    refresh_token = refreshToken,
-                    refresh_token_expiry_time = refreshTokenExpiryTime
-                });
-
-                return Ok(user);
+                await _userService.UpdateUserToken(user.id);
+                
+                return Ok(await _userService.GetUserById(user.id));
             }
             catch (EmailExistsException)
             {
@@ -180,7 +147,7 @@ namespace ExpressVoituresApi.Controllers
         }
 
         /// <summary>
-        /// Refreshes the JWT token.
+        /// Refreshes the JWT token
         /// </summary>
         /// <param name="refreshTokenDto">The refresh token data transfer object containing the token and refresh token.</param>
         /// <returns>An IActionResult that may contain a new JWT token if refresh is successful, or an unauthorized response if refresh fails.</returns>
@@ -208,28 +175,7 @@ namespace ExpressVoituresApi.Controllers
                     return Unauthorized(new { Message = "Invalid refresh token" });
                 }
 
-                var newToken = _authService.GenerateToken(user);
-                var newRefreshToken = _authService.GenerateRefreshToken(user);
-                var newRefreshTokenExpiryTime = DateTime.UtcNow.AddDays(1);
-
-                user.token = newToken;
-                user.refresh_token = newRefreshToken;
-                user.refresh_token_expiry_time = newRefreshTokenExpiryTime;
-
-                await _userService.UpdateUserToken(new TokenDto
-                {
-                    id = user.id,
-                    token = newToken,
-                    refresh_token = newRefreshToken,
-                    refresh_token_expiry_time = newRefreshTokenExpiryTime
-                });
-
-                return Ok(new TokenDto
-                {
-                    token = newToken,
-                    refresh_token = newRefreshToken,
-                    refresh_token_expiry_time = newRefreshTokenExpiryTime
-                });
+                return Ok(await _userService.UpdateUserToken(user.id));
             }
             catch (Exception ex)
             {
@@ -239,7 +185,7 @@ namespace ExpressVoituresApi.Controllers
         }
 
         /// <summary>
-        /// Retrieves a user by ID.
+        /// Retrieves a user by ID
         /// </summary>
         /// <param name="id">The ID of the user to retrieve.</param>
         /// <returns>The user with the specified ID.</returns>

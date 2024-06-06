@@ -8,6 +8,6 @@ namespace ExpressVoituresApi.Repositories.Interfaces
         Task<User> GetUserByEmail(string email);
         Task AddUser(User user);
         Task UpdateUser(User user);
-        Task UpdateUserToken(TokenDto tokenDto);
+        Task UpdateUserToken(User user);
     }
 }
