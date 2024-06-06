@@ -194,6 +194,7 @@ namespace ExpressVoituresApi.Controllers
         /// <response code="404">If the user is not found.</response>
         /// <response code="500">If there is an internal server error.</response>
         [HttpGet("{id}", Name = "GetUserById")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<UserDto>> GetUserById(int id)
         {
             try
@@ -209,6 +210,36 @@ namespace ExpressVoituresApi.Controllers
             {
                 _logger.LogError(ex, $"An error occurred while retrieving user with ID {id}");
                 return StatusCode(500, new { Message = "An error occurred while retrieving the user" });
+            }
+        }
+
+        /// <summary>
+        /// Retrieves information of the currently authenticated user
+        /// </summary>
+        /// <returns>An IActionResult containing the user information if successful; otherwise, an error response.</returns>
+        /// <response code="200">Returns the user information.</response>
+        /// <response code="404">If the user is not found.</response>
+        /// <response code="500">If an internal server error occurs.</response>
+        [HttpGet( Name = "GetUserInfo")]
+        public async Task<IActionResult> GetMyInfo()
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                if (userIdClaim == null || !int.TryParse(userIdClaim, out var userId))
+                {
+                    return NotFound(new { Message = "User not found" });
+                }
+
+                var userDto = await _userService.GetUserById(userId);
+
+                return Ok(userDto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while retrieving user info");
+                return StatusCode(500, new { Message = "An error occurred while retrieving user info" });
             }
         }
     }
