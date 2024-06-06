@@ -5,6 +5,7 @@ using ExpressVoituresApi.Models.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Newtonsoft.Json.Linq;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ExpressVoituresApi.Controllers
 {
@@ -149,32 +150,34 @@ namespace ExpressVoituresApi.Controllers
         /// <summary>
         /// Refreshes the JWT token
         /// </summary>
-        /// <param name="refreshTokenDto">The refresh token data transfer object containing the token and refresh token.</param>
+        /// <param name="tokenDto">The refresh token data transfer object containing the token and refresh token.</param>
         /// <returns>An IActionResult that may contain a new JWT token if refresh is successful, or an unauthorized response if refresh fails.</returns>
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken([FromBody] TokenDto tokenDto)
         {
             try
             {
-                if (tokenDto == null || string.IsNullOrEmpty(tokenDto.token) || string.IsNullOrEmpty(tokenDto.refresh_token))
+                if (string.IsNullOrEmpty(tokenDto.token) || string.IsNullOrEmpty(tokenDto.refresh_token))
                 {
                     _logger.LogWarning("RefreshTokenDto is invalid");
                     return BadRequest(new { Message = "Invalid refresh token data" });
                 }
 
                 var principal = _authService.GetPrincipalFromExpiredToken(tokenDto.token);
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
                 if (principal == null)
                 {
                     return Unauthorized(new { Message = "Invalid token" });
                 }
 
-                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 if (userIdClaim == null || !int.TryParse(userIdClaim, out var userId))
                 {
                     return NotFound(new { Message = "User not found" });
                 }
 
                 var user = await _userService.GetUserById(userId);
+
                 if (user == null || user.refresh_token != tokenDto.refresh_token || user.refresh_token_expiry_time <= DateTime.Now)
                 {
                     return Unauthorized(new { Message = "Invalid refresh token" });
