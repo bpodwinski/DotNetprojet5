@@ -4,6 +4,7 @@ using ExpressVoituresApi.Services.Interfaces;
 using ExpressVoituresApi.Models.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Newtonsoft.Json.Linq;
 
 namespace ExpressVoituresApi.Controllers
 {
@@ -47,13 +48,35 @@ namespace ExpressVoituresApi.Controllers
                     return BadRequest(new { Message = "User login data is required" });
                 }
 
-                var userDto = await _authService.Authenticate(userLoginDto.email, userLoginDto.password);
-                if (userDto == null)
+                var user = await _authService.Authenticate(userLoginDto.email, userLoginDto.password);
+
+                if (user == null)
                 {
                     return Unauthorized(new { Message = "Invalid email or password" });
                 }
 
-                return Ok(userDto);
+                var userDto = new UserDto
+                {
+                    id = user.id,
+                    email = user.email
+                };
+
+                var token = _authService.GenerateToken(userDto);
+                var refreshToken = _authService.GenerateRefreshToken(userDto);
+                var refreshTokenExpiryTime = DateTime.UtcNow.AddDays(1);
+
+                user.refresh_token = refreshToken;
+                user.refresh_token_expiry_time = refreshTokenExpiryTime;
+
+                await _userService.UpdateUserToken(new TokenDto
+                {
+                    id = userDto.id,
+                    token = token,
+                    refresh_token = refreshToken,
+                    refresh_token_expiry_time = refreshTokenExpiryTime
+                });
+
+                return Ok(user);
             }
             catch (Exception ex)
             {
@@ -87,40 +110,25 @@ namespace ExpressVoituresApi.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var createdUser = await _userService.CreateUser(userCreateDto);
+                var user = await _userService.CreateUser(userCreateDto);
 
-                var userDto = new UserDto
+                var token = _authService.GenerateToken(user);
+                var refreshToken = _authService.GenerateRefreshToken(user);
+                var refreshTokenExpiryTime = DateTime.UtcNow.AddDays(1);
+
+                user.token = token;
+                user.refresh_token = refreshToken;
+                user.refresh_token_expiry_time = refreshTokenExpiryTime;
+
+                await _userService.UpdateUserToken(new TokenDto
                 {
-                    id = createdUser.id,
-                    email = createdUser.email
-                };
-
-                var token = _authService.GenerateToken(userDto);
-                var refreshToken = _authService.GenerateRefreshToken(userDto);
-
-                var updatedUser = await _userService.UpdateUser(new UserUpdateDto
-                {
-                    id = userDto.id,
-                    create_date = createdUser.create_date,
-                    firstname = createdUser.firstname,
-                    lastname = createdUser.lastname,
-                    email = createdUser.email,
+                    id = user.id,
                     token = token,
                     refresh_token = refreshToken,
-                    refresh_token_expiry_time = DateTime.UtcNow.AddDays(1),
+                    refresh_token_expiry_time = refreshTokenExpiryTime
                 });
 
-                return StatusCode(201, new
-                {
-                    id = updatedUser.id,
-                    create_date = updatedUser.create_date,
-                    firstname = updatedUser.firstname,
-                    lastname = updatedUser.lastname,
-                    email = updatedUser.email,
-                    token = token,
-                    refresh_token = updatedUser.refresh_token,
-                    refresh_token_expiry_time = updatedUser.refresh_token_expiry_time
-                });
+                return Ok(user);
             }
             catch (EmailExistsException)
             {
@@ -177,17 +185,17 @@ namespace ExpressVoituresApi.Controllers
         /// <param name="refreshTokenDto">The refresh token data transfer object containing the token and refresh token.</param>
         /// <returns>An IActionResult that may contain a new JWT token if refresh is successful, or an unauthorized response if refresh fails.</returns>
         [HttpPost("refresh-token")]
-        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenDto refreshTokenDto)
+        public async Task<IActionResult> RefreshToken([FromBody] TokenDto tokenDto)
         {
             try
             {
-                if (refreshTokenDto == null || string.IsNullOrEmpty(refreshTokenDto.token) || string.IsNullOrEmpty(refreshTokenDto.refresh_token))
+                if (tokenDto == null || string.IsNullOrEmpty(tokenDto.token) || string.IsNullOrEmpty(tokenDto.refresh_token))
                 {
                     _logger.LogWarning("RefreshTokenDto is invalid");
                     return BadRequest(new { Message = "Invalid refresh token data" });
                 }
 
-                var principal = _authService.GetPrincipalFromExpiredToken(refreshTokenDto.token);
+                var principal = _authService.GetPrincipalFromExpiredToken(tokenDto.token);
                 if (principal == null)
                 {
                     return Unauthorized(new { Message = "Invalid token" });
@@ -195,20 +203,32 @@ namespace ExpressVoituresApi.Controllers
 
                 var userId = int.Parse(principal.FindFirst(ClaimTypes.NameIdentifier)?.Value);
                 var user = await _userService.GetUserById(userId);
-                if (user == null || user.refresh_token != refreshTokenDto.refresh_token || user.refresh_token_expiry_time <= DateTime.Now)
+                if (user == null || user.refresh_token != tokenDto.refresh_token || user.refresh_token_expiry_time <= DateTime.Now)
                 {
                     return Unauthorized(new { Message = "Invalid refresh token" });
                 }
 
                 var newToken = _authService.GenerateToken(user);
                 var newRefreshToken = _authService.GenerateRefreshToken(user);
-                user.refresh_token = newRefreshToken;
-                user.refresh_token_expiry_time = DateTime.UtcNow.AddDays(1);
+                var newRefreshTokenExpiryTime = DateTime.UtcNow.AddDays(1);
 
-                return Ok(new
+                user.token = newToken;
+                user.refresh_token = newRefreshToken;
+                user.refresh_token_expiry_time = newRefreshTokenExpiryTime;
+
+                await _userService.UpdateUserToken(new TokenDto
+                {
+                    id = user.id,
+                    token = newToken,
+                    refresh_token = newRefreshToken,
+                    refresh_token_expiry_time = newRefreshTokenExpiryTime
+                });
+
+                return Ok(new TokenDto
                 {
                     token = newToken,
-                    refresh_token = newRefreshToken
+                    refresh_token = newRefreshToken,
+                    refresh_token_expiry_time = newRefreshTokenExpiryTime
                 });
             }
             catch (Exception ex)

@@ -11,6 +11,7 @@ namespace ExpressVoituresApi.Models.Entities
 
         public string? refresh_token { get; set; }
 
+        [SwaggerSchema(ReadOnly = true)]
         public DateTime? refresh_token_expiry_time { get; set; }
     }
 }

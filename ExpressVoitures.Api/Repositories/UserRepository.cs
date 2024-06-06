@@ -39,12 +39,16 @@ namespace ExpressVoituresApi.Repositories
 
         public async Task<User> GetUserById(int id)
         {
-            return await _context.Users.FindAsync(id);
+            var user = await _context.Users.FindAsync(id);
+
+            return user;
         }
 
         public async Task<User> GetUserByEmail(string email)
         {
-            return await _context.Users.SingleOrDefaultAsync(u => u.email == email);
+            var user = await _context.Users.SingleOrDefaultAsync(u => u.email == email);
+
+            return user;
         }
     }
 }

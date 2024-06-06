@@ -157,7 +157,19 @@ namespace ExpressVoituresApi.Services
 
         public async Task UpdateUserToken(TokenDto tokenDto)
         {
+            var user = await _userRepository.GetUserById(tokenDto.id);
+
+            if (user == null)
+            {
+                throw new InvalidOperationException($"User with ID {tokenDto.id} not found");
+            }
+
+            user.token = tokenDto.token;
+            user.refresh_token = tokenDto.refresh_token;
+            user.refresh_token_expiry_time = tokenDto.refresh_token_expiry_time;
+
             await _userRepository.UpdateUserToken(tokenDto);
+
         }
 
         /// <summary>

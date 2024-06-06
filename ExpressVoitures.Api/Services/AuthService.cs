@@ -70,7 +70,7 @@ namespace ExpressVoituresApi.Services
         /// <summary>
         /// Generates a JWT token for the specified User DTO.
         /// </summary>
-        /// <param name="userTokenUpdateDtoserDto">The user data transfer object containing the user's details.</param>
+        /// <param name="userDto">The user data transfer object containing the user's details.</param>
         /// <returns>A JWT token as a string.</returns>
         /// <exception cref="InvalidOperationException">Thrown when the token cannot be generated.</exception>
         public string GenerateToken(UserDto userDto)
@@ -93,8 +93,9 @@ namespace ExpressVoituresApi.Services
                 };
 
                 var token = tokenHandler.CreateToken(tokenDescriptor);
+                var tokenString = tokenHandler.WriteToken(token);
 
-                return tokenHandler.WriteToken(token);
+                return tokenString;
             }
             catch (Exception ex)
             {
