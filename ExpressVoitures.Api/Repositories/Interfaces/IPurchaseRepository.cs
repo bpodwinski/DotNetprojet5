@@ -22,17 +22,17 @@ namespace ExpressVoituresApi.Repositories.Interfaces
         Task Update(Purchase purchase);
 
         /// <summary>
-        /// Gets a purchase by its ID.
-        /// </summary>
-        /// <param name="id">The ID of the purchase to retrieve.</param>
-        /// <returns>The purchase entity or null if not found.</returns>
-        Task<Purchase?> GetById(int id);
-
-        /// <summary>
         /// Deletes a purchase by ID.
         /// </summary>
         /// <param name="id">The ID of the purchase to delete.</param>
         /// <returns>The deleted purchase entity or null if not found.</returns>
         Task<bool> Delete(int id);
+
+        /// <summary>
+        /// Gets a purchase by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the purchase to retrieve.</param>
+        /// <returns>The purchase entity or null if not found.</returns>
+        Task<Purchase?> GetById(int id);
     }
 }
