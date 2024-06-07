@@ -5,28 +5,50 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExpressVoituresApi.Repositories
 {
+    /// <summary>
+    /// Repository for managing user entities.
+    /// </summary>
     public class UserRepository : IUserRepository
     {
         private readonly ApplicationDbContext _context;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserRepository"/> class.
+        /// </summary>
+        /// <param name="context">The application database context.</param>
         public UserRepository(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public async Task AddUser(User user)
+        /// <summary>
+        /// Adds a new user.
+        /// </summary>
+        /// <param name="user">The user entity to add.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task Add(User user)
         {
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateUser(User user)
+        /// <summary>
+        /// Updates an existing user.
+        /// </summary>
+        /// <param name="user">The user entity to update.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task Update(User user)
         {
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateUserToken(User user)
+        /// <summary>
+        /// Updates the token of an existing user.
+        /// </summary>
+        /// <param name="user">The user entity to update the token for.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task UpdateToken(User user)
         {
             var _user = await _context.Users.FindAsync(user.id);
 
@@ -37,18 +59,24 @@ namespace ExpressVoituresApi.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<User> GetUserById(int id)
+        /// <summary>
+        /// Gets a user by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the user to retrieve.</param>
+        /// <returns>The user entity.</returns>
+        public async Task<User?> GetById(int id)
         {
-            var user = await _context.Users.FindAsync(id);
-
-            return user;
+            return await _context.Users.FindAsync(id);
         }
 
-        public async Task<User> GetUserByEmail(string email)
+        /// <summary>
+        /// Gets a user by its email.
+        /// </summary>
+        /// <param name="email">The email of the user to retrieve.</param>
+        /// <returns>The user entity.</returns>
+        public async Task<User?> GetByEmail(string email)
         {
-            var user = await _context.Users.SingleOrDefaultAsync(u => u.email == email);
-
-            return user;
+            return await _context.Users.SingleOrDefaultAsync(u => u.email == email);
         }
     }
 }

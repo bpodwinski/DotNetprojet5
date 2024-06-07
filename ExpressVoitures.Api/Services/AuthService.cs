@@ -40,7 +40,7 @@ namespace ExpressVoituresApi.Services
         {
             try
             {
-                var user = await _userRepository.GetUserByEmail(email);
+                var user = await _userRepository.GetByEmail(email);
 
                 if (user == null || _passwordHasher.VerifyHashedPassword(user, user.password, password) == PasswordVerificationResult.Failed)
                 {

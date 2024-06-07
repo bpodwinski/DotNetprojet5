@@ -54,7 +54,7 @@ namespace ExpressVoituresApi.Services
 
             try
             {
-                var user = await _userRepository.GetUserByEmail(email);
+                var user = await _userRepository.GetByEmail(email);
                 return user != null;
             }
             catch (Exception ex)
@@ -91,7 +91,7 @@ namespace ExpressVoituresApi.Services
 
                 user.password = _passwordHasher.HashPassword(user, userCreateDto.password);
 
-                await _userRepository.AddUser(user);
+                await _userRepository.Add(user);
 
                 return new UserDto
                 {
@@ -120,7 +120,7 @@ namespace ExpressVoituresApi.Services
         {
             try
             {
-                var user = await _userRepository.GetUserById(userUpdateDto.id);
+                var user = await _userRepository.GetById(userUpdateDto.id);
 
                 if (user == null)
                 {
@@ -140,7 +140,7 @@ namespace ExpressVoituresApi.Services
                 user.token = userUpdateDto.token;
                 user.refresh_token = userUpdateDto.refresh_token;
 
-                await _userRepository.UpdateUser(user);
+                await _userRepository.Update(user);
 
                 return userUpdateDto;
             }
@@ -157,7 +157,7 @@ namespace ExpressVoituresApi.Services
 
         public async Task<TokenDto> UpdateUserToken(int id)
         {
-            var user = await _userRepository.GetUserById(id);
+            var user = await _userRepository.GetById(id);
 
             if (user == null)
             {
@@ -178,7 +178,7 @@ namespace ExpressVoituresApi.Services
             user.refresh_token = refreshToken;
             user.refresh_token_expiry_time = refreshTokenExpiryTime;
 
-            await _userRepository.UpdateUser(user);
+            await _userRepository.Update(user);
 
             var tokenDto = new TokenDto
             {
