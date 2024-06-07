@@ -14,13 +14,25 @@ namespace ExpressVoituresApi.Repositories.Interfaces
         /// <returns>A task representing the asynchronous operation.</returns>
         Task Add(Sale sale);
 
-        //Task<bool> Update(Sale sale);
+        /// <summary>
+        /// Updates an existing sale.
+        /// </summary>
+        /// <param name="sale">The sale entity to update.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        Task Update(Sale sale);
 
         /// <summary>
         /// Deletes a sale by its ID.
         /// </summary>
         /// <param name="id">The ID of the sale to delete.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        Task Delete(int id);
+        /// <returns>A task representing the asynchronous operation with a boolean result indicating success.</returns>
+        Task<bool> Delete(int id);
+
+        /// <summary>
+        /// Gets a sale by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the sale to retrieve.</param>
+        /// <returns>The sale entity or null if not found.</returns>
+        Task<Sale?> GetById(int id);
     }
 }

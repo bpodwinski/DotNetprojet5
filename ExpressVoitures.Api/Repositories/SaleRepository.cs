@@ -8,34 +8,70 @@ using System.Threading.Tasks;
 
 namespace ExpressVoituresApi.Repositories
 {
+    /// <summary>
+    /// Repository for managing sale entities.
+    /// </summary>
     public class SaleRepository : ISaleRepository
     {
         private readonly ApplicationDbContext _context;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SaleRepository"/> class.
+        /// </summary>
+        /// <param name="context">The application database context.</param>
         public SaleRepository(ApplicationDbContext context)
         {
             _context = context;
         }
 
+        /// <summary>
+        /// Adds a new sale.
+        /// </summary>
+        /// <param name="sale">The sale entity to add.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
         public async Task Add(Sale sale)
         {
             await _context.Sales.AddAsync(sale);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Sale> GetById(int saleId)
+        /// <summary>
+        /// Updates an existing sale.
+        /// </summary>
+        /// <param name="sale">The sale entity to update.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task Update(Sale sale)
         {
-            return await _context.Sales.FindAsync(saleId);
+            _context.Sales.Update(sale);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task Delete(int saleId)
+        /// <summary>
+        /// Deletes a sale by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the sale to delete.</param>
+        /// <returns>A task representing the asynchronous operation with a boolean result indicating success.</returns>
+        public async Task<bool> Delete(int id)
         {
-            var sale = await GetById(saleId);
-            if (sale != null)
+            var sale = await GetById(id);
+            if (sale == null)
             {
-                _context.Sales.Remove(sale);
-                await _context.SaveChangesAsync();
+                return false;
             }
+
+            _context.Sales.Remove(sale);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        /// <summary>
+        /// Gets a sale by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the sale to retrieve.</param>
+        /// <returns>The sale entity or null if not found.</returns>
+        public async Task<Sale?> GetById(int id)
+        {
+            return await _context.Sales.FindAsync(id);
         }
     }
 }
