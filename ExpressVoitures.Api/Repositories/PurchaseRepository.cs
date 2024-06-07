@@ -33,28 +33,42 @@ namespace ExpressVoituresApi.Repositories
         }
 
         /// <summary>
-        /// Retrieves a purchase by ID.
+        /// Updates an existing purchase.
         /// </summary>
-        /// <param name="purchaseId">The ID of the purchase to retrieve.</param>
-        /// <returns>The purchase entity with the specified ID, or null if not found.</returns>
-        public async Task<Purchase> GetById(int purchaseId)
+        /// <param name="purchase">The purchase entity to update.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task Update(Purchase purchase)
         {
-            return await _context.Purchases.FindAsync(purchaseId);
+            _context.Purchases.Update(purchase);
+            await _context.SaveChangesAsync();
         }
 
         /// <summary>
-        /// Deletes a purchase by ID.
+        /// Gets a purchase by its ID.
         /// </summary>
-        /// <param name="purchaseId">The ID of the purchase to delete.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task Delete(int purchaseId)
+        /// <param name="id">The ID of the purchase to retrieve.</param>
+        /// <returns>The purchase entity or null if not found.</returns>
+        public async Task<Purchase?> GetById(int id)
         {
-            var purchase = await GetById(purchaseId);
-            if (purchase != null)
+            return await _context.Purchases.FindAsync(id);
+        }
+
+        /// <summary>
+        /// Deletes a purchase by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the purchase to delete.</param>
+        /// <returns>The deleted purchase entity or null if not found.</returns>
+        public async Task<bool> Delete(int id)
+        {
+            var purchase = await GetById(id);
+            if (purchase == null)
             {
-                _context.Purchases.Remove(purchase);
-                await _context.SaveChangesAsync();
+                return false;
             }
+
+            _context.Purchases.Remove(purchase);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }
