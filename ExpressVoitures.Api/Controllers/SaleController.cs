@@ -8,12 +8,12 @@ namespace ExpressVoituresApi.Controllers
     [Route("vehicle/{id}/sale")]
     public class SaleController : ControllerBase
     {
-        private readonly IVehicleService _vehicleService;
+        private readonly ISaleService _saleService;
         private readonly ILogger<SaleController> _logger;
 
-        public SaleController(IVehicleService vehicleService, ILogger<SaleController> logger)
+        public SaleController(ISaleService saleService, ILogger<SaleController> logger)
         {
-            _vehicleService = vehicleService;
+            _saleService = saleService;
             _logger = logger;
         }
 
@@ -35,7 +35,7 @@ namespace ExpressVoituresApi.Controllers
                 }
 
                 saleAddDto.vehicle_id = id;
-                await _vehicleService.AddSale(saleAddDto);
+                await _saleService.AddSale(saleAddDto);
                 return StatusCode(201);
             }
             catch (Exception ex)

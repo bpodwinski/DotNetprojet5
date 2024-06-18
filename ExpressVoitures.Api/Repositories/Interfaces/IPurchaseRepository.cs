@@ -12,14 +12,14 @@ namespace ExpressVoituresApi.Repositories.Interfaces
         /// </summary>
         /// <param name="purchase">The purchase entity to add.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        Task Add(Purchase purchase);
+        Task Add(Model purchase);
 
         /// <summary>
         /// Updates an existing purchase.
         /// </summary>
         /// <param name="purchase">The purchase entity to update.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        Task Update(Purchase purchase);
+        Task Update(Model purchase);
 
         /// <summary>
         /// Deletes a purchase by ID.
@@ -33,6 +33,6 @@ namespace ExpressVoituresApi.Repositories.Interfaces
         /// </summary>
         /// <param name="id">The ID of the purchase to retrieve.</param>
         /// <returns>The purchase entity or null if not found.</returns>
-        Task<Purchase?> GetById(int id);
+        Task<Model?> GetById(int id);
     }
 }

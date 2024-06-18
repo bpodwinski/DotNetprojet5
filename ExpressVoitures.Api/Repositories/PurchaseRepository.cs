@@ -26,7 +26,7 @@ namespace ExpressVoituresApi.Repositories
         /// </summary>
         /// <param name="purchase">The purchase entity to add.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task Add(Purchase purchase)
+        public async Task Add(Model purchase)
         {
             await _context.Purchases.AddAsync(purchase);
             await _context.SaveChangesAsync();
@@ -37,7 +37,7 @@ namespace ExpressVoituresApi.Repositories
         /// </summary>
         /// <param name="purchase">The purchase entity to update.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task Update(Purchase purchase)
+        public async Task Update(Model purchase)
         {
             _context.Purchases.Update(purchase);
             await _context.SaveChangesAsync();
@@ -48,7 +48,7 @@ namespace ExpressVoituresApi.Repositories
         /// </summary>
         /// <param name="id">The ID of the purchase to retrieve.</param>
         /// <returns>The purchase entity or null if not found.</returns>
-        public async Task<Purchase?> GetById(int id)
+        public async Task<Model?> GetById(int id)
         {
             return await _context.Purchases.FindAsync(id);
         }

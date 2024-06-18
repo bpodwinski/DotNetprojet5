@@ -9,19 +9,25 @@ namespace ExpressVoituresApi.Controllers
     public class RepairController : ControllerBase
     {
         private readonly ILogger<RepairController> _logger;
-        private readonly IVehicleService _vehicleService;
+        private readonly IRepairService _repairService;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RepairController"/> class.
+        /// </summary>
+        /// <param name="logger">The logger instance.</param>
+        /// <param name="repairService">The repair service instance.</param>
         public RepairController(
             ILogger<RepairController> logger,
-            IVehicleService vehicleService)
+            IRepairService repairService)
         {
             _logger = logger;
-            _vehicleService = vehicleService;
+            _repairService = repairService;
         }
 
         /// <summary>
-        /// Adds a new repair to a vehicle
+        /// Adds a new repair to a vehicle.
         /// </summary>
+        /// <param name="id">The ID of the vehicle.</param>
         /// <param name="repairAddDto">The repair data transfer object.</param>
         /// <returns>A status indicating the result of the operation.</returns>
         [HttpPost(Name = "AddRepair")]
@@ -36,7 +42,7 @@ namespace ExpressVoituresApi.Controllers
                 }
 
                 repairAddDto.vehicle_id = id;
-                await _vehicleService.AddRepair(id, repairAddDto);
+                await _repairService.AddRepair(id, repairAddDto);
                 return Ok();
             }
             catch (Exception ex)

@@ -1,7 +1,5 @@
-﻿using System.Linq;
-using ExpressVoituresApi.Models.Dtos;
+﻿using ExpressVoituresApi.Models.Dtos;
 using ExpressVoituresApi.Models.Entities;
-using ExpressVoituresApi.Repositories;
 using ExpressVoituresApi.Repositories.Interfaces;
 using ExpressVoituresApi.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -14,31 +12,19 @@ namespace ExpressVoituresApi.Services
     public class VehicleService : IVehicleService
     {
         private readonly IVehicleRepository _vehicleRepository;
-        private readonly IPurchaseRepository _purchaseRepository;
-        private readonly IRepairRepository _repairRepository;
-        private readonly ISaleRepository _saleRepository;
         private readonly ILogger<VehicleService> _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="VehicleService"/> class.
         /// </summary>
         /// <param name="vehicleRepository">The vehicle repository.</param>
-        /// <param name="purchaseRepository">The purchase repository.</param>
-        /// <param name="repairRepository">The repair repository.</param>
-        /// <param name="saleRepository">The sale repository.</param>
         /// <param name="logger">The logger.</param>
         public VehicleService(
             IVehicleRepository vehicleRepository,
-            IPurchaseRepository purchaseRepository,
-            IRepairRepository repairRepository,
-            ISaleRepository saleRepository,
             ILogger<VehicleService> logger
             )
         {
             _vehicleRepository = vehicleRepository;
-            _purchaseRepository = purchaseRepository;
-            _repairRepository = repairRepository;
-            _saleRepository = saleRepository;
             _logger = logger;
         }
 
@@ -240,44 +226,6 @@ namespace ExpressVoituresApi.Services
         }
 
         /// <summary>
-        /// Adds a new purchase to a vehicle
-        /// </summary>
-        /// <param name="vehicleId">The ID of the vehicle.</param>
-        /// <param name="purchaseDto">The purchase data transfer object.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        /// <exception cref="ArgumentException">Thrown when the vehicle is not found.</exception>
-        /// <exception cref="InvalidOperationException">Thrown when the vehicle already has a purchase.</exception>
-        public async Task AddPurchase(int vehicleId, PurchaseDto purchaseDto)
-        {
-            try
-            {
-                var vehicle = await _vehicleRepository.GetById(vehicleId);
-                if (vehicle == null)
-                {
-                    throw new InvalidOperationException($"Vehicle with ID {vehicleId} not found");
-                }
-
-                if (vehicle.purchase != null)
-                {
-                    throw new InvalidOperationException("The vehicle already has a purchase");
-                }
-
-                var purchase = new Purchase
-                {
-                    date = purchaseDto.date,
-                    price = purchaseDto.price,
-                    vehicle_id = vehicleId
-                };
-
-                await _purchaseRepository.Add(purchase);
-            }
-            catch (Exception)
-            {
-                throw new InvalidOperationException("An error occurred while updating the vehicle");
-            }
-        }
-
-        /// <summary>
         /// Updates an existing vehicle by ID
         /// </summary>
         /// <param name="id">The ID of the vehicle to update.</param>
@@ -330,130 +278,6 @@ namespace ExpressVoituresApi.Services
                 _logger.LogError(ex, "An error occurred while deleting the vehicle");
                 throw new InvalidOperationException("An error occurred while deleting the vehicle", ex);
             }
-        }
-
-        /// <summary>
-        /// Deletes the purchase associated with a vehicle by vehicle ID.
-        /// </summary>
-        /// <param name="vehicleId">The ID of the vehicle whose purchase will be deleted.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        /// <exception cref="InvalidOperationException">
-        /// Thrown when the vehicle with the specified ID is not found,
-        /// or when no purchase is found for the specified vehicle.
-        /// </exception>
-        public async Task DeletePurchase(int vehicleId)
-        {
-            try
-            {
-                var vehicle = await _vehicleRepository.GetById(vehicleId);
-                if (vehicle == null)
-                {
-                    throw new InvalidOperationException($"Vehicle with ID {vehicleId} not found");
-                }
-
-                if (vehicle.purchase == null)
-                {
-                    throw new InvalidOperationException($"No purchase found for Vehicle ID {vehicleId}");
-                }
-
-                await _purchaseRepository.Delete(vehicle.purchase.id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"An error occurred while deleting purchase with ID {vehicleId}");
-                throw new InvalidOperationException("An error occurred while deleting the purchase");
-            }
-        }
-
-        /// <summary>
-        /// Adds a new repair to a vehicle.
-        /// </summary>
-        /// <param name="vehicleId">The ID of the vehicle to add the repair to.</param>
-        /// <param name="repairAddDto">The repair data transfer object containing the details of the repair.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        /// <exception cref="InvalidOperationException">
-        /// Thrown when the vehicle with the specified ID is not found,
-        /// or when an error occurs while adding the repair.
-        /// </exception>
-        public async Task AddRepair(int vehicleId, RepairAddDto repairAddDto)
-        {
-            try
-            {
-                var vehicle = await _vehicleRepository.GetById(vehicleId);
-                if (vehicle == null)
-                {
-                    throw new InvalidOperationException($"Vehicle with ID {vehicleId} not found");
-                }
-
-                var repair = new Repair
-                {
-                    vehicle_id = vehicleId,
-                    description = repairAddDto.description,
-                    cost = repairAddDto.cost
-                };
-
-                await _repairRepository.Add(repair);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"An error occurred while adding a repair to vehicle with ID {vehicleId}");
-                throw new InvalidOperationException("An error occurred while adding the repair");
-            }
-        }
-
-        /// <summary>
-        /// Adds a new sale to a vehicle.
-        /// </summary>
-        /// <param name="saleAddDto">The sale data transfer object containing the details of the sale.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        /// <exception cref="InvalidOperationException">
-        /// Thrown when the vehicle with the specified ID is not found,
-        /// when the vehicle already has a sale,
-        /// or when an error occurs while adding the sale.
-        /// </exception>
-        public async Task AddSale(SaleAddDto saleAddDto)
-        {
-            try
-            {
-                var vehicle = await _vehicleRepository.GetById(saleAddDto.vehicle_id);
-                if (vehicle == null)
-                {
-                    throw new InvalidOperationException($"Vehicle with ID {saleAddDto.vehicle_id} not found");
-                }
-
-                if (vehicle.sale != null)
-                {
-                    throw new InvalidOperationException("The vehicle already has a sale");
-                }
-
-                var sale = new Sale
-                {
-                    vehicle_id = saleAddDto.vehicle_id,
-                    create_date = saleAddDto.create_date,
-                    availability_date = saleAddDto.availability_date,
-                    sale_date = saleAddDto.sale_date,
-                    price = saleAddDto.price,
-                    title = saleAddDto.title,
-                    description = saleAddDto.description
-                };
-
-                await _saleRepository.Add(sale);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"An error occurred while adding a sale to vehicle with ID {saleAddDto.vehicle_id}");
-                throw new InvalidOperationException("An error occurred while adding the sale");
-            }
-        }
-
-        /// <summary>
-        /// Deletes a sale by its ID.
-        /// </summary>
-        /// <param name="saleId">The ID of the sale to delete.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task DeleteSale(int saleId)
-        {
-            await _saleRepository.Delete(saleId);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Drawing.Drawing2D;
 
 namespace ExpressVoituresApi.Models.Entities
 {
@@ -18,15 +19,21 @@ namespace ExpressVoituresApi.Models.Entities
 
         public int year { get; set; }
 
-        public string brand { get; set; }
+        public virtual Brand brand { get; set; }
 
-        public string model { get; set; }
+        public virtual Model model { get; set; }
 
-        public string trim_level { get; set; }
+        public virtual Trim_Level trim_level { get; set; }
 
-        public virtual Purchase purchase { get; set; }
+        public decimal purchase_price { get; set; }
 
-        public virtual Sale sale { get; set; }
+        public DateTime purchase_date { get; set; }
+
+        public decimal sale_price { get; set; }
+
+        public DateTime availability_date { get; set; }
+
+        public DateTime sale_date { get; set; }
 
         public virtual ICollection<Repair> repair { get; set; }
     }

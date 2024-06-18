@@ -67,6 +67,9 @@ builder.Services.AddScoped<ISaleRepository, SaleRepository>();
 // Add services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IPurchaseService, PurchaseService>();
+builder.Services.AddScoped<IRepairService, RepairService>();
+builder.Services.AddScoped<ISaleService, SaleService>();
 builder.Services.AddScoped<IVehicleService, VehicleService>();
 
 // Add AuthService for generating JWT tokens

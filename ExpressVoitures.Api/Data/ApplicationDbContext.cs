@@ -23,7 +23,7 @@ namespace ExpressVoituresApi.Data
         /// <summary>
         /// Gets or sets the Purchases DbSet.
         /// </summary>
-        public DbSet<Purchase> Purchases { get; set; }
+        public DbSet<Model> Purchases { get; set; }
 
         /// <summary>
         /// Gets or sets the Repairs DbSet.
@@ -33,7 +33,7 @@ namespace ExpressVoituresApi.Data
         /// <summary>
         /// Gets or sets the Sales DbSet.
         /// </summary>
-        public DbSet<Sale> Sales { get; set; }
+        public DbSet<Brand> Sales { get; set; }
 
         /// <summary>
         /// Gets or sets the UserAccounts DbSet.
@@ -59,7 +59,7 @@ namespace ExpressVoituresApi.Data
                 .HasDefaultValueSql("GETDATE()");
 
             // Set default value for Purchase.date
-            modelBuilder.Entity<Purchase>()
+            modelBuilder.Entity<Model>()
                 .Property(p => p.date)
                 .HasDefaultValueSql("GETDATE()");
 
@@ -69,7 +69,7 @@ namespace ExpressVoituresApi.Data
                 .HasDefaultValueSql("GETDATE()");
 
             // Set default value for Sale.create_date
-            modelBuilder.Entity<Sale>()
+            modelBuilder.Entity<Brand>()
                 .Property(s => s.create_date)
                 .HasDefaultValueSql("GETDATE()");
 
@@ -77,14 +77,14 @@ namespace ExpressVoituresApi.Data
             modelBuilder.Entity<Vehicle>()
                 .HasOne(v => v.purchase)
                 .WithOne(p => p.vehicle)
-                .HasForeignKey<Purchase>(p => p.vehicle_id)
+                .HasForeignKey<Model>(p => p.vehicle_id)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // Configure one-to-one relationship between Vehicle and Sale
             modelBuilder.Entity<Vehicle>()
                 .HasOne(v => v.sale)
                 .WithOne(s => s.vehicle)
-                .HasForeignKey<Sale>(s => s.vehicle_id)
+                .HasForeignKey<Brand>(s => s.vehicle_id)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // Configure one-to-many relationship between Vehicle and Repairs

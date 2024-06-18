@@ -29,7 +29,7 @@ namespace ExpressVoituresApi.Repositories
         /// </summary>
         /// <param name="sale">The sale entity to add.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task Add(Sale sale)
+        public async Task Add(Brand sale)
         {
             await _context.Sales.AddAsync(sale);
             await _context.SaveChangesAsync();
@@ -40,7 +40,7 @@ namespace ExpressVoituresApi.Repositories
         /// </summary>
         /// <param name="sale">The sale entity to update.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task Update(Sale sale)
+        public async Task Update(Brand sale)
         {
             _context.Sales.Update(sale);
             await _context.SaveChangesAsync();
@@ -69,7 +69,7 @@ namespace ExpressVoituresApi.Repositories
         /// </summary>
         /// <param name="id">The ID of the sale to retrieve.</param>
         /// <returns>The sale entity or null if not found.</returns>
-        public async Task<Sale?> GetById(int id)
+        public async Task<Brand?> GetById(int id)
         {
             return await _context.Sales.FindAsync(id);
         }
