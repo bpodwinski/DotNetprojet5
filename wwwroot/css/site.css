@@ -40,15 +40,14 @@ body.home header nav {
     border-bottom: 1px solid rgba(255,255,255,0.25);
 }
 
-header,
-header a,
 body.products-list footer span,
 body.about footer span,
 body.home footer span,
 body.products-list footer a,
 body.about footer a,
 body.home footer a,
-body.home header a {
+.nav-link,
+.navbar-brand {
     color: #fff !important;
 }
 
