@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using ExpressVoituresV2.Models;
 
 namespace ExpressVoituresV2.Data
 {
@@ -11,5 +10,8 @@ namespace ExpressVoituresV2.Data
 		{
 		}
 	    public DbSet<ExpressVoituresV2.Models.Vehicle> Vehicle { get; set; } = default!;
+	    public DbSet<ExpressVoituresV2.Models.Brand> Brands { get; set; }
+	    public DbSet<ExpressVoituresV2.Models.Model> Models { get; set; }
+	    public DbSet<ExpressVoituresV2.Models.TrimLevel> TrimLevels { get; set; }
 	}
 }

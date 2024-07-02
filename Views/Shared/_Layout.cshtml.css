@@ -46,3 +46,14 @@ button.accept-policy {
   white-space: nowrap;
   line-height: 60px;
 }
+
+.admin .dropdown-toggle {
+    background-color: rgba(255,255,255,0.9);
+    border: 1px solid rgba(255,255,255,1);
+    border-radius: 6px;
+    color: #333 !important;
+}
+
+.admin .dropdown-toggle:hover {
+    background-color: rgba(255,255,255,1);
+}

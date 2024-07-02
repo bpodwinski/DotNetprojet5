@@ -1,0 +1,13 @@
+﻿.img-fluid {
+    max-width: 1000px;
+    width: 80%;
+    margin: 0 auto;
+    display: block;
+    pointer-events: none;
+}
+
+h1 {
+    font-size: 6rem;
+    color: #fff;
+    text-shadow: 0px 10px 15px rgba(0,0,0,0.3);
+}

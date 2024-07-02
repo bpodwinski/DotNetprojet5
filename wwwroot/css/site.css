@@ -1,11 +1,13 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
+    scroll-behavior: smooth;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+        scroll-behavior: smooth;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
@@ -15,8 +17,41 @@ html {
 html {
   position: relative;
   min-height: 100%;
+  box-sizing: border-box;
 }
 
 body {
   margin-bottom: 60px;
+  background-color: #f0f0f0;
+}
+
+body.about,
+body.products-list,
+body.home {
+    background: rgb(78,51,27);
+    background: radial-gradient(circle, rgba(78,51,27,1) 0%, rgba(21,21,21,1) 100%);
+}
+
+body.about header nav,
+body.products-list header nav,
+body.home header nav {
+    backdrop-filter: blur(8px);
+    background: #E77D1B !important;
+    border-bottom: 1px solid rgba(255,255,255,0.25);
+}
+
+header,
+header a,
+body.products-list footer span,
+body.about footer span,
+body.home footer span,
+body.products-list footer a,
+body.about footer a,
+body.home footer a,
+body.home header a {
+    color: #fff !important;
+}
+
+header {
+    background-color: #417DC5;
 }

@@ -29,19 +29,10 @@ namespace ExpressVoituresV2.Models
         [AnneeValidation]
         public int Year { get; set; }
 
-		//[Display(Name = "Marque")]
-		//public int BrandId { get; set; }
-		//[ForeignKey("BrandId")]
-		//public virtual Brand Brand { get; set; }
-
-		//[Display(Name = "Modèle")]
-		//public int ModelId { get; set; }
-		//[ForeignKey("ModelId")]
-		//public virtual Model Model { get; set; }
-
-		//[Display(Name = "Finition")]
-		//[ForeignKey("TrimLevelId")]
-		//public virtual TrimLevel TrimLevel { get; set; }
+		[Display(Name = "Marque")]
+		public int BrandId { get; set; }
+		[ForeignKey("BrandId")]
+		public virtual Brand Brand { get; set; }
 
 		public class DateAchatValidationAttribute : ValidationAttribute
         {

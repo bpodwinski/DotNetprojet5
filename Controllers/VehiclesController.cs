@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ExpressVoituresV2.Data;
 using ExpressVoituresV2.Models;
 
-namespace ExpressVoituresV2
+namespace ExpressVoituresV2.Controllers
 {
     public class VehiclesController : Controller
     {
@@ -22,7 +22,8 @@ namespace ExpressVoituresV2
         // GET: Vehicles
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Vehicle.ToListAsync());
+            var applicationDbContext = _context.Vehicle.Include(v => v.Brand);
+            return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: Vehicles/Details/5
@@ -34,6 +35,7 @@ namespace ExpressVoituresV2
             }
 
             var vehicle = await _context.Vehicle
+                .Include(v => v.Brand)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (vehicle == null)
             {
@@ -46,6 +48,7 @@ namespace ExpressVoituresV2
         // GET: Vehicles/Create
         public IActionResult Create()
         {
+            ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name");
             return View();
         }
 
@@ -54,7 +57,7 @@ namespace ExpressVoituresV2
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Vin,Year,PurchaseDate,PurchasePrice,AvailabilityDate,SalePrice,SaleDate")] Vehicle vehicle)
+        public async Task<IActionResult> Create([Bind("Id,Vin,Year,BrandId,PurchaseDate,PurchasePrice,AvailabilityDate,SalePrice,SaleDate")] Vehicle vehicle)
         {
             if (ModelState.IsValid)
             {
@@ -62,6 +65,7 @@ namespace ExpressVoituresV2
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name", vehicle.BrandId);
             return View(vehicle);
         }
 
@@ -78,6 +82,7 @@ namespace ExpressVoituresV2
             {
                 return NotFound();
             }
+            ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name", vehicle.BrandId);
             return View(vehicle);
         }
 
@@ -86,7 +91,7 @@ namespace ExpressVoituresV2
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Vin,Year,PurchaseDate,PurchasePrice,AvailabilityDate,SalePrice,SaleDate")] Vehicle vehicle)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Vin,Year,BrandId,PurchaseDate,PurchasePrice,AvailabilityDate,SalePrice,SaleDate")] Vehicle vehicle)
         {
             if (id != vehicle.Id)
             {
@@ -113,6 +118,7 @@ namespace ExpressVoituresV2
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name", vehicle.BrandId);
             return View(vehicle);
         }
 
@@ -125,6 +131,7 @@ namespace ExpressVoituresV2
             }
 
             var vehicle = await _context.Vehicle
+                .Include(v => v.Brand)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (vehicle == null)
             {
