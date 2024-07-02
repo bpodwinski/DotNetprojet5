@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using ExpressVoituresV2.Models;
 
 namespace ExpressVoituresV2.Data
 {
@@ -9,5 +10,6 @@ namespace ExpressVoituresV2.Data
 			: base(options)
 		{
 		}
+	    public DbSet<ExpressVoituresV2.Models.Vehicle> Vehicle { get; set; } = default!;
 	}
 }
