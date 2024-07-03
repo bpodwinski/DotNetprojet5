@@ -44,7 +44,7 @@ namespace ExpressVoituresV2.Controllers
                 return NotFound();
             }
 
-            return View(vehicle);
+            return PartialView("_DetailsPartial", vehicle);
         }
 
         // GET: Vehicles/Create
@@ -172,7 +172,7 @@ namespace ExpressVoituresV2.Controllers
                 return NotFound();
             }
 
-            return View(vehicle);
+            return PartialView("_DeletePartial", vehicle);
         }
 
         // POST: Vehicles/Delete/5

@@ -1,0 +1,52 @@
+﻿@model ExpressVoituresV2.Models.Vehicle
+
+<dl class="row">
+	<dt class="col-sm-4">
+		@Html.DisplayNameFor(model => model.Vin)
+	</dt>
+	<dd class="col-sm-8">
+		@Html.DisplayFor(model => model.Vin)
+	</dd>
+	<dt class="col-sm-4">
+		@Html.DisplayNameFor(model => model.Year)
+	</dt>
+	<dd class="col-sm-8">
+		@Html.DisplayFor(model => model.Year)
+	</dd>
+	<dt class="col-sm-4">
+		@Html.DisplayNameFor(model => model.Brand)
+	</dt>
+	<dd class="col-sm-8">
+		@Html.DisplayFor(model => model.Brand.Name)
+	</dd>
+	<dt class="col-sm-4">
+		@Html.DisplayNameFor(model => model.PurchaseDate)
+	</dt>
+	<dd class="col-sm-8">
+		@Html.DisplayFor(model => model.PurchaseDate)
+	</dd>
+	<dt class="col-sm-4">
+		@Html.DisplayNameFor(model => model.PurchasePrice)
+	</dt>
+	<dd class="col-sm-8">
+		@Html.DisplayFor(model => model.PurchasePrice)
+	</dd>
+	<dt class="col-sm-4">
+		@Html.DisplayNameFor(model => model.AvailabilityDate)
+	</dt>
+	<dd class="col-sm-8">
+		@Html.DisplayFor(model => model.AvailabilityDate)
+	</dd>
+	<dt class="col-sm-4">
+		@Html.DisplayNameFor(model => model.SalePrice)
+	</dt>
+	<dd class="col-sm-8">
+		@Html.DisplayFor(model => model.SalePrice)
+	</dd>
+	<dt class="col-sm-4">
+		@Html.DisplayNameFor(model => model.SaleDate)
+	</dt>
+	<dd class="col-sm-8">
+		@Html.DisplayFor(model => model.SaleDate)
+	</dd>
+</dl>
