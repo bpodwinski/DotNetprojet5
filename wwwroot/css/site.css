@@ -25,19 +25,44 @@ body {
   background-color: #f0f0f0;
 }
 
+body.home {
+    background-image: radial-gradient(circle, rgba(78,51,27,0.6) 15%, rgba(10,10,10,1) 100%), url("../images/bg.jpg");
+    background-size: cover;
+    background-position: center center;
+}
+
+body.home .logo:before {
+    content: "";
+    position: absolute;
+    right: 80px;
+    bottom: -80px;
+    display: block;
+    width: 550px;
+    height: 550px;
+    background-image: url("../images/tire.png");
+    background-size: cover;
+    background-position: center center;
+    opacity: 0.6;
+}
+
 body.about,
 body.products-list,
 body.home {
-    background: rgb(78,51,27);
-    background: radial-gradient(circle, rgba(78,51,27,1) 0%, rgba(21,21,21,1) 100%);
+    //background: rgb(78,51,27);
+    //background: radial-gradient(circle, rgba(78,51,27,1) 0%, rgba(21,21,21,1) 100%);
 }
 
 body.about header nav,
 body.products-list header nav,
 body.home header nav {
-    backdrop-filter: blur(8px);
-    background: #E77D1B !important;
-    border-bottom: 1px solid rgba(255,255,255,0.25);
+    backdrop-filter: blur(12px);
+    background: rgb(211 124 42 / 85%) !important;
+    border-bottom: 2px solid rgba(255,255,255,0.08);
+}
+
+.navbar .nav-link,
+.navbar-brand {
+    color: #ffebd5 !important;
 }
 
 body.products-list footer span,
@@ -45,12 +70,10 @@ body.about footer span,
 body.home footer span,
 body.products-list footer a,
 body.about footer a,
-body.home footer a,
-.navbar .nav-link,
-.navbar-brand {
-    color: #fff !important;
+body.home footer a {
+    color: rgba(255,255,255,0.8) !important;
 }
 
 header {
-    background-color: #417DC5;
+    background-color: transparent;
 }

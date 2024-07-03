@@ -7,7 +7,32 @@
 }
 
 h1 {
-    font-size: 6rem;
-    color: #fff;
-    text-shadow: 0px 10px 15px rgba(0,0,0,0.3);
+    font-family: "Bebas Neue", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 8rem;
+    line-height: 7rem;
+    color: #ffe1c6;
+    text-shadow: 0px 4px 0px #562d00;
+}
+
+h2 {
+    font-family: "Bebas Neue", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 3rem;
+    color: #ffb96e;
+    text-shadow: 0px 2px 0px #3e2000;
+}
+
+hr {
+    color: #ffb96e;
+    border-top: 3px solid;
+    opacity: 1;
+    max-width: 400px;
+    margin: 1rem auto;
+}
+
+.row .col {
+    position: relative;
 }
