@@ -5,27 +5,25 @@
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
-    <li class="nav-item dropdown">
+		<li class="nav-item dropdown login">
 	    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 			@User.Identity?.Name!
 	    </a>
 	    <ul class="dropdown-menu">
 		    <li>
 			    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
-				    <i class="bi bi-gear-fill me-2"></i>
 				    Compte et paramètres
 			    </a>
 		    </li>
 		    <li>
 			    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">
-				    <i class="bi bi-plus-circle-fill me-2"></i>
 				    Créer un compte
 			    </a>
 		    </li>
 		    <li><hr class="dropdown-divider"></li>
 		    <li>
-			    <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-				    <button  type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+			    <form class="dropdown-item" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+				    <button type="submit" class="text-danger">Se déconnecter</button>
 			    </form>
 		    </li>
 	    </ul>

@@ -7,3 +7,9 @@
 .dropdown-toggle:hover {
     background-color: rgba(255,255,255,0.2);
 }
+
+.login button {
+    padding: 0;
+    border: none;
+    background: none;
+}

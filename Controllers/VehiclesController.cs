@@ -59,7 +59,12 @@ namespace ExpressVoituresV2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Vin,Year,BrandId,PurchaseDate,PurchasePrice,AvailabilityDate,SalePrice,SaleDate")] Vehicle vehicle)
         {
-            if (ModelState.IsValid)
+	        if (vehicle.Year < 1990 || vehicle.Year > DateTime.Now.Year)
+	        {
+		        ModelState.AddModelError("Year", $"L'année doit être entre 1990 et {DateTime.Now.Year}.");
+	        }
+
+			if (ModelState.IsValid)
             {
                 _context.Add(vehicle);
                 await _context.SaveChangesAsync();

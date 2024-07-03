@@ -46,7 +46,7 @@ body.home footer span,
 body.products-list footer a,
 body.about footer a,
 body.home footer a,
-.nav-link,
+.navbar .nav-link,
 .navbar-brand {
     color: #fff !important;
 }
