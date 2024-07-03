@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ExpressVoituresV2.Data;
 using ExpressVoituresV2.Models;
+using ExpressVoituresV2.ViewModel;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ExpressVoituresV2.Controllers
 {
@@ -48,34 +50,61 @@ namespace ExpressVoituresV2.Controllers
         // GET: Vehicles/Create
         public IActionResult Create()
         {
-            ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name");
+            ViewData["BrandList"] = new SelectList(_context.Brands, "Id", "Name");
             return View();
         }
 
         // POST: Vehicles/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Vin,Year,BrandId,PurchaseDate,PurchasePrice,AvailabilityDate,SalePrice,SaleDate")] Vehicle vehicle)
+        public async Task<IActionResult> Create([Bind("Id,Vin,Year,BrandId,BrandAdd,BrandList,PurchaseDate,PurchasePrice,AvailabilityDate,SalePrice,SaleDate")] VehicleViewModel viewModel)
         {
-	        if (vehicle.Year < 1990 || vehicle.Year > DateTime.Now.Year)
+	        if (!string.IsNullOrEmpty(viewModel.BrandAdd))
 	        {
-		        ModelState.AddModelError("Year", $"L'année doit être entre 1990 et {DateTime.Now.Year}.");
+		        var existingBrand = await _context.Brands.FirstOrDefaultAsync(b => b.Name == viewModel.BrandAdd);
+		        if (existingBrand == null)
+		        {
+			        var newBrand = new Brand { Name = viewModel.BrandAdd };
+			        _context.Brands.Add(newBrand);
+			        await _context.SaveChangesAsync();
+			        viewModel.BrandId = newBrand.Id;
+		        }
+		        else
+		        {
+			        viewModel.BrandId = existingBrand.Id;
+		        }
+	        }
+	        else if (!string.IsNullOrEmpty(viewModel.BrandList))
+	        {
+		        viewModel.BrandId = Convert.ToInt32(viewModel.BrandList);
 	        }
 
 			if (ModelState.IsValid)
-            {
-                _context.Add(vehicle);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name", vehicle.BrandId);
-            return View(vehicle);
+	        {
+		        var vehicle = new Vehicle
+		        {
+			        Vin = viewModel.Vin,
+			        Year = viewModel.Year,
+			        BrandId = viewModel.BrandId,
+			        PurchaseDate = viewModel.PurchaseDate,
+			        PurchasePrice = viewModel.PurchasePrice,
+			        AvailabilityDate = viewModel.AvailabilityDate,
+			        SalePrice = viewModel.SalePrice,
+			        SaleDate = viewModel.SaleDate
+		        };
+
+				_context.Vehicle.Add(vehicle);
+		        await _context.SaveChangesAsync();
+
+				return RedirectToAction(nameof(Index));
+	        }
+
+			return View(viewModel);
         }
 
-        // GET: Vehicles/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+
+		// GET: Vehicles/Edit/5
+		public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {

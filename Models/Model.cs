@@ -7,8 +7,6 @@ namespace ExpressVoituresV2.Models
 	{
 		public int Id { get; set; }
 
-		[Required(ErrorMessage = "Le nom du modèle est obligatoire.")]
-		[StringLength(100, ErrorMessage = "Le nom du modèle ne doit pas dépasser 100 caractères.")]
 		[Display(Name = "Modèle")]
 		public string Name { get; set; }
 

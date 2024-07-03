@@ -8,8 +8,6 @@ namespace ExpressVoituresV2.Models
 	{
 		public int Id { get; set; }
 
-		[Required(ErrorMessage = "Le nom de la finition est obligatoire.")]
-		[StringLength(100, ErrorMessage = "Le nom de la finition ne doit pas dépasser 100 caractères.")]
 		[Display(Name = "Finition")]
 		public string Name { get; set; }
 

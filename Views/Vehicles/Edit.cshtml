@@ -5,12 +5,10 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Edit</h1>
+<h1 class="text-center mt-5">Editer un véhicule</h1>
 
-<h4>Vehicle</h4>
-<hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-8 mx-auto mt-5 p-5 rounded bg-white shadow">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
@@ -50,19 +48,17 @@
                 <span asp-validation-for="SalePrice" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="SaleDate" class="control-label"></label>
-                <input asp-for="SaleDate" class="form-control" />
-                <span asp-validation-for="SaleDate" class="text-danger"></span>
+	            <label asp-for="SaleDate" class="control-label"></label>
+	            <input asp-for="SaleDate" class="form-control" />
+	            <span asp-validation-for="SaleDate" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+            
+            <div class="mt-5 form-group d-flex flex-row justify-content-between form-group text-center">
+	            <a asp-action="Index" class="btn btn-outline-secondary">Retour</a>
+	            <input type="submit" value="Enregistrer" class="btn btn-primary"/>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
