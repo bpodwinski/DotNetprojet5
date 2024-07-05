@@ -42,12 +42,32 @@
 									Admin
 								</a>
 								<ul class="dropdown-menu">
-									<a class="dropdown-item" asp-area="" asp-controller="Vehicles" asp-action="Index">
-										Mes véhicules
-									</a>
-									<a class="dropdown-item" asp-area="" asp-controller="Vehicles" asp-action="Create">
-										Ajouter un véhicule
-									</a>
+									<li>
+										<a class="dropdown-item" asp-area="" asp-controller="Vehicles" asp-action="Index">
+											Les voitures
+										</a>
+									</li>
+									<li>
+										<a class="dropdown-item" asp-area="" asp-controller="Vehicles" asp-action="Create">
+											Ajouter un véhicule
+										</a>
+									</li>
+									<li><hr class="dropdown-divider"></li>
+									<li>
+										<a class="dropdown-item" asp-area="" asp-controller="Brands" asp-action="Index">
+											Les marques
+										</a>
+									</li>
+									<li>
+										<a class="dropdown-item" asp-area="" asp-controller="Models" asp-action="Index">
+											Les modèles
+										</a>
+									</li>
+									<li>
+										<a class="dropdown-item" asp-area="" asp-controller="TrimLevels" asp-action="Index">
+											Les finitions
+										</a>
+									</li>
 								</ul>
 							</li>
 						}

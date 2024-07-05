@@ -85,7 +85,6 @@ namespace ExpressVoituresV2.Controllers
 		        {
 			        Vin = viewModel.Vin,
 			        Year = viewModel.Year,
-			        BrandId = viewModel.BrandId,
 			        PurchaseDate = viewModel.PurchaseDate,
 			        PurchasePrice = viewModel.PurchasePrice,
 			        AvailabilityDate = viewModel.AvailabilityDate,
@@ -116,7 +115,7 @@ namespace ExpressVoituresV2.Controllers
             {
                 return NotFound();
             }
-            ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name", vehicle.BrandId);
+            ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name", vehicle.Brand);
             return View(vehicle);
         }
 
@@ -152,7 +151,7 @@ namespace ExpressVoituresV2.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name", vehicle.BrandId);
+            ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name", vehicle.Brand);
             return View(vehicle);
         }
 

@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ExpressVoituresV2.Models
 {
@@ -7,7 +6,7 @@ namespace ExpressVoituresV2.Models
 	{
         public int Id { get; set; }
 
-        [Display(Name = "Code VIN")]
+		[Display(Name = "Code VIN")]
 		public string? Vin { get; set; }
 
 		[Display(Name = "Année")]
@@ -15,12 +14,7 @@ namespace ExpressVoituresV2.Models
 		[RegularExpression("^[0-9]+$", ErrorMessage = "L'année doit être un nombre")]
 		public int Year { get; set; }
 
-		[Display(Name = "Marque")]
-		public int BrandId { get; set; }
-		[ForeignKey("BrandId")]
-		public virtual Brand Brand { get; set; }
-
-        [Display(Name = "Date d'achat")]
+		[Display(Name = "Date d'achat")]
 		[Required(ErrorMessage = "La date d'achat de la vehicle doit être complétée")]
         [DataType(DataType.Date, ErrorMessage = "La date d'achat doit être une date.")]
         public DateTime PurchaseDate { get; set; }
@@ -42,6 +36,22 @@ namespace ExpressVoituresV2.Models
 		[DataType(DataType.Date, ErrorMessage = "La date de vente doit être une date.")]
         public DateTime? SaleDate { get; set; }
 
+
+        [Display(Name = "Marque")]
+        public int BrandId { get; set; }
+        public virtual Brand Brand { get; set; }
+
+
+        [Display(Name = "Modèle")]
+        public int ModelId { get; set; }
+        public virtual Model Model { get; set; }
+
+
+        [Display(Name = "Finition")]
+        public int TrimLevelId { get; set; }
+        public virtual TrimLevel TrimLevel { get; set; }
+
+
 		//public ICollection<Repair>? Repairs { get; set; }
-    }
+	}
 }

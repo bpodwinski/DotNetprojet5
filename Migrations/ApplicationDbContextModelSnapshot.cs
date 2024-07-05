@@ -97,6 +97,9 @@ namespace ExpressVoituresV2.Migrations
                     b.Property<int>("BrandId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ModelId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("PurchaseDate")
                         .HasColumnType("datetime2");
 
@@ -109,6 +112,9 @@ namespace ExpressVoituresV2.Migrations
                     b.Property<float?>("SalePrice")
                         .HasColumnType("real");
 
+                    b.Property<int>("TrimLevelId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Vin")
                         .HasColumnType("nvarchar(max)");
 
@@ -118,6 +124,10 @@ namespace ExpressVoituresV2.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BrandId");
+
+                    b.HasIndex("ModelId");
+
+                    b.HasIndex("TrimLevelId");
 
                     b.ToTable("Vehicle");
                 });
@@ -327,7 +337,7 @@ namespace ExpressVoituresV2.Migrations
             modelBuilder.Entity("ExpressVoituresV2.Models.Model", b =>
                 {
                     b.HasOne("ExpressVoituresV2.Models.Brand", "Brand")
-                        .WithMany()
+                        .WithMany("Models")
                         .HasForeignKey("BrandId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -351,10 +361,26 @@ namespace ExpressVoituresV2.Migrations
                     b.HasOne("ExpressVoituresV2.Models.Brand", "Brand")
                         .WithMany()
                         .HasForeignKey("BrandId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ExpressVoituresV2.Models.Model", "Model")
+                        .WithMany()
+                        .HasForeignKey("ModelId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ExpressVoituresV2.Models.TrimLevel", "TrimLevel")
+                        .WithMany()
+                        .HasForeignKey("TrimLevelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Brand");
+
+                    b.Navigation("Model");
+
+                    b.Navigation("TrimLevel");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -406,6 +432,11 @@ namespace ExpressVoituresV2.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ExpressVoituresV2.Models.Brand", b =>
+                {
+                    b.Navigation("Models");
                 });
 #pragma warning restore 612, 618
         }

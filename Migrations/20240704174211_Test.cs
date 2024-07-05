@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ExpressVoituresV2.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Test : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -56,7 +56,7 @@ namespace ExpressVoituresV2.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -175,7 +175,7 @@ namespace ExpressVoituresV2.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     BrandId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -190,38 +190,12 @@ namespace ExpressVoituresV2.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Vehicle",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Vin = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Year = table.Column<int>(type: "int", nullable: false),
-                    BrandId = table.Column<int>(type: "int", nullable: false),
-                    PurchaseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PurchasePrice = table.Column<float>(type: "real", nullable: false),
-                    AvailabilityDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    SalePrice = table.Column<float>(type: "real", nullable: true),
-                    SaleDate = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Vehicle", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Vehicle_Brands_BrandId",
-                        column: x => x.BrandId,
-                        principalTable: "Brands",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "TrimLevels",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ModelId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -231,6 +205,46 @@ namespace ExpressVoituresV2.Migrations
                         name: "FK_TrimLevels_Models_ModelId",
                         column: x => x.ModelId,
                         principalTable: "Models",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Vehicle",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Vin = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Year = table.Column<int>(type: "int", nullable: false),
+                    PurchaseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PurchasePrice = table.Column<float>(type: "real", nullable: false),
+                    AvailabilityDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    SalePrice = table.Column<float>(type: "real", nullable: true),
+                    SaleDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    BrandId = table.Column<int>(type: "int", nullable: false),
+                    ModelId = table.Column<int>(type: "int", nullable: false),
+                    TrimLevelId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Vehicle", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Vehicle_Brands_BrandId",
+                        column: x => x.BrandId,
+                        principalTable: "Brands",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Vehicle_Models_ModelId",
+                        column: x => x.ModelId,
+                        principalTable: "Models",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Vehicle_TrimLevels_TrimLevelId",
+                        column: x => x.TrimLevelId,
+                        principalTable: "TrimLevels",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -288,6 +302,16 @@ namespace ExpressVoituresV2.Migrations
                 name: "IX_Vehicle_BrandId",
                 table: "Vehicle",
                 column: "BrandId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Vehicle_ModelId",
+                table: "Vehicle",
+                column: "ModelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Vehicle_TrimLevelId",
+                table: "Vehicle",
+                column: "TrimLevelId");
         }
 
         /// <inheritdoc />
@@ -309,9 +333,6 @@ namespace ExpressVoituresV2.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "TrimLevels");
-
-            migrationBuilder.DropTable(
                 name: "Vehicle");
 
             migrationBuilder.DropTable(
@@ -319,6 +340,9 @@ namespace ExpressVoituresV2.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "TrimLevels");
 
             migrationBuilder.DropTable(
                 name: "Models");

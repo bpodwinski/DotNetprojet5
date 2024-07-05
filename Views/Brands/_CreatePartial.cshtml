@@ -1,0 +1,14 @@
+﻿@model ExpressVoituresV2.Models.Brand
+
+<form asp-action="Create">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="mt-5 form-group d-flex flex-row justify-content-between form-group text-center">
+        <a asp-action="Index" class="btn btn-outline-secondary">Retour</a>
+        <input type="submit" value="Créer" class="btn btn-primary" />
+    </div>
+</form>

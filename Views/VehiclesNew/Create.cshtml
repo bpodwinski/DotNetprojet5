@@ -1,0 +1,160 @@
+﻿@model ExpressVoituresV2.Models.Vehicle
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const brandSelect = document.querySelector('#BrandId');
+        const modelSelect = document.querySelector('#ModelId');
+        const trimSelect = document.querySelector('#TrimLevelId');
+
+        // Fonction pour charger les modèles
+        function loadModels(brandId) {
+            fetch(`/VehiclesNew/GetModelsByBrand?brandId=${brandId}`)
+                .then(response => response.json())
+                .then(data => {
+                    modelSelect.innerHTML = '<option value=""></option>';
+                    data.forEach(item => {
+                        const option = new Option(item.text, item.value);
+                        modelSelect.appendChild(option);
+                    });
+                    // Déclencher le changement pour réinitialiser les niveaux de finition
+                    modelSelect.dispatchEvent(new Event('change'));
+                })
+                .catch(error => console.error('Error loading models:', error));
+        }
+
+        // Fonction pour charger les niveaux de finition
+        function loadTrimLevels(modelId) {
+            fetch(`/VehiclesNew/GetTrimLevelsByModel?modelId=${modelId}`)
+                .then(response => response.json())
+                .then(data => {
+                    trimSelect.innerHTML = '<option value=""></option>';
+                    data.forEach(item => {
+                        const option = new Option(item.text, item.value);
+                        trimSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error loading trim levels:', error));
+        }
+
+        // Événements de changement pour la marque
+        brandSelect.addEventListener('change', function () {
+            loadModels(this.value);
+        });
+
+        // Événements de changement pour le modèle
+        modelSelect.addEventListener('change', function () {
+            loadTrimLevels(this.value);
+        });
+
+        // Initialisation des modèles et niveaux de finition au chargement
+        if (brandSelect.value) {
+            loadModels(brandSelect.value);
+        }
+    });
+</script>
+
+<h1 class="text-center mt-5">Ajouter un véhicule</h1>
+
+<div class="row">
+    <div class="col-md-8 mx-auto mt-5 p-5 rounded bg-white shadow">
+        <form asp-action="Create">
+	        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+	        <h2 class="text-center mb-3">Détails</h2>
+
+	        <div class="form-group mb-3">
+                <label asp-for="Vin" class="control-label"></label>
+                <input asp-for="Vin" class="form-control" />
+                <span asp-validation-for="Vin" class="text-danger"></span>
+            </div>
+	        <div class="form-group mb-3">
+		        <label asp-for="Year" class="control-label"></label>
+		        <input asp-for="Year" class="form-control" />
+		        <span asp-validation-for="Year" class="text-danger"></span>
+	        </div>
+            
+	        <div class="row g-3">
+		        <div class="col form-group mb-3">
+			        <label asp-for="BrandId" class="control-label"></label>
+                    <select asp-for="BrandId" class="form-select" asp-items="ViewBag.BrandId"></select>
+		        </div>
+		        <div class="col form-group mb-3">
+			        <label asp-for="Vin" class="control-label"></label>
+			        <input asp-for="Vin" class="form-control" />
+			        <span asp-validation-for="Vin" class="text-danger"></span>
+		        </div>
+	        </div>
+            
+	        <div class="row g-3">
+		        <div class="col form-group mb-3">
+			        <label asp-for="ModelId" class="control-label"></label>
+                    <select asp-for="ModelId" class="form-select" asp-items="ViewBag.ModelId"></select>
+		        </div>
+                <div class="col form-group mb-3">
+                    <label asp-for="Vin" class="control-label"></label>
+                    <input asp-for="Vin" class="form-control" />
+                    <span asp-validation-for="Vin" class="text-danger"></span>
+                </div>
+	        </div>
+
+            <div class="row g-3">
+                <div class="col form-group mb-3">
+		            <label asp-for="TrimLevelId" class="control-label"></label>
+                    <select asp-for="TrimLevelId" class="form-select" asp-items="ViewBag.TrimLevelId"></select>
+	            </div>
+	            <div class="col form-group mb-3">
+		            <label asp-for="Vin" class="control-label"></label>
+		            <input asp-for="Vin" class="form-control" />
+		            <span asp-validation-for="Vin" class="text-danger"></span>
+	            </div>
+            </div>
+            
+            <h2 class="text-center mt-5 mb-3">Achats et Ventes</h2>
+
+            <div class="row g-3">
+                <div class="col form-group mb-3">
+	                <label asp-for="PurchaseDate" class="control-label"></label>
+	                <input asp-for="PurchaseDate" class="form-control" />
+	                <span asp-validation-for="PurchaseDate" class="text-danger"></span>
+	            </div>
+                <div class="col form-group mb-3">
+		            <label asp-for="PurchasePrice" class="control-label"></label>
+		            <input asp-for="PurchasePrice" class="form-control" />
+		            <span asp-validation-for="PurchasePrice" class="text-danger"></span>
+	            </div>
+            </div>
+
+            <div class="form-group mb-3">
+	            <label asp-for="AvailabilityDate" class="control-label"></label>
+	            <input asp-for="AvailabilityDate" class="form-control" />
+	            <span asp-validation-for="AvailabilityDate" class="text-danger"></span>
+            </div>
+            
+            <div class="row g-3">
+	            <div class="col form-group mb-3">
+		            <label asp-for="SaleDate" class="control-label"></label>
+		            <input asp-for="SaleDate" class="form-control" />
+		            <span asp-validation-for="SaleDate" class="text-danger"></span>
+	            </div>
+	            <div class="col form-group mb-3">
+		            <label asp-for="SalePrice" class="control-label"></label>
+		            <input asp-for="SalePrice" class="form-control"/>
+		            <span asp-validation-for="SalePrice" class="text-danger"></span>
+	            </div>
+            </div>
+            <div class="mt-5 form-group d-flex flex-row justify-content-between form-group text-center">
+                <a asp-action="Index" class="btn btn-outline-secondary">Retour</a>
+                <input type="submit" value="Enregistrer" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
