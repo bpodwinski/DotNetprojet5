@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ExpressVoituresV2.Data;
 using ExpressVoituresV2.Models;
-using ExpressVoituresV2.ViewModel;
-using Microsoft.IdentityModel.Tokens;
 
 namespace ExpressVoituresV2.Controllers
 {
@@ -21,14 +15,14 @@ namespace ExpressVoituresV2.Controllers
             _context = context;
         }
 
-        // GET: Vehicles
+        // GET: VehiclesNew
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Vehicle.Include(v => v.Brand);
+            var applicationDbContext = _context.Vehicle.Include(v => v.Brand).Include(v => v.Model).Include(v => v.TrimLevel);
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Vehicles/Details/5
+        // GET: VehiclesNew/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -38,6 +32,8 @@ namespace ExpressVoituresV2.Controllers
 
             var vehicle = await _context.Vehicle
                 .Include(v => v.Brand)
+                .Include(v => v.Model)
+                .Include(v => v.TrimLevel)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (vehicle == null)
             {
@@ -47,63 +43,39 @@ namespace ExpressVoituresV2.Controllers
             return PartialView("_DetailsPartial", vehicle);
         }
 
-        // GET: Vehicles/Create
+        // GET: VehiclesNew/Create
         public IActionResult Create()
         {
-            ViewData["BrandList"] = new SelectList(_context.Brands, "Id", "Name");
+            ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name");
+            ViewData["ModelId"] = new SelectList(_context.Models, "Id", "Name");
+            ViewData["TrimLevelId"] = new SelectList(_context.TrimLevels, "Id", "Name");
             return View();
         }
 
-        // POST: Vehicles/Create
+        // POST: VehiclesNew/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Vin,Year,BrandId,BrandAdd,BrandList,PurchaseDate,PurchasePrice,AvailabilityDate,SalePrice,SaleDate")] VehicleViewModel viewModel)
+        public async Task<IActionResult> Create([Bind("Id,Vin,Year,PurchaseDate,PurchasePrice,AvailabilityDate,SalePrice,SaleDate,BrandId,ModelId,TrimLevelId")] Vehicle vehicle)
         {
-	        if (!string.IsNullOrEmpty(viewModel.BrandAdd))
-	        {
-		        var existingBrand = await _context.Brands.FirstOrDefaultAsync(b => b.Name == viewModel.BrandAdd);
-		        if (existingBrand == null)
-		        {
-			        var newBrand = new Brand { Name = viewModel.BrandAdd };
-			        _context.Brands.Add(newBrand);
-			        await _context.SaveChangesAsync();
-			        viewModel.BrandId = newBrand.Id;
-		        }
-		        else
-		        {
-			        viewModel.BrandId = existingBrand.Id;
-		        }
-	        }
-	        else if (!string.IsNullOrEmpty(viewModel.BrandList))
-	        {
-		        viewModel.BrandId = Convert.ToInt32(viewModel.BrandList);
-	        }
-
-			if (ModelState.IsValid)
-	        {
-		        var vehicle = new Vehicle
-		        {
-			        Vin = viewModel.Vin,
-			        Year = viewModel.Year,
-			        PurchaseDate = viewModel.PurchaseDate,
-			        PurchasePrice = viewModel.PurchasePrice,
-			        AvailabilityDate = viewModel.AvailabilityDate,
-			        SalePrice = viewModel.SalePrice,
-			        SaleDate = viewModel.SaleDate
-		        };
-
-				_context.Vehicle.Add(vehicle);
-		        await _context.SaveChangesAsync();
-
-				return RedirectToAction(nameof(Index));
-	        }
-
-			return View(viewModel);
+            ModelState.Remove("Brand");
+            ModelState.Remove("Model");
+            ModelState.Remove("TrimLevel");
+            if (ModelState.IsValid)
+            {
+                _context.Add(vehicle);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name", vehicle.BrandId);
+            ViewData["ModelId"] = new SelectList(_context.Models, "Id", "Name", vehicle.ModelId);
+            ViewData["TrimLevelId"] = new SelectList(_context.TrimLevels, "Id", "Name", vehicle.TrimLevelId);
+            return View(vehicle);
         }
 
-
-		// GET: Vehicles/Edit/5
-		public async Task<IActionResult> Edit(int? id)
+        // GET: VehiclesNew/Edit/5
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
@@ -115,16 +87,18 @@ namespace ExpressVoituresV2.Controllers
             {
                 return NotFound();
             }
-            ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name", vehicle.Brand);
+            ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name", vehicle.BrandId);
+            ViewData["ModelId"] = new SelectList(_context.Models, "Id", "Name", vehicle.ModelId);
+            ViewData["TrimLevelId"] = new SelectList(_context.TrimLevels, "Id", "Name", vehicle.TrimLevelId);
             return View(vehicle);
         }
 
-        // POST: Vehicles/Edit/5
+        // POST: VehiclesNew/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Vin,Year,BrandId,PurchaseDate,PurchasePrice,AvailabilityDate,SalePrice,SaleDate")] Vehicle vehicle)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Vin,Year,PurchaseDate,PurchasePrice,AvailabilityDate,SalePrice,SaleDate,BrandId,ModelId,TrimLevelId")] Vehicle vehicle)
         {
             if (id != vehicle.Id)
             {
@@ -151,11 +125,13 @@ namespace ExpressVoituresV2.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name", vehicle.Brand);
+            ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name", vehicle.BrandId);
+            ViewData["ModelId"] = new SelectList(_context.Models, "Id", "Name", vehicle.ModelId);
+            ViewData["TrimLevelId"] = new SelectList(_context.TrimLevels, "Id", "Name", vehicle.TrimLevelId);
             return View(vehicle);
         }
 
-        // GET: Vehicles/Delete/5
+        // GET: VehiclesNew/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -165,6 +141,8 @@ namespace ExpressVoituresV2.Controllers
 
             var vehicle = await _context.Vehicle
                 .Include(v => v.Brand)
+                .Include(v => v.Model)
+                .Include(v => v.TrimLevel)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (vehicle == null)
             {
@@ -174,7 +152,7 @@ namespace ExpressVoituresV2.Controllers
             return PartialView("_DeletePartial", vehicle);
         }
 
-        // POST: Vehicles/Delete/5
+        // POST: VehiclesNew/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -192,6 +170,20 @@ namespace ExpressVoituresV2.Controllers
         private bool VehicleExists(int id)
         {
             return _context.Vehicle.Any(e => e.Id == id);
+        }
+
+        // Action pour obtenir les modèles basés sur BrandId
+        public async Task<JsonResult> GetModelsByBrand(int brandId)
+        {
+            var models = await _context.Models.Where(m => m.BrandId == brandId).ToListAsync();
+            return Json(new SelectList(models, "Id", "Name"));
+        }
+
+        // Action pour obtenir les niveaux de finition basés sur ModelId
+        public async Task<JsonResult> GetTrimLevelsByModel(int modelId)
+        {
+            var trimLevels = await _context.TrimLevels.Where(t => t.ModelId == modelId).ToListAsync();
+            return Json(new SelectList(trimLevels, "Id", "Name"));
         }
     }
 }

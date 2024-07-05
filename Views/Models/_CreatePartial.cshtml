@@ -1,25 +1,18 @@
-﻿@model ExpressVoituresV2.Models.Brand
+﻿@model ExpressVoituresV2.Models.Model
 
-@{
-    ViewData["Title"] = "Edit";
-}
-
-<form asp-action="Edit">
+<form asp-action="Create">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <input type="hidden" asp-for="Id" />
     <div class="mb-3">
         <label asp-for="Name" class="form-label"></label>
         <input asp-for="Name" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
+    <div class="mb-3">
+        <label asp-for="BrandId" class="form-label"></label>
+        <select asp-for="BrandId" class="form-control" asp-items="ViewBag.BrandId"></select>
+    </div>
     <div class="mt-5 d-flex flex-row justify-content-between text-center">
         <a asp-action="Index" class="btn btn-outline-secondary">Retour</a>
-        <input type="submit" value="Modifier" class="btn btn-primary" />
+        <input type="submit" value="Créer" class="btn btn-primary" />
     </div>
 </form>
-
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}

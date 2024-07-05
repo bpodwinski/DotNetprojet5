@@ -1,7 +1,7 @@
-﻿@model ExpressVoituresV2.Models.Brand
+﻿@model ExpressVoituresV2.Models.Model
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Modifier";
 }
 
 <form asp-action="Edit">
@@ -11,6 +11,11 @@
         <label asp-for="Name" class="form-label"></label>
         <input asp-for="Name" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="BrandId" class="form-label"></label>
+        <select asp-for="BrandId" class="form-control" asp-items="ViewBag.BrandId" disabled></select>
+        <span asp-validation-for="BrandId" class="text-danger"></span>
     </div>
     <div class="mt-5 d-flex flex-row justify-content-between text-center">
         <a asp-action="Index" class="btn btn-outline-secondary">Retour</a>

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ExpressVoituresV2.Data;
 using ExpressVoituresV2.Models;
+using System.Drawing.Drawing2D;
 
 namespace ExpressVoituresV2
 {
@@ -42,14 +43,14 @@ namespace ExpressVoituresV2
                 return NotFound();
             }
 
-            return View(trimLevel);
+            return PartialView("_DetailsPartial", trimLevel);
         }
 
         // GET: TrimLevels/Create
         public IActionResult Create()
         {
             ViewData["ModelId"] = new SelectList(_context.Models, "Id", "Name");
-            return View();
+            return PartialView("_CreatePartial");
         }
 
         // POST: TrimLevels/Create
@@ -67,7 +68,7 @@ namespace ExpressVoituresV2
                 return RedirectToAction(nameof(Index));
             }
             ViewData["ModelId"] = new SelectList(_context.Models, "Id", "Name", trimLevel.ModelId);
-            return View(trimLevel);
+            return PartialView("_CreatePartial");
         }
 
         // GET: TrimLevels/Edit/5
@@ -84,7 +85,7 @@ namespace ExpressVoituresV2
                 return NotFound();
             }
             ViewData["ModelId"] = new SelectList(_context.Models, "Id", "Name", trimLevel.ModelId);
-            return View(trimLevel);
+            return PartialView("_EditPartial", trimLevel);
         }
 
         // POST: TrimLevels/Edit/5
@@ -120,7 +121,7 @@ namespace ExpressVoituresV2
                 return RedirectToAction(nameof(Index));
             }
             ViewData["ModelId"] = new SelectList(_context.Models, "Id", "Name", trimLevel.ModelId);
-            return View(trimLevel);
+            return PartialView("_EditPartial", trimLevel);
         }
 
         // GET: TrimLevels/Delete/5
@@ -139,7 +140,7 @@ namespace ExpressVoituresV2
                 return NotFound();
             }
 
-            return View(trimLevel);
+            return PartialView("_DeletePartial", trimLevel);
         }
 
         // POST: TrimLevels/Delete/5

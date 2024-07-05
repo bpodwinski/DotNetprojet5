@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ExpressVoituresV2.Data;
 using ExpressVoituresV2.Models;
+using System.Drawing.Drawing2D;
 
 namespace ExpressVoituresV2.Controllers
 {
@@ -42,14 +43,14 @@ namespace ExpressVoituresV2.Controllers
                 return NotFound();
             }
 
-            return View(model);
+            return PartialView("_DetailsPartial", model);
         }
 
         // GET: Models/Create
         public IActionResult Create()
         {
             ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name");
-            return View();
+            return PartialView("_CreatePartial");
         }
 
         // POST: Models/Create
@@ -67,7 +68,7 @@ namespace ExpressVoituresV2.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name", model.BrandId);
-            return View(model);
+            return PartialView("_CreatePartial");
         }
 
         // GET: Models/Edit/5
@@ -84,7 +85,7 @@ namespace ExpressVoituresV2.Controllers
                 return NotFound();
             }
             ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name", model.BrandId);
-            return View(model);
+            return PartialView("_EditPartial", model);
         }
 
         // POST: Models/Edit/5
@@ -120,7 +121,7 @@ namespace ExpressVoituresV2.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name", model.BrandId);
-            return View(model);
+            return PartialView("_EditPartial", model);
         }
 
         // GET: Models/Delete/5
@@ -139,7 +140,7 @@ namespace ExpressVoituresV2.Controllers
                 return NotFound();
             }
 
-            return View(model);
+            return PartialView("_DeletePartial", model);
         }
 
         // POST: Models/Delete/5

@@ -1,91 +1,155 @@
-﻿@model ExpressVoituresV2.ViewModel.VehicleViewModel
+﻿@model ExpressVoituresV2.Models.Vehicle
 
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const brandSelect = document.querySelector('#BrandId');
+        const modelSelect = document.querySelector('#ModelId');
+        const trimSelect = document.querySelector('#TrimLevelId');
+
+        // Fonction pour charger les modèles
+        function loadModels(brandId) {
+            fetch(`/Vehicles/GetModelsByBrand?brandId=${brandId}`)
+                .then(response => response.json())
+                .then(data => {
+                    modelSelect.innerHTML = '<option value=""></option>';
+                    data.forEach(item => {
+                        const option = new Option(item.text, item.value);
+                        modelSelect.appendChild(option);
+                    });
+                    // Déclencher le changement pour réinitialiser les niveaux de finition
+                    modelSelect.dispatchEvent(new Event('change'));
+                })
+                .catch(error => console.error('Error loading models:', error));
+        }
+
+        // Fonction pour charger les niveaux de finition
+        function loadTrimLevels(modelId) {
+            fetch(`/Vehicles/GetTrimLevelsByModel?modelId=${modelId}`)
+                .then(response => response.json())
+                .then(data => {
+                    trimSelect.innerHTML = '<option value=""></option>';
+                    data.forEach(item => {
+                        const option = new Option(item.text, item.value);
+                        trimSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error loading trim levels:', error));
+        }
+
+        // Événements de changement pour la marque
+        brandSelect.addEventListener('change', function () {
+            loadModels(this.value);
+        });
+
+        // Événements de changement pour le modèle
+        modelSelect.addEventListener('change', function () {
+            loadTrimLevels(this.value);
+        });
+
+        // Initialisation des modèles et niveaux de finition au chargement
+        if (brandSelect.value) {
+            loadModels(brandSelect.value);
+        }
+    });
+</script>
+
 <h1 class="text-center mt-5">Ajouter un véhicule</h1>
 
 <div class="row">
-	<div class="col-md-8 mx-auto mt-5 p-5 rounded bg-white shadow">
+    <div class="col-md-8 mx-auto mt-5 p-5 rounded bg-white shadow">
         <form asp-action="Create">
 	        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+	        <h2 class="text-center mb-3">Détails</h2>
 
-			<div class="form-floating mb-3">
-		        <input asp-for="Vin" class="form-control" />
-		        <label asp-for="Vin" class="form-label">Code VIN</label>
-		        <span asp-validation-for="Vin" class="text-danger"></span>
-	        </div>
-			
-	        <div class="form-floating mb-3">
+	        <div class="form-group mb-3">
+                <label asp-for="Vin" class="control-label"></label>
+                <input asp-for="Vin" class="form-control" />
+                <span asp-validation-for="Vin" class="text-danger"></span>
+            </div>
+	        <div class="form-group mb-3">
+		        <label asp-for="Year" class="control-label"></label>
 		        <input asp-for="Year" class="form-control" />
-		        <label asp-for="Year" class="form-label">Année</label>
 		        <span asp-validation-for="Year" class="text-danger"></span>
 	        </div>
-			
-	        <div class="row g-2 mb-5">
-		        <div class="col-md-5">
-			        <div class="form-floating">
-						<input asp-for="BrandAdd" class="form-control">
-						<label asp-for="BrandAdd" class="form-label">Ajouter un marque</label>
-						<span asp-validation-for="BrandAdd" class="text-danger"></span>
-			        </div>
+            
+	        <div class="row g-3">
+		        <div class="col form-group mb-3">
+			        <label asp-for="BrandId" class="control-label"></label>
+                    <select asp-for="BrandId" class="form-select" asp-items="ViewBag.BrandId"></select>
 		        </div>
-		        <div class="col-md-2">
-			        <p class="text-center p-0 mt-3">ou</p>
-		        </div>
-		        <div class="col-md-5">
-			        <div class="form-floating">
-						<select asp-for="BrandList" class="form-select" asp-items="ViewBag.BrandList">
-					        <option value=""></option>
-				        </select>
-						<label asp-for="BrandList">Sélectionnez une marque</label>
-			        </div>
+		        <div class="col form-group mb-3">
+			        <label asp-for="Vin" class="control-label"></label>
+			        <input asp-for="Vin" class="form-control" />
+			        <span asp-validation-for="Vin" class="text-danger"></span>
 		        </div>
 	        </div>
-			
-	        <div class="row g-2 mb-5">
-		        <div class="col-md input-group">
-			        <div class="form-floating">
-						<input asp-for="PurchaseDate" type="date" class="form-control" />
-				        <label asp-for="PurchaseDate" for="floatingSelect" class="control-label">Date d'achat</label>
-				        <span asp-validation-for="PurchaseDate" class="text-danger"></span>
-			        </div>
-					<span class="input-group-text"><i class="bi bi-calendar3"></i></span>
-				</div>
-				<div class="col-md input-group">
-					<div class="form-floating">
-						<input asp-for="PurchasePrice" class="form-control"/>
-						<label asp-for="PurchasePrice" class="form-label">Prix d'achat</label>
-						<span asp-validation-for="PurchasePrice" class="text-danger"></span>
-					</div>
-					<span class="input-group-text">€</span>
+            
+	        <div class="row g-3">
+		        <div class="col form-group mb-3">
+			        <label asp-for="ModelId" class="control-label"></label>
+                    <select asp-for="ModelId" class="form-select" asp-items="ViewBag.ModelId"></select>
 		        </div>
-	        </div>
-			
-	        <div class="row g-2 mb-5">
-				<div class="col-md input-group">
-					<div class="form-floating">
-				        <input asp-for="SaleDate" type="date" class="form-control" />
-				        <label asp-for="SaleDate" for="floatingSelect" class="control-label">Date de vente</label>
-				        <span asp-validation-for="SaleDate" class="text-danger"></span>
-			        </div>
-					<span class="input-group-text"><i class="bi bi-calendar3"></i></span>
-		        </div>
-				<div class="col-md input-group">
-			        <div class="form-floating">
-				        <input asp-for="SalePrice" class="form-control"/>
-				        <label asp-for="SalePrice" class="form-label">Prix de vente</label>
-				        <span asp-validation-for="SalePrice" class="text-danger"></span>
-			        </div>
-					<span class="input-group-text">€</span>
-		        </div>
+                <div class="col form-group mb-3">
+                    <label asp-for="Vin" class="control-label"></label>
+                    <input asp-for="Vin" class="form-control" />
+                    <span asp-validation-for="Vin" class="text-danger"></span>
+                </div>
 	        </div>
 
-	        <div class="mt-5 form-group d-flex flex-row justify-content-between form-group text-center">
+            <div class="row g-3">
+                <div class="col form-group mb-3">
+		            <label asp-for="TrimLevelId" class="control-label"></label>
+                    <select asp-for="TrimLevelId" class="form-select" asp-items="ViewBag.TrimLevelId"></select>
+	            </div>
+	            <div class="col form-group mb-3">
+		            <label asp-for="Vin" class="control-label"></label>
+		            <input asp-for="Vin" class="form-control" />
+		            <span asp-validation-for="Vin" class="text-danger"></span>
+	            </div>
+            </div>
+            
+            <h2 class="text-center mt-5 mb-3">Achats et Ventes</h2>
+
+            <div class="row g-3">
+                <div class="col form-group mb-3">
+	                <label asp-for="PurchaseDate" class="control-label"></label>
+	                <input asp-for="PurchaseDate" class="form-control" />
+	                <span asp-validation-for="PurchaseDate" class="text-danger"></span>
+	            </div>
+                <div class="col form-group mb-3">
+		            <label asp-for="PurchasePrice" class="control-label"></label>
+		            <input asp-for="PurchasePrice" class="form-control" />
+		            <span asp-validation-for="PurchasePrice" class="text-danger"></span>
+	            </div>
+            </div>
+
+            <div class="form-group mb-3">
+	            <label asp-for="AvailabilityDate" class="control-label"></label>
+	            <input asp-for="AvailabilityDate" class="form-control" />
+	            <span asp-validation-for="AvailabilityDate" class="text-danger"></span>
+            </div>
+            
+            <div class="row g-3">
+	            <div class="col form-group mb-3">
+		            <label asp-for="SaleDate" class="control-label"></label>
+		            <input asp-for="SaleDate" class="form-control" />
+		            <span asp-validation-for="SaleDate" class="text-danger"></span>
+	            </div>
+	            <div class="col form-group mb-3">
+		            <label asp-for="SalePrice" class="control-label"></label>
+		            <input asp-for="SalePrice" class="form-control"/>
+		            <span asp-validation-for="SalePrice" class="text-danger"></span>
+	            </div>
+            </div>
+            <div class="mt-5 form-group d-flex flex-row justify-content-between form-group text-center">
                 <a asp-action="Index" class="btn btn-outline-secondary">Retour</a>
-	            <input type="submit" value="Enregistrer" class="btn btn-primary"/>
+                <input type="submit" value="Enregistrer" class="btn btn-primary" />
             </div>
         </form>
     </div>
