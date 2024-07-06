@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ExpressVoituresV2.Models
 {
@@ -39,16 +40,25 @@ namespace ExpressVoituresV2.Models
 
         [Display(Name = "Marque")]
         public int BrandId { get; set; }
+        [Display(Name = "Ajouter une marque")]
+        [NotMapped]
+        public string? BrandAdd { get; set; }
         public virtual Brand Brand { get; set; }
 
 
         [Display(Name = "Modèle")]
         public int ModelId { get; set; }
+        [Display(Name = "Ajouter un modèle")]
+        [NotMapped]
+        public string? ModelAdd { get; set; }
         public virtual Model Model { get; set; }
 
 
         [Display(Name = "Finition")]
         public int TrimLevelId { get; set; }
+        [Display(Name = "Ajouter une finition")]
+        [NotMapped]
+        public string? TrimLevelAdd { get; set; }
         public virtual TrimLevel TrimLevel { get; set; }
 
 
