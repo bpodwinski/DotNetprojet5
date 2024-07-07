@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ExpressVoituresV2.Data;
 using ExpressVoituresV2.Models;
-using System.Drawing.Drawing2D;
 
 namespace ExpressVoituresV2
 {
@@ -23,7 +18,10 @@ namespace ExpressVoituresV2
         // GET: TrimLevels
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.TrimLevels.Include(t => t.Model);
+            var applicationDbContext = _context.TrimLevels
+                .Include(t => t.Model)
+                .ThenInclude(m => m.Brand);
+
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -60,7 +58,8 @@ namespace ExpressVoituresV2
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,ModelId")] TrimLevel trimLevel)
         {
-	        ModelState.Remove("Model");
+            ModelState.Remove("Brand");
+            ModelState.Remove("Model");
 			if (ModelState.IsValid)
             {
                 _context.Add(trimLevel);

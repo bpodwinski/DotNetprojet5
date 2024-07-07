@@ -38,7 +38,7 @@ namespace ExpressVoituresV2.Controllers
                     AvailabilityDate = v.AvailabilityDate,
                     SaleDate = v.SaleDate,
                     SalePrice = v.SalePrice,
-                    TotalRepairCost = v.Repairs.Any() ? v.Repairs.Sum(r => r.Cost) : (float?)null
+                    TotalRepairCost = v.Repairs.Any() ? v.Repairs.Sum(r => r.Cost) : (decimal?)null
                 });
 
 			return View(await applicationDbContext.ToListAsync());

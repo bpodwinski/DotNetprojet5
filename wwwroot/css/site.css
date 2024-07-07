@@ -71,3 +71,11 @@ body.home footer a {
 header {
     background-color: transparent;
 }
+
+.table-bordered > :not(caption) > * > * {
+    border: none;
+}
+
+.table-bordered > :not(caption) > * {
+    border-top: none;
+}

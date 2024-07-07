@@ -61,6 +61,7 @@ namespace ExpressVoituresV2.Controllers
         public async Task<IActionResult> Create([Bind("Id,Name,BrandId")] Model model)
         {
             ModelState.Remove("Brand");
+            ModelState.Remove("TrimLevels");
             if (ModelState.IsValid)
             {
                 _context.Add(model);

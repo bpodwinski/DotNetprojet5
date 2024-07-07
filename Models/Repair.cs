@@ -13,7 +13,7 @@ namespace ExpressVoituresV2.Models
         public string Name { get; set; }
 
         [Display(Name = "Coût")]
-        public float Cost { get; set; }
+        public decimal? Cost { get; set; }
 
 		[Display(Name = "Voiture")]
 		public int VehicleId { get; set; }

@@ -6,7 +6,8 @@ namespace ExpressVoituresV2.ViewModel
 {
 	public class VehicleViewModel
 	{
-		public int Id { get; set; }
+        [Key]
+        public int Id { get; set; }
 
 		[Display(Name = "Code VIN")]
 		public string? Vin { get; set; }
@@ -24,7 +25,7 @@ namespace ExpressVoituresV2.ViewModel
 		[Display(Name = "Prix d'achat")]
 		[Required(ErrorMessage = "Le prix d'achat de la vehicle doit être complétée")]
 		[RegularExpression(@"^[0-9]+(\,[0-9]{1,2})?$", ErrorMessage = "Le prix d'achat doit être un nombre")]
-		public float PurchasePrice { get; set; }
+		public decimal PurchasePrice { get; set; }
 
 		[Display(Name = "Date de disponibilité")]
 		[DataType(DataType.Date, ErrorMessage = "La date de disponibilité de vente doit être une date.")]
@@ -32,7 +33,7 @@ namespace ExpressVoituresV2.ViewModel
 
 		[Display(Name = "Prix de vente")]
 		[RegularExpression(@"^[0-9]+(\,[0-9]{1,2})?$", ErrorMessage = "Le prix de vente doit être un nombre")]
-		public float? SalePrice { get; set; }
+		public decimal? SalePrice { get; set; }
 
 		[Display(Name = "Date de vente")]
 		[DataType(DataType.Date, ErrorMessage = "La date de vente doit être une date.")]
@@ -63,6 +64,6 @@ namespace ExpressVoituresV2.ViewModel
 
 		[Display(Name = "Total des réparations")]
 		[NotMapped]
-		public float? TotalRepairCost { get; set; }
+		public decimal? TotalRepairCost { get; set; }
 	}
 }

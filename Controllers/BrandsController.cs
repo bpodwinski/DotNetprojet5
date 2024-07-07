@@ -57,6 +57,7 @@ namespace ExpressVoituresV2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name")] Brand brand)
         {
+            ModelState.Remove("Models");
             if (ModelState.IsValid)
             {
                 _context.Add(brand);

@@ -5,81 +5,33 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<script>
-    function loadEdit(id, title) {
-        const url = `@Url.Action("Edit", "Brands")?id=${id}`;
-        fetch(url)
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById('modalLabel').innerText = title; // Modal Title
-                document.querySelector('#Modal .modal-body').innerHTML = html; // Modal body
-
-                var modal = new bootstrap.Modal(document.getElementById('Modal'));
-                modal.show();
-            })
-            .catch(error => console.error('Error loading the details:', error));
-    }
-
-    function loadCreate(title) {
-        const url = `@Url.Action("Create", "Brands")`;
-        fetch(url)
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById('modalLabel').innerText = title; // Modal Title
-                document.querySelector('#Modal .modal-body').innerHTML = html; // Modal body
-
-                var modal = new bootstrap.Modal(document.getElementById('Modal'));
-                modal.show();
-            })
-            .catch(error => console.error('Error loading the details:', error));
-    }
-
-    function loadDetails(id, title) {
-        const url = `@Url.Action("Details", "Brands")?id=${id}`;
-        fetch(url)
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById('modalLabel').innerText = title; // Modal Title
-                document.querySelector('#Modal .modal-body').innerHTML = html; // Modal body
-
-                var modal = new bootstrap.Modal(document.getElementById('Modal'));
-                modal.show();
-            })
-            .catch(error => console.error('Error loading the details:', error));
-    }
-
-    function loadDelete(id, title) {
-        const url = `@Url.Action("Delete", "Brands")?id=${id}`;
-        fetch(url)
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById('modalLabel').innerText = title; // Modal Title
-                document.querySelector('#Modal .modal-body').innerHTML = html; // Modal body
-
-                var modal = new bootstrap.Modal(document.getElementById('Modal'));
-                modal.show();
-            })
-            .catch(error => console.error('Error loading the details:', error));
-    }
-</script>
-
 <h1 class="text-center mt-5">Les marques</h1>
 
 <div class="col-lg-8 mx-auto">
     <div class="d-flex flex-row justify-content-end mt-5 mb-3">
-        <a class="btn btn-primary" href="javascript:void(0);" data-bs-toggle="modal" onclick="loadCreate('Créer une marque')">
-            <i class="bi bi-plus-circle-fill me-1"></i> Créer une marque
+        <a class="btn btn-primary" href="javascript:void(0);" onclick="loadModal('@Url.Action("Create", "Brands")', null, 'Ajouter une marque', true)");">
+            Ajouter
         </a>
     </div>
 
     <div class="p-4 rounded bg-white shadow-lg">
-        <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">
+        <table class="table align-middle"
+               data-locale="fr-FR"
+               data-toggle="table"
+               data-id-field="id"
+               data-pagination="true"
+               data-page-list="[10, 25, 50, 100, all]"
+               data-search="true">
+            <thead class="table-light">
+                <tr>
+                <th scope="col" data-sortable="true" data-field="id">
+                    @Html.DisplayNameFor(model => model.Id)
+                </th>
+                <th scope="col" " data-sortable="true" data-field="name">
                     @Html.DisplayNameFor(model => model.Name)
                 </th>
-                    <th scope="col" class="text-end">Actions
+                <th scope="col" class="text-end">
+                    Actions
                 </th>
             </tr>
         </thead>
@@ -87,11 +39,14 @@
         @foreach (var item in Model) {
                 <tr>
                     <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
                         @Html.DisplayFor(modelItem => item.Name)
                     </td>
                     <td class="text-end">
                         <div class="btn-group">
-                                <a href="javascript:void(0);" data-bs-toggle="modal" onclick="loadEdit('@item.Id', 'Modifier la marque')" class="btn btn-secondary btn-sm">Modifier</a>
+                            <a href="javascript:void(0);" onclick="loadModal('@Url.Action("Edit", "Brands")', @item.Id, 'Modifier une marque')" class="btn btn-secondary btn-sm">Modifier</a>
 
                             <button type="button" class="btn btn-secondary btn-sm dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
                                 <span class="visually-hidden">Toggle Dropdown</span>
@@ -99,12 +54,12 @@
 
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="javascript:void(0);" data-bs-toggle="modal" onclick="loadDetails('@item.Id', 'Détail de la marque')" class="dropdown-item">
-                                        <i class="bi bi-eye-fill"></i> Voir</a>
+                                    <a href="javascript:void(0);" onclick="loadModal('@Url.Action("Details", "Brands")', @item.Id, 'Détail de la marque')" class="dropdown-item">
+                                    <i class="bi bi-eye-fill"></i> Voir</a>
                                 </li>
                                 <li>
-                                    <a href="javascript:void(0);" data-bs-toggle="modal" onclick="loadDelete('@item.Id', 'Supprimer la marque')" class="dropdown-item">
-                                        <i class="bi bi-trash-fill"></i> Supprimer</a>
+                                    <a href="javascript:void(0);" onclick="loadModal('@Url.Action("Delete", "Brands")', @item.Id, 'Supprimer la marque')" class="dropdown-item">
+                                    <i class="bi bi-trash-fill"></i> Supprimer</a>
                                 </li>
                             </ul>
                         </div>

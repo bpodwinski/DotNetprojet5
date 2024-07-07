@@ -2,11 +2,13 @@
 
 <form asp-action="Create">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="mb-3">
+
+    <div class="mb-3 form-group">
         <label asp-for="Name" class="form-label"></label>
         <input asp-for="Name" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
+
     <div class="mt-5 d-flex flex-row justify-content-between text-center">
         <a asp-action="Index" class="btn btn-outline-secondary">Retour</a>
         <input type="submit" value="Créer" class="btn btn-primary" />

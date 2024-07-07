@@ -5,7 +5,8 @@ namespace ExpressVoituresV2.Models
 	[Display(Name = "Modèle")]
 	public class Model
 	{
-		public int Id { get; set; }
+        [Key]
+        public int Id { get; set; }
 
 
 		[Display(Name = "Modèle")]
@@ -16,5 +17,6 @@ namespace ExpressVoituresV2.Models
 		public int BrandId { get; set; }
 		public virtual Brand Brand { get; set; }
 
-	}
+        public virtual ICollection<TrimLevel> TrimLevels { get; set; }
+    }
 }

@@ -1,13 +1,14 @@
 ﻿@model ExpressVoituresV2.Models.Brand
 
 <dl class="row text-center">
-    <dt class="col-12">
+    <dt class="col-sm-2">
         @Html.DisplayNameFor(model => model.Name)
     </dt>
-    <dd class="col-12">
+    <dd class="col-sm-10">
         @Html.DisplayFor(model => model.Name)
     </dd>
 </dl>
+
 <div class="mt-5 d-flex flex-row justify-content-between text-center">
     <a asp-action="Index" class="btn btn-outline-secondary">Retour</a>
 </div>

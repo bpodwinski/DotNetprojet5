@@ -5,6 +5,7 @@ namespace ExpressVoituresV2.Models
 {
     public class Vehicle
 	{
+        [Key]
         public int Id { get; set; }
 
 		[Display(Name = "Code VIN")]
@@ -23,7 +24,7 @@ namespace ExpressVoituresV2.Models
 		[Display(Name = "Prix d'achat")]
 		[Required(ErrorMessage = "Le prix d'achat de la vehicle doit être complétée")]
         [RegularExpression(@"^[0-9]+(\,[0-9]{1,2})?$", ErrorMessage = "Le prix d'achat doit être un nombre")]
-        public float PurchasePrice { get; set; }
+        public decimal PurchasePrice { get; set; }
 
         [Display(Name = "Date de disponibilité")]
 		[DataType(DataType.Date, ErrorMessage = "La date de disponibilité de vente doit être une date.")]
@@ -31,7 +32,7 @@ namespace ExpressVoituresV2.Models
 
         [Display(Name = "Prix de vente")]
 		[RegularExpression(@"^[0-9]+(\,[0-9]{1,2})?$", ErrorMessage = "Le prix de vente doit être un nombre")]
-        public float? SalePrice { get; set; }
+        public decimal? SalePrice { get; set; }
 
         [Display(Name = "Date de vente")]
 		[DataType(DataType.Date, ErrorMessage = "La date de vente doit être une date.")]

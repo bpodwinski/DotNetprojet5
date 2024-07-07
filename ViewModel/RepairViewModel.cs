@@ -13,7 +13,7 @@ namespace ExpressVoituresV2.ViewModel
         public string Name { get; set; }
 
         [Display(Name = "Coût")]
-        public float? Cost { get; set; }
+        public decimal? Cost { get; set; }
 
         [Display(Name = "Voiture")]
         public int VehicleId { get; set; }
@@ -22,6 +22,6 @@ namespace ExpressVoituresV2.ViewModel
         [ForeignKey("VehicleId")]
         public virtual Vehicle Vehicle { get; set; }
 
-        public float? TotalRepairCost { get; set; }
+        public decimal? TotalRepairCost { get; set; }
     }
 }
