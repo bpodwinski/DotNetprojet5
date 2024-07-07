@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ExpressVoituresV2.Data;
 using ExpressVoituresV2.Models;
+using ExpressVoituresV2.ViewModel;
 
 namespace ExpressVoituresV2.Controllers
 {
@@ -15,15 +16,37 @@ namespace ExpressVoituresV2.Controllers
             _context = context;
         }
 
-        // GET: VehiclesNew
-        public async Task<IActionResult> Index()
+		// GET: Vehicles
+		[HttpGet("/admin/vehicle")]
+		public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Vehicle.Include(v => v.Brand).Include(v => v.Model).Include(v => v.TrimLevel);
-            return View(await applicationDbContext.ToListAsync());
+            var applicationDbContext = _context.Vehicle
+                .Include(v => v.Brand)
+                .Include(v => v.Model)
+                .Include(v => v.TrimLevel)
+                .Include(v => v.Repairs)
+                .Select(v => new VehicleViewModel
+                {
+                    Id = v.Id,
+                    Vin = v.Vin,
+                    Year = v.Year,
+                    Brand = v.Brand,
+                    Model = v.Model,
+                    TrimLevel = v.TrimLevel,
+                    PurchaseDate = v.PurchaseDate,
+                    PurchasePrice = v.PurchasePrice,
+                    AvailabilityDate = v.AvailabilityDate,
+                    SaleDate = v.SaleDate,
+                    SalePrice = v.SalePrice,
+                    TotalRepairCost = v.Repairs.Any() ? v.Repairs.Sum(r => r.Cost) : (float?)null
+                });
+
+			return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: VehiclesNew/Details/5
-        public async Task<IActionResult> Details(int? id)
+		// GET: Vehicles/Details/5
+		[HttpGet("/admin/vehicle/details/{id}")]
+		public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
@@ -43,20 +66,21 @@ namespace ExpressVoituresV2.Controllers
             return PartialView("_DetailsPartial", vehicle);
         }
 
-        // GET: VehiclesNew/Create
-        public IActionResult Create()
+		// GET: Vehicles/Create
+		[HttpGet("/admin/vehicle/add")]
+		public IActionResult Create()
         {
             ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name");
-            ViewData["ModelId"] = new SelectList(_context.Models, "Id", "Name");
-            ViewData["TrimLevelId"] = new SelectList(_context.TrimLevels, "Id", "Name");
+            //ViewData["ModelId"] = new SelectList(_context.Models, "Id", "Name");
+            //ViewData["TrimLevelId"] = new SelectList(_context.TrimLevels, "Id", "Name");
             return View();
         }
 
-        // POST: VehiclesNew/Create
+        // POST: Vehicles/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+		[HttpPost("/admin/vehicle/add")]
+		[ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Vin,Year,PurchaseDate,PurchasePrice,AvailabilityDate,SalePrice,SaleDate,BrandId,ModelId,TrimLevelId")] Vehicle vehicle)
         {
             ModelState.Remove("Brand");
@@ -74,8 +98,9 @@ namespace ExpressVoituresV2.Controllers
             return View(vehicle);
         }
 
-        // GET: VehiclesNew/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+		// GET: VehiclesNew/Edit/5
+		[HttpGet("/admin/vehicle/edit{id}")]
+		public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
@@ -96,8 +121,8 @@ namespace ExpressVoituresV2.Controllers
         // POST: VehiclesNew/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+		[HttpPost("/admin/vehicle/edit{id}")]
+		[ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Vin,Year,PurchaseDate,PurchasePrice,AvailabilityDate,SalePrice,SaleDate,BrandId,ModelId,TrimLevelId")] Vehicle vehicle)
         {
             if (id != vehicle.Id)
@@ -131,8 +156,9 @@ namespace ExpressVoituresV2.Controllers
             return View(vehicle);
         }
 
-        // GET: VehiclesNew/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+		// GET: VehiclesNew/Delete/5
+		[HttpGet("/admin/vehicle/delete{id}")]
+		public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
@@ -153,8 +179,8 @@ namespace ExpressVoituresV2.Controllers
         }
 
         // POST: VehiclesNew/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+		[HttpPost("/admin/vehicle/delete{id}"), ActionName("Delete")]
+		[ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var vehicle = await _context.Vehicle.FindAsync(id);

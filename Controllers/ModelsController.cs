@@ -67,6 +67,7 @@ namespace ExpressVoituresV2.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name", model.BrandId);
             return PartialView("_CreatePartial");
         }

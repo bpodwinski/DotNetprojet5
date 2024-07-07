@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ExpressVoituresV2.Models.Vehicle>
+﻿@model IEnumerable<ExpressVoituresV2.ViewModel.VehicleViewModel>
 
 @{
     ViewData["Title"] = "Les véhicules";
@@ -18,6 +18,20 @@
 				modal.show();
 			})
 			.catch(error => console.error('Error loading the details:', error));
+	}
+
+	function loadRepairs(id, title) {
+		const url = `@Url.Action("Index", "Repairs")/vehicule/${id}`;
+		fetch(url)
+			.then(response => response.text())
+			.then(html => {
+				document.getElementById('modalLabel').innerText = title; // Modal Title
+				document.querySelector('#Modal .modal-body').innerHTML = html; // Modal body
+
+				var modal = new bootstrap.Modal(document.getElementById('Modal'));
+				modal.show();
+			})
+			.catch(error => console.error('Error loading the repairs:', error));
 	}
 
 	function loadDelete(id, title) {
@@ -44,8 +58,8 @@
 </div>
 
 <div class="p-4 rounded bg-white shadow-lg">
-	<table class="table table-striped">
-		<thead>
+	<table class="table">
+		<thead class="table-light">
 		<tr>
 			<th>
 				@Html.DisplayNameFor(model => model.Vin)
@@ -76,6 +90,9 @@
 			</th>
 			<th>
 				@Html.DisplayNameFor(model => model.SaleDate)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.TotalRepairCost)
 			</th>
 			<th>
 				Actions
@@ -116,6 +133,12 @@
 					@Html.DisplayFor(modelItem => item.SaleDate)
 				</td>
 				<td>
+					@if (item.TotalRepairCost != null)
+					{
+						@:@String.Format("{0:F2} €", item.TotalRepairCost)
+					}
+				</td>
+				<td>
 					<div class="btn-group">
 						<a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-secondary btn-sm">Editer</a>
 
@@ -125,10 +148,19 @@
 						
 						<ul class="dropdown-menu">
 							<li>
-									<a href="javascript:void(0);" data-bs-toggle="modal" onclick="loadDetails('@item.Id', 'Détail du véhicule')" class="dropdown-item"><i class="bi bi-eye-fill"></i> Voir</a>
+								<a href="javascript:void(0);" data-bs-toggle="modal" onclick="loadDetails('@item.Id', 'Détail du véhicule')" class="dropdown-item">
+									<i class="bi bi-eye-fill"></i> Voir
+								</a>
 							</li>
 							<li>
-									<a href="javascript:void(0);" data-bs-toggle="modal" onclick="loadDelete('@item.Id', 'Supprimer le véhicule')" class="dropdown-item"><i class="bi bi-trash-fill"></i> Supprimer</a>
+									<a asp-controller="Repairs" asp-action="Index" asp-route-VehicleId="@item.Id" class="dropdown-item">
+									<i class="bi bi-gear-fill"></i> Réparations
+								</a>
+							</li>
+							<li>
+								<a href="javascript:void(0);" data-bs-toggle="modal" onclick="loadDelete('@item.Id', 'Supprimer le véhicule')" class="dropdown-item text-danger">
+									<i class="bi bi-trash-fill"></i> Supprimer
+								</a>
 							</li>
 						</ul>
 					</div>

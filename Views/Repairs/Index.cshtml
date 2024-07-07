@@ -1,0 +1,90 @@
+﻿@model IEnumerable<ExpressVoituresV2.ViewModel.RepairViewModel>
+
+@{
+    ViewData["Title"] = "Les réparations";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var vehicleId = Model.FirstOrDefault()?.VehicleId;
+    var totalRepairCost = Model.Sum(item => item.Cost);
+}
+
+<h1 class="text-center mt-5">Les réparations</h1>
+<h4 class="text-center">Voiture: </h4>
+
+<div class="col-lg-8 mx-auto">
+    <div class="d-flex flex-row justify-content-end mt-5 mb-4">
+        <a class="btn btn-primary" asp-action="Create" asp-route-vehicleId="@vehicleId">
+            Ajouter
+        </a>
+    </div>
+
+    <div class="table-responsive p-4 rounded bg-white shadow-lg">
+        <table class="table">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col">
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th scope="col">
+                        @Html.DisplayNameFor(model => model.Cost)
+                    </th>
+                    <th scope="col" class="text-end">
+                        Actions
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model) {
+                @if (item.Id != 0)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                        @if (item.Cost != null)
+                        {
+                            @:@String.Format("{0:F2} €", item.Cost)
+                        }
+                        </td>
+                        <td class="text-end">
+                            <div class="btn-group">
+                                    <a asp-action="Edit" asp-route-vehicleId="@item.VehicleId" asp-route-id="@item.Id" class="btn btn-secondary btn-sm">Modifier</a>
+
+                                <button type="button" class="btn btn-secondary btn-sm dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="visually-hidden">Toggle Dropdown</span>
+                                </button>
+
+                                <ul class="dropdown-menu">
+                                    <li>
+                                            <a asp-action="Delete" asp-route-vehicleId="@item.VehicleId" asp-route-id="@item.Id" class="dropdown-item text-danger">
+                                            <i class="bi bi-trash-fill"></i> Supprimer
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td>
+                        <b>Total</b>
+                    </td>
+                    <td>
+                        @if (@totalRepairCost != 0)
+                        {
+                            <b>@String.Format("{0:F2} €", totalRepairCost)</b>
+                        }
+                    </td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <div class="form-group mt-4">
+        <a asp-controller="Vehicles" asp-action="Index" class="btn btn-outline-secondary">Retour</a>
+    </div>
+</div>

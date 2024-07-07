@@ -37,14 +37,12 @@ namespace ExpressVoituresV2.Models
 		[DataType(DataType.Date, ErrorMessage = "La date de vente doit être une date.")]
         public DateTime? SaleDate { get; set; }
 
-
         [Display(Name = "Marque")]
         public int BrandId { get; set; }
         [Display(Name = "Ajouter une marque")]
         [NotMapped]
         public string? BrandAdd { get; set; }
         public virtual Brand Brand { get; set; }
-
 
         [Display(Name = "Modèle")]
         public int ModelId { get; set; }
@@ -53,7 +51,6 @@ namespace ExpressVoituresV2.Models
         public string? ModelAdd { get; set; }
         public virtual Model Model { get; set; }
 
-
         [Display(Name = "Finition")]
         public int TrimLevelId { get; set; }
         [Display(Name = "Ajouter une finition")]
@@ -61,7 +58,6 @@ namespace ExpressVoituresV2.Models
         public string? TrimLevelAdd { get; set; }
         public virtual TrimLevel TrimLevel { get; set; }
 
-
-		//public ICollection<Repair>? Repairs { get; set; }
+        public ICollection<Repair>? Repairs { get; set; }
 	}
 }

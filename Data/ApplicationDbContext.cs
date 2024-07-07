@@ -1,7 +1,6 @@
 ﻿using ExpressVoituresV2.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using ExpressVoituresV2.ViewModel;
 
 namespace ExpressVoituresV2.Data
 {
@@ -15,8 +14,9 @@ namespace ExpressVoituresV2.Data
 	    public DbSet<ExpressVoituresV2.Models.Brand> Brands { get; set; }
 	    public DbSet<ExpressVoituresV2.Models.Model> Models { get; set; }
 	    public DbSet<ExpressVoituresV2.Models.TrimLevel> TrimLevels { get; set; }
+        public DbSet<ExpressVoituresV2.Models.Repair> Repair { get; set; }
 
-	    protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
 	    {
 		    base.OnModelCreating(modelBuilder);
 
@@ -37,10 +37,20 @@ namespace ExpressVoituresV2.Data
 			    .WithMany()
 			    .HasForeignKey(v => v.TrimLevelId);
 
+			modelBuilder.Entity<Vehicle>()
+				.HasMany(v => v.Repairs) 
+				.WithOne()
+				.HasForeignKey(r => r.VehicleId);
+
+			modelBuilder.Entity<Repair>()
+				.HasOne(r => r.Vehicle)
+				.WithMany(v => v.Repairs)
+				.HasForeignKey(r => r.VehicleId);
+
 			modelBuilder.Entity<Brand>()
 			    .HasMany(b => b.Models)
 			    .WithOne(m => m.Brand)
 			    .HasForeignKey(m => m.BrandId);
-	    }
+        }
 	}
 }
