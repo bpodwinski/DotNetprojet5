@@ -121,22 +121,28 @@
 					@Html.DisplayFor(modelItem => item.PurchaseDate)
 				</td>
 				<td>
-					@Html.DisplayFor(modelItem => item.PurchasePrice)
+				@if (item.PurchasePrice != 0)
+				{
+					@:@String.Format("{0:F2} €", item.PurchasePrice)
+				}
 				</td>
 				<td>
 					@Html.DisplayFor(modelItem => item.AvailabilityDate)
 				</td>
 				<td>
-					@Html.DisplayFor(modelItem => item.SalePrice)
+				@if (item.SalePrice != null)
+				{
+					@:@String.Format("{0:F2} €", item.SalePrice)
+				}
 				</td>
 				<td>
 					@Html.DisplayFor(modelItem => item.SaleDate)
 				</td>
 				<td>
-					@if (item.TotalRepairCost != null)
-					{
-						@:@String.Format("{0:F2} €", item.TotalRepairCost)
-					}
+				@if (item.TotalRepairCost != null)
+				{
+					@:@String.Format("{0:F2} €", item.TotalRepairCost)
+				}
 				</td>
 				<td>
 					<div class="btn-group">
