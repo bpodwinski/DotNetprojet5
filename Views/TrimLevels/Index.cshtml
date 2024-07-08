@@ -15,22 +15,28 @@
     </div>
 
     <div class="p-4 rounded bg-white shadow-lg">
-        <table class="table align-middle">
+        <table class="table align-middle"
+               data-locale="fr-FR"
+               data-toggle="table"
+               data-id-field="id"
+               data-pagination="true"
+               data-page-list="[10, 25, 50, 100, all]"
+               data-search="true">
             <thead class="table-light">
             <tr>
-                <th scope="col">
+                <th data-field="id" data-sortable="true">
                     @Html.DisplayNameFor(model => model.Id)
                 </th>
-                    <th scope="col" class="table-active">
+                <th data-sortable="true">
                     @Html.DisplayNameFor(model => model.Name)
                 </th>
-                <th scope="col">
+                <th data-sortable="true">
                     @Html.DisplayNameFor(model => model.Model)
                 </th>
-                <th scope="col">
+                <th sdata-sortable="true">
                     @Html.DisplayNameFor(model => model.Model.Brand.Name)
                 </th>
-                <th scope="col" class="text-end">
+                <th data-sortable="true" class="text-end">
                     Actions
                 </th>
             </tr>
@@ -41,7 +47,7 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.Id)
                     </td>
-                        <td class="table-active">
+                    <td>
                         @Html.DisplayFor(modelItem => item.Name)
                     </td>
                     <td>

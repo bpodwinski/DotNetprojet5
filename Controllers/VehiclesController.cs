@@ -24,22 +24,7 @@ namespace ExpressVoituresV2.Controllers
                 .Include(v => v.Brand)
                 .Include(v => v.Model)
                 .Include(v => v.TrimLevel)
-                .Include(v => v.Repairs)
-                .Select(v => new VehicleViewModel
-                {
-                    Id = v.Id,
-                    Vin = v.Vin,
-                    Year = v.Year,
-                    Brand = v.Brand,
-                    Model = v.Model,
-                    TrimLevel = v.TrimLevel,
-                    PurchaseDate = v.PurchaseDate,
-                    PurchasePrice = v.PurchasePrice,
-                    AvailabilityDate = v.AvailabilityDate,
-                    SaleDate = v.SaleDate,
-                    SalePrice = v.SalePrice,
-                    TotalRepairCost = v.Repairs.Any() ? v.Repairs.Sum(r => r.Cost) : (decimal?)null
-                });
+                .Include(v => v.Repairs);
 
 			return View(await applicationDbContext.ToListAsync());
         }
@@ -58,6 +43,7 @@ namespace ExpressVoituresV2.Controllers
                 .Include(v => v.Model)
                 .Include(v => v.TrimLevel)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (vehicle == null)
             {
                 return NotFound();
@@ -81,17 +67,38 @@ namespace ExpressVoituresV2.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost("/admin/vehicle/add")]
 		[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Vin,Year,PurchaseDate,PurchasePrice,AvailabilityDate,SalePrice,SaleDate,BrandId,ModelId,TrimLevelId")] Vehicle vehicle)
+        public async Task<IActionResult> Create([Bind("Id,Vin,Year,PurchaseDate,PurchasePrice,AvailabilityDate,SalePrice,SaleDate,BrandId,ModelId,TrimLevelId,Description")] Vehicle vehicle, IFormFile ImagePath)
         {
-            ModelState.Remove("Brand");
+
+			if (ImagePath != null && ImagePath.Length > 0)
+			{
+				var extension = Path.GetExtension(ImagePath.FileName);
+
+				var fileName = Path.GetFileNameWithoutExtension(ImagePath.FileName);
+				fileName = fileName.Replace(" ", "-");
+				fileName = string.Concat(fileName.Where(c => !Path.GetInvalidFileNameChars().Contains(c)));
+				fileName = $"{fileName}_{DateTime.Now:yyyyMMddHHmmss}{extension}".ToLower();
+
+				var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/adverts", fileName);
+
+				using (var fileStream = new FileStream(filePath, FileMode.Create))
+				{
+					await ImagePath.CopyToAsync(fileStream);
+				}
+
+				vehicle.ImagePath = "/images/adverts/" + fileName;
+			}
+
+			ModelState.Remove("Brand");
             ModelState.Remove("Model");
             ModelState.Remove("TrimLevel");
-            if (ModelState.IsValid)
+			if (ModelState.IsValid)
             {
                 _context.Add(vehicle);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name", vehicle.BrandId);
             ViewData["ModelId"] = new SelectList(_context.Models, "Id", "Name", vehicle.ModelId);
             ViewData["TrimLevelId"] = new SelectList(_context.TrimLevels, "Id", "Name", vehicle.TrimLevelId);
@@ -99,7 +106,7 @@ namespace ExpressVoituresV2.Controllers
         }
 
 		// GET: VehiclesNew/Edit/5
-		[HttpGet("/admin/vehicle/edit{id}")]
+		[HttpGet("/admin/vehicle/{id}/edit")]
 		public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -112,6 +119,7 @@ namespace ExpressVoituresV2.Controllers
             {
                 return NotFound();
             }
+
             ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name", vehicle.BrandId);
             ViewData["ModelId"] = new SelectList(_context.Models, "Id", "Name", vehicle.ModelId);
             ViewData["TrimLevelId"] = new SelectList(_context.TrimLevels, "Id", "Name", vehicle.TrimLevelId);
@@ -121,7 +129,7 @@ namespace ExpressVoituresV2.Controllers
         // POST: VehiclesNew/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-		[HttpPost("/admin/vehicle/edit{id}")]
+		[HttpPost("/admin/vehicle/{id}/edit")]
 		[ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Vin,Year,PurchaseDate,PurchasePrice,AvailabilityDate,SalePrice,SaleDate,BrandId,ModelId,TrimLevelId")] Vehicle vehicle)
         {
@@ -130,7 +138,10 @@ namespace ExpressVoituresV2.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+			ModelState.Remove("Brand");
+			ModelState.Remove("Model");
+			ModelState.Remove("TrimLevel");
+			if (ModelState.IsValid)
             {
                 try
                 {
@@ -150,6 +161,7 @@ namespace ExpressVoituresV2.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name", vehicle.BrandId);
             ViewData["ModelId"] = new SelectList(_context.Models, "Id", "Name", vehicle.ModelId);
             ViewData["TrimLevelId"] = new SelectList(_context.TrimLevels, "Id", "Name", vehicle.TrimLevelId);
@@ -157,7 +169,7 @@ namespace ExpressVoituresV2.Controllers
         }
 
 		// GET: VehiclesNew/Delete/5
-		[HttpGet("/admin/vehicle/delete{id}")]
+		[HttpGet("/admin/vehicle/{id}/delete")]
 		public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -179,7 +191,7 @@ namespace ExpressVoituresV2.Controllers
         }
 
         // POST: VehiclesNew/Delete/5
-		[HttpPost("/admin/vehicle/delete{id}"), ActionName("Delete")]
+		[HttpPost("/admin/vehicle/{id}/delete"), ActionName("Delete")]
 		[ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

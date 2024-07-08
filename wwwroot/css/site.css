@@ -25,8 +25,14 @@ body {
   background-color: #f0f0f0;
 }
 
+body.page {
+    background-image: radial-gradient(circle, rgba(78,51,27,0.85) 0%, rgba(20,20,20,1) 100%);
+    background-size: cover;
+    background-position: center center;
+}
+
 body.home {
-    background-image: radial-gradient(circle, rgba(78,51,27,0.6) 15%, rgba(10,10,10,1) 100%), url("../images/bg.jpg");
+    background-image: radial-gradient(circle, rgba(78,51,27,0.6) 0%, rgba(20,20,20,1) 100%), url("../images/bg.jpg");
     background-size: cover;
     background-position: center center;
 }
@@ -46,9 +52,8 @@ body.home .logo:before {
     pointer-events: none;
 }
 
-body.about header nav,
 body.products-list header nav,
-body.home header nav {
+body.page header nav {
     backdrop-filter: blur(12px);
     background: rgb(211 124 42 / 85%) !important;
     border-bottom: 2px solid rgba(255,255,255,0.08);
@@ -60,11 +65,9 @@ body.home header nav {
 }
 
 body.products-list footer span,
-body.about footer span,
-body.home footer span,
+body.page footer span,
 body.products-list footer a,
-body.about footer a,
-body.home footer a {
+body.page footer a {
     color: rgba(255,255,255,0.8) !important;
 }
 
@@ -78,4 +81,14 @@ header {
 
 .table-bordered > :not(caption) > * {
     border-top: none;
+}
+
+body.page h1 {
+    font-family: "Bebas Neue", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 5rem;
+    line-height: 5rem;
+    color: #ffe1c6;
+    text-shadow: 0px 4px 0px #562d00;
 }

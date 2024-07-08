@@ -15,16 +15,22 @@
     </div>
 
     <div class="p-4 rounded bg-white shadow-lg">
-        <table class="table align-middle">
+        <table class="table align-middle"
+               data-locale="fr-FR"
+               data-toggle="table"
+               data-id-field="id"
+               data-pagination="true"
+               data-page-list="[10, 25, 50, 100, all]"
+               data-search="true">
             <thead class="table-light">
             <tr>
                 <th scope="col">
                     @Html.DisplayNameFor(model => model.Id)
                 </th>
-                    <th scope="col" class="table-active">
+                <th data-sortable="true">
                     @Html.DisplayNameFor(model => model.Name)
                 </th>
-                <th scope="col">
+                <th data-sortable="true">
                     @Html.DisplayNameFor(model => model.Brand)
                 </th>
                 <th scope="col" class="text-end">
@@ -38,7 +44,7 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.Id)
                     </td>
-                        <td class="table-active">
+                    <td>
                         @Html.DisplayFor(modelItem => item.Name)
                     </td>
                     <td>
@@ -78,7 +84,7 @@
                 <h1 class="modal-title fs-5" id="modalLabel"></h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
             </div>
-            <div class="modal-body" style="position: relative;"></div>
+            <div class="modal-body"></div>
         </div>
     </div>
 </div>

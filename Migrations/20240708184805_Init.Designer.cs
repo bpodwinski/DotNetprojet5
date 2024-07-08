@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ExpressVoituresV2.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240707150517_Init")]
+    [Migration("20240708184805_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -128,6 +128,12 @@ namespace ExpressVoituresV2.Migrations
 
                     b.Property<int>("BrandId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ModelId")
                         .HasColumnType("int");

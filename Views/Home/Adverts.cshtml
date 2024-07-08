@@ -1,0 +1,39 @@
+﻿@model IEnumerable<ExpressVoituresV2.ViewModel.VehicleViewModel>
+
+@{
+	ViewData["Title"] = "Nos voitures";
+	ViewData["BodyClass"] = "adverts page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="text-center my-5">Nos voitures</h1>
+
+<div class="row">
+	@foreach (var item in Model)
+	{
+		@if (item.SalePrice != null)
+		{
+		<div class="col-md-6 col-lg-4 mb-5">
+			<div class="card p-3 shadow-lg">
+				@if (!string.IsNullOrEmpty(item.ImagePath))
+				{
+				<img src="@item.ImagePath" class="card-img-top" />
+				}
+				<div class="card-body">
+					<h5 class="card-title text-center">@Html.DisplayFor(modelItem => item.VehicleTitle)</h5>
+
+					<p class="card-text">@Html.DisplayFor(modelItem => item.Description)</p>
+
+					<div class="text-center fw-bold fs-5">@String.Format("{0:F2} €", item.SalePrice)</div>
+				</div>
+				@if (item.AvailabilityDate != null)
+				{
+				<div class="card-footer text-center">
+					<small class="text-body-secondary">En vente depuis : @Html.DisplayFor(modelItem => item.AvailabilityDate)</small>
+				</div>
+				}
+			</div>
+		</div>
+		}
+	}
+</div>

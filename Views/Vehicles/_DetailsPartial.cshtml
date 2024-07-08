@@ -1,24 +1,15 @@
-﻿@model ExpressVoituresV2.Models.Brand
+﻿@model ExpressVoituresV2.Models.Vehicle
 
-@{
-    ViewData["Title"] = "Details";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+<dl class="row">
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.VehicleTitle)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.VehicleTitle)
+    </dd>
+</dl>
 
-<h1 class="text-center my-5">Détails</h1>
-
-<div class="col-lg-6 mx-auto p-4 rounded bg-white shadow-lg">
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-    </dl>
-
-    <div class="mt-5 form-group d-flex flex-row justify-content-between form-group text-center">
-        <a asp-action="Index" class="btn btn-outline-secondary">Retour</a>
-        <input type="submit" value="Enregistrer" class="btn btn-primary" />
-    </div>
+<div class="mt-5 form-group d-flex flex-row justify-content-between form-group text-center">
+    <a asp-action="Index" class="btn btn-outline-secondary">Retour</a>
+    <input type="submit" value="Enregistrer" class="btn btn-primary" />
 </div>

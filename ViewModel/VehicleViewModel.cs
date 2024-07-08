@@ -27,7 +27,7 @@ namespace ExpressVoituresV2.ViewModel
 		[RegularExpression(@"^[0-9]+(\,[0-9]{1,2})?$", ErrorMessage = "Le prix d'achat doit être un nombre")]
 		public decimal PurchasePrice { get; set; }
 
-		[Display(Name = "Date de disponibilité")]
+		[Display(Name = "Disponibilité")]
 		[DataType(DataType.Date, ErrorMessage = "La date de disponibilité de vente doit être une date.")]
 		public DateTime? AvailabilityDate { get; set; }
 
@@ -60,9 +60,19 @@ namespace ExpressVoituresV2.ViewModel
 		public string? TrimLevelAdd { get; set; }
 		public virtual TrimLevel TrimLevel { get; set; }
 
+        [Display(Name = "Description")]
+        public string? Description { get; set; }
+
+        [Display(Name = "Image")]
+        public string? ImagePath { get; set; }
+
+        [NotMapped]
+		[Display(Name = "Détails du véhicule")]
+		public string VehicleTitle => $"{Year} - {Brand?.Name} {Model?.Name} {TrimLevel?.Name}";
+
 		public ICollection<Repair>? Repairs { get; set; }
 
-		[Display(Name = "Total des réparations")]
+		[Display(Name = "Coûts réparations")]
 		[NotMapped]
 		public decimal? TotalRepairCost { get; set; }
 	}

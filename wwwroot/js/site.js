@@ -15,12 +15,13 @@ async function loadModal(action, id = null || 0, title = "Modal Title", selectpi
         throw new TypeError('Expected a boolean for selectpicker');
     }
 
+    let url = action;
     if (id) {
-        action += `?id=${id}`;
+        url += `/${id}`;
     }
 
     try {
-        const response = await fetch(action);
+        const response = await fetch(url);
         const html = await response.text();
 
         document.getElementById('modalLabel').innerText = title; // Set modal title

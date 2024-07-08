@@ -224,7 +224,9 @@ namespace ExpressVoituresV2.Migrations
                     SaleDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     BrandId = table.Column<int>(type: "int", nullable: false),
                     ModelId = table.Column<int>(type: "int", nullable: false),
-                    TrimLevelId = table.Column<int>(type: "int", nullable: false)
+                    TrimLevelId = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

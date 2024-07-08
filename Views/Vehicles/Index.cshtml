@@ -1,53 +1,9 @@
-﻿@model IEnumerable<ExpressVoituresV2.ViewModel.VehicleViewModel>
+﻿@model IEnumerable<ExpressVoituresV2.Models.Vehicle>
 
 @{
     ViewData["Title"] = "Les véhicules";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<script>
-	function loadDetails(id, title) {
-		const url = `@Url.Action("Details", "Vehicles")?id=${id}`;
-		fetch(url)
-			.then(response => response.text())
-			.then(html => {
-				document.getElementById('modalLabel').innerText = title; // Modal Title
-				document.querySelector('#Modal .modal-body').innerHTML = html; // Modal body
-
-				var modal = new bootstrap.Modal(document.getElementById('Modal'));
-				modal.show();
-			})
-			.catch(error => console.error('Error loading the details:', error));
-	}
-
-	function loadRepairs(id, title) {
-		const url = `@Url.Action("Index", "Repairs")/vehicule/${id}`;
-		fetch(url)
-			.then(response => response.text())
-			.then(html => {
-				document.getElementById('modalLabel').innerText = title; // Modal Title
-				document.querySelector('#Modal .modal-body').innerHTML = html; // Modal body
-
-				var modal = new bootstrap.Modal(document.getElementById('Modal'));
-				modal.show();
-			})
-			.catch(error => console.error('Error loading the repairs:', error));
-	}
-
-	function loadDelete(id, title) {
-		const url = `@Url.Action("Delete", "Vehicles")?id=${id}`;
-		fetch(url)
-			.then(response => response.text())
-			.then(html => {
-				document.getElementById('modalLabel').innerText = title; // Modal Title
-				document.querySelector('#Modal .modal-body').innerHTML = html; // Modal body
-
-				var modal = new bootstrap.Modal(document.getElementById('Modal'));
-				modal.show();
-			})
-			.catch(error => console.error('Error loading the details:', error));
-	}
-</script>
 
 <h1 class="text-center mt-5">Les véhicules</h1>
 
@@ -58,40 +14,43 @@
 </div>
 
 <div class="p-4 rounded bg-white shadow-lg">
-	<table class="table">
+	<table class="table align-middle"
+		   data-locale="fr-FR"
+		   data-toggle="table"
+		   data-id-field="id"
+		   data-pagination="true"
+		   data-page-list="[10, 25, 50, 100, all]"
+		   data-search="true">
 		<thead class="table-light">
 		<tr>
-			<th>
-				@Html.DisplayNameFor(model => model.Vin)
+			<th data-field="id" data-sortable="true">
+				@Html.DisplayNameFor(model => model.Id)
 			</th>
 			<th>
+				@Html.DisplayNameFor(model => model.ImagePath)
+			</th>
+			<th data-sortable="true">
 				@Html.DisplayNameFor(model => model.Year)
 			</th>
-			<th>
+			<th data-sortable="true">
 				@Html.DisplayNameFor(model => model.Brand)
 			</th>
-			<th>
+			<th data-sortable="true">
 				@Html.DisplayNameFor(model => model.Model)
 			</th>
-			<th>
+			<th data-sortable="true">
 				@Html.DisplayNameFor(model => model.TrimLevel)
 			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.PurchaseDate)
-			</th>
-			<th>
+			<th data-sortable="true">
 				@Html.DisplayNameFor(model => model.PurchasePrice)
 			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.AvailabilityDate)
-			</th>
-			<th>
+			<th data-sortable="true">
 				@Html.DisplayNameFor(model => model.SalePrice)
 			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.SaleDate)
+			<th data-sortable="true">
+				@Html.DisplayNameFor(model => model.AvailabilityDate)
 			</th>
-			<th>
+			<th data-sortable="true">
 				@Html.DisplayNameFor(model => model.TotalRepairCost)
 			</th>
 			<th>
@@ -103,7 +62,13 @@
 		@foreach (var item in Model) {
 			<tr>
 				<td>
-					@Html.DisplayFor(modelItem => item.Vin)
+					@Html.DisplayFor(modelItem => item.Id)
+				</td>
+				<td>
+				@if (!string.IsNullOrEmpty(item.ImagePath))
+				{
+					<img src="@item.ImagePath" width="auto" height="50"/>
+				}
 				</td>
 				<td>
 					@Html.DisplayFor(modelItem => item.Year)
@@ -118,16 +83,10 @@
 					@Html.DisplayFor(modelItem => item.TrimLevel.Name)
 				</td>
 				<td>
-					@Html.DisplayFor(modelItem => item.PurchaseDate)
-				</td>
-				<td>
 				@if (item.PurchasePrice != 0)
 				{
 					@:@String.Format("{0:F2} €", item.PurchasePrice)
 				}
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.AvailabilityDate)
 				</td>
 				<td>
 				@if (item.SalePrice != null)
@@ -136,7 +95,7 @@
 				}
 				</td>
 				<td>
-					@Html.DisplayFor(modelItem => item.SaleDate)
+					@Html.DisplayFor(modelItem => item.AvailabilityDate)
 				</td>
 				<td>
 				@if (item.TotalRepairCost != null)
@@ -154,17 +113,17 @@
 						
 						<ul class="dropdown-menu">
 							<li>
-								<a href="javascript:void(0);" data-bs-toggle="modal" onclick="loadDetails('@item.Id', 'Détail du véhicule')" class="dropdown-item">
+								<a href="javascript:void(0);" onclick="loadModal('/admin/vehicle/details', @item.Id, 'Détail du véhicule')" class="dropdown-item">
 									<i class="bi bi-eye-fill"></i> Voir
 								</a>
 							</li>
 							<li>
-									<a asp-controller="Repairs" asp-action="Index" asp-route-VehicleId="@item.Id" class="dropdown-item">
+								<a asp-controller="Repairs" asp-action="Index" asp-route-VehicleId="@item.Id" class="dropdown-item">
 									<i class="bi bi-gear-fill"></i> Réparations
 								</a>
 							</li>
 							<li>
-								<a href="javascript:void(0);" data-bs-toggle="modal" onclick="loadDelete('@item.Id', 'Supprimer le véhicule')" class="dropdown-item text-danger">
+									<a href="javascript:void(0);" onclick="loadModal('/admin/vehicle/delete', @item.Id, 'Supprimer le véhicule')" class="dropdown-item text-danger">
 									<i class="bi bi-trash-fill"></i> Supprimer
 								</a>
 							</li>
