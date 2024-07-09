@@ -26,9 +26,6 @@
 			<th data-field="id" data-sortable="true">
 				@Html.DisplayNameFor(model => model.Id)
 			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.ImagePath)
-			</th>
 			<th data-sortable="true">
 				@Html.DisplayNameFor(model => model.Year)
 			</th>
@@ -65,12 +62,6 @@
 					@Html.DisplayFor(modelItem => item.Id)
 				</td>
 				<td>
-				@if (!string.IsNullOrEmpty(item.ImagePath))
-				{
-					<img src="@item.ImagePath" width="auto" height="50"/>
-				}
-				</td>
-				<td>
 					@Html.DisplayFor(modelItem => item.Year)
 				</td>
 				<td>
@@ -89,10 +80,7 @@
 				}
 				</td>
 				<td>
-				@if (item.SalePrice != null)
-				{
-					@:@String.Format("{0:F2} €", item.SalePrice)
-				}
+					@Html.DisplayFor(modelItem => item.SalePrice)
 				</td>
 				<td>
 					@Html.DisplayFor(modelItem => item.AvailabilityDate)

@@ -139,15 +139,11 @@ namespace ExpressVoituresV2.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("PurchasePrice")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<DateTime?>("SaleDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<decimal?>("SalePrice")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("TrimLevelId")
                         .HasColumnType("int");

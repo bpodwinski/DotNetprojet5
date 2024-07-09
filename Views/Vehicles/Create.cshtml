@@ -77,45 +77,21 @@
 		        <input asp-for="Year" class="form-control" />
 		        <span asp-validation-for="Year" class="text-danger"></span>
 	        </div>
-            
-	        <div class="row g-3">
-		        <div class="col-7 form-group mb-3">
-			        <label asp-for="BrandId" class="form-label"></label>
-                    <select asp-for="BrandId" class="form-select" asp-items="ViewBag.BrandId"></select>
-		        </div>
-                <div class="col-1 text-center form-group" style="margin-top: 52px;">ou</div>
-		        <div class="col-4 form-group mb-3">
-			        <label asp-for="BrandAdd" class="form-label"></label>
-                    <input asp-for="BrandAdd" class="form-control" />
-                    <span asp-validation-for="BrandAdd" class="text-danger"></span>
-		        </div>
-	        </div>
-            
-	        <div class="row g-3">
-                <div class="col-7 form-group mb-3">
-			        <label asp-for="ModelId" class="form-label"></label>
-                    <select asp-for="ModelId" class="form-select" asp-items="ViewBag.ModelId"></select>
-		        </div>
-                <div class="col-1 text-center form-group" style="margin-top: 52px;">ou</div>
-                <div class="col-4 form-group mb-3">
-                    <label asp-for="ModelAdd" class="form-label"></label>
-                    <input asp-for="ModelAdd" class="form-control" />
-                    <span asp-validation-for="ModelAdd" class="text-danger"></span>
-                </div>
-	        </div>
 
-            <div class="row g-3">
-                <div class="col-7 form-group mb-3">
-		            <label asp-for="TrimLevelId" class="form-label"></label>
-                    <select asp-for="TrimLevelId" class="form-select" asp-items="ViewBag.TrimLevelId"></select>
-	            </div>
-                <div class="col-1 text-center form-group" style="margin-top: 52px;">ou</div>
-                <div class="col-4 form-group mb-3">
-                    <label asp-for="TrimLevelAdd" class="form-label"></label>
-                    <input asp-for="TrimLevelAdd" class="form-control" />
-                    <span asp-validation-for="TrimLevelAdd" class="text-danger"></span>
-	            </div>
-            </div>
+            <div class="form-group mb-3">
+			    <label asp-for="BrandId" class="form-label"></label>
+                <select asp-for="BrandId" class="form-select" asp-items="ViewBag.BrandId"></select>
+		    </div>
+
+            <div class="form-group mb-3">
+			    <label asp-for="ModelId" class="form-label"></label>
+                <select asp-for="ModelId" class="form-select" asp-items="ViewBag.ModelId"></select>
+		    </div>
+
+            <div class="form-group mb-3">
+		        <label asp-for="TrimLevelId" class="form-label"></label>
+                <select asp-for="TrimLevelId" class="form-select" asp-items="ViewBag.TrimLevelId"></select>
+	        </div>
             
             <h2 class="text-center mt-5 mb-3">Achats</h2>
 
@@ -145,14 +121,6 @@
                     <label asp-for="SaleDate" class="form-label"></label>
                     <input asp-for="SaleDate" class="form-control" />
                     <span asp-validation-for="SaleDate" class="text-danger"></span>
-                </div>
-                <div class="col form-group mb-3">
-                    <label asp-for="SalePrice" class="form-label"></label>
-                    <input asp-for="SalePrice" class="form-control" aria-describedby="SalePriceHelpBlock" />
-                    <span asp-validation-for="SalePrice" class="text-danger"></span>
-                    <div id="SalePriceHelpBlock" class="form-text">
-                        Ajouter un prix de vente activera l'annonce pour les clients
-                    </div>
                 </div>
             </div>
 

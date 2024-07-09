@@ -26,10 +26,7 @@ namespace ExpressVoituresV2.Data
             {
                 // Numeric precision
                 entity.Property(e => e.PurchasePrice)
-                      .HasPrecision(18, 2);
-                entity.Property(e => e.SalePrice)
-                      .HasPrecision(18, 2);
-
+                      .HasPrecision(10, 2);
                 // Brand relationship
                 entity.HasOne(v => v.Brand)
                       .WithMany()

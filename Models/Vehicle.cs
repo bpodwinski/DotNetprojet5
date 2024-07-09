@@ -30,32 +30,28 @@ namespace ExpressVoituresV2.Models
 		[DataType(DataType.Date, ErrorMessage = "La date de disponibilité de vente doit être une date.")]
         public DateTime? AvailabilityDate { get; set; }
 
-        [Display(Name = "Prix de vente")]
-		[RegularExpression(@"^[0-9]+(\,[0-9]{1,2})?$", ErrorMessage = "Le prix de vente doit être un nombre")]
-        public decimal? SalePrice { get; set; }
-
         [Display(Name = "Date de vente")]
 		[DataType(DataType.Date, ErrorMessage = "La date de vente doit être une date.")]
         public DateTime? SaleDate { get; set; }
 
         [Display(Name = "Marque")]
         public int BrandId { get; set; }
-        [Display(Name = "Ajouter une marque")]
         [NotMapped]
+        [Display(Name = "Ajouter une marque")]
         public string? BrandAdd { get; set; }
         public virtual Brand Brand { get; set; }
 
         [Display(Name = "Modèle")]
         public int ModelId { get; set; }
-        [Display(Name = "Ajouter un modèle")]
         [NotMapped]
+        [Display(Name = "Ajouter un modèle")]
         public string? ModelAdd { get; set; }
         public virtual Model Model { get; set; }
 
         [Display(Name = "Finition")]
         public int TrimLevelId { get; set; }
-        [Display(Name = "Ajouter une finition")]
         [NotMapped]
+        [Display(Name = "Ajouter une finition")]
         public string? TrimLevelAdd { get; set; }
         public virtual TrimLevel TrimLevel { get; set; }
 
@@ -69,10 +65,13 @@ namespace ExpressVoituresV2.Models
         [Display(Name = "Détails du véhicule")]
         public string VehicleTitle => $"{Year} - {Brand?.Name} {Model?.Name} {TrimLevel?.Name}";
 
-        public ICollection<Repair>? Repairs { get; set; }
-
-        [Display(Name = "Coûts réparations")]
         [NotMapped]
+        [Display(Name = "Prix de vente")]
+        public decimal? SalePrice => PurchasePrice + (TotalRepairCost ?? 0) + 500;
+
+		[NotMapped]
+        [Display(Name = "Coûts réparations")]
         public decimal? TotalRepairCost { get; set; }
+        public ICollection<Repair>? Repairs { get; set; }
     }
 }

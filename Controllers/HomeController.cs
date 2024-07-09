@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using ExpressVoituresV2.Data;
 using ExpressVoituresV2.Models;
-using ExpressVoituresV2.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,23 +28,7 @@ namespace ExpressVoituresV2.Controllers
 				.Include(v => v.Brand)
 				.Include(v => v.Model)
 				.Include(v => v.TrimLevel)
-				.Include(v => v.Repairs)
-				.Select(v => new VehicleViewModel
-				{
-					Id = v.Id,
-					Vin = v.Vin,
-					Year = v.Year,
-					Brand = v.Brand,
-					Model = v.Model,
-					TrimLevel = v.TrimLevel,
-					PurchaseDate = v.PurchaseDate,
-					PurchasePrice = v.PurchasePrice,
-					AvailabilityDate = v.AvailabilityDate,
-					SaleDate = v.SaleDate,
-					SalePrice = v.SalePrice,
-                    ImagePath = v.ImagePath,
-                    TotalRepairCost = v.Repairs.Any() ? v.Repairs.Sum(r => r.Cost) : (decimal?)null
-				});
+				.Include(v => v.Repairs);
 
 			return View(await applicationDbContext.ToListAsync());
 		}
