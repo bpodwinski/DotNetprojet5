@@ -1,4 +1,5 @@
 using ExpressVoitures.Data;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,8 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
+
+builder.Services.AddAntiforgery(options => options.SuppressXFrameOptionsHeader = true);
 
 var app = builder.Build();
 
