@@ -1,7 +1,7 @@
 ﻿@model ExpressVoituresV2.Models.Vehicle
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Créer un véhicule";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -82,16 +82,19 @@
             <div class="form-group mb-3">
 			    <label asp-for="BrandId" class="form-label"></label>
                 <select asp-for="BrandId" class="form-select" asp-items="ViewBag.BrandId"></select>
+                <span asp-validation-for="BrandId" class="text-danger"></span>
 		    </div>
 
             <div class="form-group mb-3">
 			    <label asp-for="ModelId" class="form-label"></label>
                 <select asp-for="ModelId" class="form-select" asp-items="ViewBag.ModelId"></select>
+                <span asp-validation-for="ModelId" class="text-danger"></span>
 		    </div>
 
             <div class="form-group mb-3">
 		        <label asp-for="TrimLevelId" class="form-label"></label>
                 <select asp-for="TrimLevelId" class="form-select" asp-items="ViewBag.TrimLevelId"></select>
+                <span asp-validation-for="TrimLevelId" class="text-danger"></span>
 	        </div>
             
             <h2 class="text-center mt-5 mb-3">Achats</h2>
@@ -104,7 +107,7 @@
 	            </div>
                 <div class="col form-group mb-3">
 		            <label asp-for="PurchasePrice" class="form-label"></label>
-		            <input asp-for="PurchasePrice" class="form-control" />
+                    <input asp-for="PurchasePrice" class="form-control" type="number" step="0.01" />
 		            <span asp-validation-for="PurchasePrice" class="text-danger"></span>
 	            </div>
             </div>
@@ -135,7 +138,6 @@
             <div class="form-group mb-3">
                 <label asp-for="ImagePath" class="form-label"></label>
                 <input asp-for="ImagePath" class="form-control" type="file" accept=".jpg,.jpeg,.png" />
-                <span asp-validation-for="ImagePath" class="text-danger"></span>
             </div>
 
             <div class="mt-5 form-group d-flex flex-row justify-content-between form-group text-center">

@@ -25,11 +25,9 @@ namespace ExpressVoituresV2.Controllers
 		[HttpGet("/admin/vehicle/{vehicleId}/repair")]
 		public async Task<IActionResult> Index(int vehicleId)
 		{
-			var vehicle = await _context.Vehicle
-				.Include(v => v.Repairs)
-				.FirstOrDefaultAsync(v => v.Id == vehicleId);
+            var vehicle = await _context.Vehicle.FirstOrDefaultAsync(v => v.Id == vehicleId);
 
-			if (vehicle == null)
+            if (vehicle == null)
 			{
 				return NotFound();
 			}
@@ -40,8 +38,8 @@ namespace ExpressVoituresV2.Controllers
 				.Where(r => r.VehicleId == vehicleId)
 				.ToListAsync();
 
-			ViewData["Vehicle"] = vehicle;
-			ViewData["TotalRepairCost"] = totalRepairCost;
+            ViewBag.VehicleId = vehicleId;
+            ViewData["TotalRepairCost"] = totalRepairCost;
 
 			return View(repairs);
 		}

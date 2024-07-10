@@ -3,16 +3,14 @@
 @{
     ViewData["Title"] = "Les réparations";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var vehicleId = Model.FirstOrDefault()?.Vehicle?.Id;
     var totalRepairCost = Model.Sum(item => item.Cost);
 }
 
 <h1 class="text-center mt-5">Les réparations</h1>
-<h4 class="text-center">Voiture: </h4>
 
 <div class="col-lg-8 mx-auto">
     <div class="d-flex flex-row justify-content-end mt-5 mb-4">
-        <a class="btn btn-primary" asp-action="Create" asp-route-vehicleId="@vehicleId">
+        <a class="btn btn-primary" asp-controller="Repairs" asp-action="Create" asp-route-vehicleId="@ViewBag.VehicleId">
             Ajouter
         </a>
     </div>

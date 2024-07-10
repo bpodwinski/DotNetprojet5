@@ -30,7 +30,7 @@ namespace ExpressVoituresV2.Controllers
 				.Include(v => v.TrimLevel)
 				.Include(v => v.Repairs);
 
-			return View(await applicationDbContext.ToListAsync());
+            return View(await applicationDbContext.ToListAsync());
 		}
 
 		/// <summary>
@@ -39,14 +39,9 @@ namespace ExpressVoituresV2.Controllers
 		/// <param name="id">The ID of the vehicle.</param>
 		/// <returns>A partial view with the vehicle details.</returns>
 		[Authorize]
-		[HttpGet("/admin/vehicle/details/{id}")]
-		public async Task<IActionResult> Details(int? id)
+		[HttpGet("/admin/vehicle/{id}/details")]
+		public async Task<IActionResult> Details(int id)
 		{
-			if (id == null)
-			{
-				return NotFound();
-			}
-
 			var vehicle = await _context.Vehicle
 				.Include(v => v.Brand)
 				.Include(v => v.Model)
@@ -106,6 +101,7 @@ namespace ExpressVoituresV2.Controllers
 			ModelState.Remove("Brand");
 			ModelState.Remove("Model");
 			ModelState.Remove("TrimLevel");
+			ModelState.Remove("ImagePath");
 			if (ModelState.IsValid)
 			{
 				_context.Add(vehicle);
@@ -126,13 +122,8 @@ namespace ExpressVoituresV2.Controllers
 		/// <returns>A view with the edit vehicle form.</returns>
 		[Authorize]
 		[HttpGet("/admin/vehicle/{id}/edit")]
-		public async Task<IActionResult> Edit(int? id)
+		public async Task<IActionResult> Edit(int id)
 		{
-			if (id == null)
-			{
-				return NotFound();
-			}
-
 			var vehicle = await _context.Vehicle.FindAsync(id);
 			if (vehicle == null)
 			{
@@ -198,13 +189,8 @@ namespace ExpressVoituresV2.Controllers
 		/// <returns>A partial view with the delete vehicle confirmation form.</returns>
 		[Authorize]
 		[HttpGet("/admin/vehicle/{id}/delete")]
-		public async Task<IActionResult> Delete(int? id)
+		public async Task<IActionResult> Delete(int id)
 		{
-			if (id == null)
-			{
-				return NotFound();
-			}
-
 			var vehicle = await _context.Vehicle
 				.Include(v => v.Brand)
 				.Include(v => v.Model)
