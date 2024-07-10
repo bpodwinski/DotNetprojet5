@@ -12,6 +12,7 @@ WORKDIR /app
 COPY --from=build /app/out .
 
 EXPOSE 80
+EXPOSE 8080
 EXPOSE 443
 
 ENTRYPOINT ["dotnet", "ExpressVoitures.dll"]
