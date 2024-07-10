@@ -72,7 +72,6 @@ namespace ExpressVoitures
 		/// <returns>A redirect to the index view if successful, otherwise the create partial view.</returns>
 		[Authorize]
 		[HttpPost]
-		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Create([Bind("Id,Name,ModelId")] TrimLevel trimLevel)
 		{
 			ModelState.Remove("Brand");
@@ -117,7 +116,6 @@ namespace ExpressVoitures
 		/// <returns>A redirect to the index view if successful, otherwise the edit partial view.</returns>
 		[Authorize]
 		[HttpPost]
-		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Edit(int id, [Bind("Id,Name,ModelId")] TrimLevel trimLevel)
 		{
 			if (id != trimLevel.Id)
@@ -180,7 +178,6 @@ namespace ExpressVoitures
 		/// <returns>A redirect to the index view.</returns>
 		[Authorize]
 		[HttpPost, ActionName("Delete")]
-		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> DeleteConfirmed(int id)
 		{
 			var trimLevel = await _context.TrimLevels.FindAsync(id);

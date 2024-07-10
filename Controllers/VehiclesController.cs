@@ -78,7 +78,6 @@ namespace ExpressVoitures.Controllers
 		/// <returns>A redirect to the index view if successful, otherwise the create view.</returns>
 		[Authorize]
 		[HttpPost("/admin/vehicle/add")]
-		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Create([Bind("Id,Vin,Year,PurchaseDate,PurchasePrice,AvailabilityDate,SaleDate,BrandId,ModelId,TrimLevelId,Description")] Vehicle vehicle, IFormFile ImagePath)
 		{
 			if (ImagePath != null && ImagePath.Length > 0)
@@ -153,7 +152,6 @@ namespace ExpressVoitures.Controllers
 		/// <returns>A redirect to the index view if successful, otherwise the edit view.</returns>
 		[Authorize]
 		[HttpPost("/admin/vehicle/{id}/edit")]
-		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Edit(int id, [Bind("Id,Vin,Year,PurchaseDate,PurchasePrice,AvailabilityDate,SaleDate,BrandId,ModelId,TrimLevelId,Description")] Vehicle vehicle, IFormFile ImagePath)
 		{
 			if (id != vehicle.Id)
@@ -276,7 +274,6 @@ namespace ExpressVoitures.Controllers
 		/// <returns>A redirect to the index view.</returns>
 		[Authorize]
 		[HttpPost("/admin/vehicle/{id}/delete"), ActionName("Delete")]
-		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> DeleteConfirmed(int id)
 		{
 			var vehicle = await _context.Vehicle.FindAsync(id);

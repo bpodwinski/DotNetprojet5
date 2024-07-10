@@ -65,7 +65,6 @@ namespace ExpressVoitures.Controllers
 		/// <returns>A redirect to the index view if successful, otherwise the create partial view.</returns>
 		[Authorize]
 		[HttpPost]
-		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Create([Bind("Id,Name")] Brand brand)
 		{
 			ModelState.Remove("Models");
@@ -107,7 +106,6 @@ namespace ExpressVoitures.Controllers
 		/// <returns>A redirect to the index view if successful, otherwise the edit partial view.</returns>
 		[Authorize]
 		[HttpPost]
-		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Brand brand)
 		{
 			if (id != brand.Id)
@@ -168,7 +166,6 @@ namespace ExpressVoitures.Controllers
 		/// <returns>A redirect to the index view.</returns>
 		[Authorize]
 		[HttpPost, ActionName("Delete")]
-		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> DeleteConfirmed(int id)
 		{
 			var brand = await _context.Brands.FindAsync(id);

@@ -73,7 +73,6 @@ namespace ExpressVoitures.Controllers
 		/// <returns>A redirect to the index view if successful, otherwise the create view.</returns>
 		[Authorize]
 		[HttpPost("/admin/vehicle/{vehicleId}/repair/add")]
-		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Create(int vehicleId, [Bind("Id,Name,Cost,VehicleId")] Repair repair)
 		{
 			ModelState.Remove("Vehicle");
@@ -121,7 +120,6 @@ namespace ExpressVoitures.Controllers
 		/// <returns>A redirect to the index view if successful, otherwise the edit view.</returns>
 		[Authorize]
 		[HttpPost("/admin/vehicle/{vehicleId}/repair/edit/{id}")]
-		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Edit(int vehicleId, int id, [Bind("Id,Name,Cost,VehicleId")] Repair repair)
 		{
 			if (id != repair.Id)
@@ -186,7 +184,6 @@ namespace ExpressVoitures.Controllers
 		/// <returns>A redirect to the index view.</returns>
 		[Authorize]
 		[HttpPost("/admin/vehicle/{vehicleId}/repair/delete/{id}"), ActionName("Delete")]
-		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> DeleteConfirmed(int vehicleId, int id)
 		{
 			var repair = await _context.Repair.FindAsync(id);
