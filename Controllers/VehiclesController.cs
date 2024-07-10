@@ -1,4 +1,6 @@
-﻿using ExpressVoitures.Data;
+﻿using System.Drawing;
+using System.Drawing.Drawing2D;
+using ExpressVoitures.Data;
 using ExpressVoitures.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -90,9 +92,16 @@ namespace ExpressVoitures.Controllers
 
 				var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/adverts", fileName);
 
-				using (var fileStream = new FileStream(filePath, FileMode.Create))
+				using (var stream = new MemoryStream())
 				{
-					await ImagePath.CopyToAsync(fileStream);
+					await ImagePath.CopyToAsync(stream);
+					var image = System.Drawing.Image.FromStream(stream);
+					var resizedImage = new Bitmap(image, new Size(800, 600));
+
+					using (var fileStream = new FileStream(filePath, FileMode.Create))
+					{
+						resizedImage.Save(fileStream, System.Drawing.Imaging.ImageFormat.Jpeg);
+					}
 				}
 
 				vehicle.ImagePath = "/images/adverts/" + fileName;
@@ -145,11 +154,67 @@ namespace ExpressVoitures.Controllers
 		[Authorize]
 		[HttpPost("/admin/vehicle/{id}/edit")]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit(int id, [Bind("Id,Vin,Year,PurchaseDate,PurchasePrice,AvailabilityDate,SaleDate,BrandId,ModelId,TrimLevelId")] Vehicle vehicle)
+		public async Task<IActionResult> Edit(int id, [Bind("Id,Vin,Year,PurchaseDate,PurchasePrice,AvailabilityDate,SaleDate,BrandId,ModelId,TrimLevelId,Description")] Vehicle vehicle, IFormFile ImagePath)
 		{
 			if (id != vehicle.Id)
 			{
 				return NotFound();
+			}
+
+			if (ImagePath != null && ImagePath.Length > 0)
+			{
+				var extension = Path.GetExtension(ImagePath.FileName);
+
+				var fileName = Path.GetFileNameWithoutExtension(ImagePath.FileName);
+				fileName = fileName.Replace(" ", "-");
+				fileName = string.Concat(fileName.Where(c => !Path.GetInvalidFileNameChars().Contains(c)));
+				fileName = $"{fileName}_{DateTime.Now:yyyyMMddHHmmss}{extension}".ToLower();
+
+				var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/adverts", fileName);
+
+				using (var image = Image.FromStream(ImagePath.OpenReadStream()))
+				{
+					var destWidth = 1280;
+					var destHeight = 720;
+
+					var cropRect = new Rectangle(0, 0, image.Width, image.Height);
+					if ((image.Width / (double)image.Height) > (16 / 9.0))
+					{
+						var newWidth = (int)(image.Height * (16 / 9.0));
+						cropRect.X = (image.Width - newWidth) / 2;
+						cropRect.Width = newWidth;
+					}
+					else
+					{
+						var newHeight = (int)(image.Width * (9 / 16.0));
+						cropRect.Y = (image.Height - newHeight) / 2;
+						cropRect.Height = newHeight;
+					}
+
+					using (var croppedImage = new Bitmap(cropRect.Width, cropRect.Height))
+					{
+						using (var graphics = Graphics.FromImage(croppedImage))
+						{
+							graphics.DrawImage(image, new Rectangle(0, 0, croppedImage.Width, croppedImage.Height), cropRect, GraphicsUnit.Pixel);
+						}
+
+						using (var finalImage = new Bitmap(destWidth, destHeight))
+						{
+							using (var graphics = Graphics.FromImage(finalImage))
+							{
+								graphics.CompositingQuality = CompositingQuality.HighQuality;
+								graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+								graphics.SmoothingMode = SmoothingMode.HighQuality;
+
+								graphics.DrawImage(croppedImage, 0, 0, destWidth, destHeight);
+							}
+
+							finalImage.Save(filePath, image.RawFormat);
+						}
+					}
+				}
+
+				vehicle.ImagePath = "/images/adverts/" + fileName;
 			}
 
 			ModelState.Remove("Brand");

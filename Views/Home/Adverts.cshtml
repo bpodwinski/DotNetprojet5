@@ -24,8 +24,16 @@
 
 					<p class="card-text text-center">@Html.DisplayFor(modelItem => item.Description)</p>
 
-					<div class="text-center fw-bold fs-5">@String.Format("{0:F2} €", item.SalePrice)</div>
-				</div>
+						@if (item.SaleDate != null)
+						{
+							<div class="text-center text-danger fw-bold fs-5">Vendu</div>
+						}
+						else
+						{
+							<div class="text-center fw-bold fs-5">@String.Format("{0:F2} €", item.SalePrice)</div>
+						}
+
+					</div>
 				@if (item.AvailabilityDate != null)
 				{
 				<div class="card-footer text-center">
