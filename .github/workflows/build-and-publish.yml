@@ -32,11 +32,6 @@ jobs:
       - name: Publish
         run: dotnet publish --no-build --configuration Release --output out
 
-      - name: Apply migrations
-        run: |
-          dotnet tool install --global dotnet-ef
-          dotnet ef database update --project ExpressVoitures.csproj
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
