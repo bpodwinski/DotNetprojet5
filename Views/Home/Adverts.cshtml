@@ -11,7 +11,7 @@
 <div class="row">
 	@foreach (var item in Model)
 	{
-		@if (item.SalePrice != null)
+		@if (item.AvailabilityDate != null)
 		{
 		<div class="col-md-6 col-lg-4 mb-5">
 			<div class="card p-3 shadow-lg">
@@ -22,9 +22,9 @@
 				<div class="card-body">
 					<h5 class="card-title text-center">@Html.DisplayFor(modelItem => item.VehicleTitle)</h5>
 
-					<p class="card-text">@Html.DisplayFor(modelItem => item.Description)</p>
+					<p class="card-text text-center">@Html.DisplayFor(modelItem => item.Description)</p>
 
-						<div class="text-center fw-bold fs-5">@String.Format("{0:F2} €", item.VehicleTitle)</div>
+					<div class="text-center fw-bold fs-5">@String.Format("{0:F2} €", item.SalePrice)</div>
 				</div>
 				@if (item.AvailabilityDate != null)
 				{

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ExpressVoituresV2.Models
 {
@@ -9,10 +10,13 @@ namespace ExpressVoituresV2.Models
         public int Id { get; set; }
 
 		[Display(Name = "Finition")]
-		public string Name { get; set; }
+		public string Name { get; set; } = string.Empty;
 
+		[NotMapped]
 		[Display(Name = "Modèle")]
 		public int ModelId { get; set; }
-		public virtual Model Model { get; set; }
+
+		[NotMapped]
+		public virtual Model? Model { get; set; }
     }
 }

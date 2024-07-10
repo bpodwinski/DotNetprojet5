@@ -10,16 +10,16 @@ namespace ExpressVoituresV2.Models
         public int Id { get; set; }
 
         [Display(Name = "Réparation")]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
-        [Display(Name = "Coût")]
+		[Display(Name = "Coût")]
         public decimal? Cost { get; set; }
 
 		[Display(Name = "Voiture")]
 		public int VehicleId { get; set; }
 
-        [Display(Name = "Voiture")]
+		[Display(Name = "Voiture")]
         [ForeignKey("VehicleId")]
-        public virtual Vehicle Vehicle { get; set; }
+        public virtual Vehicle? Vehicle { get; set; }
     }
 }

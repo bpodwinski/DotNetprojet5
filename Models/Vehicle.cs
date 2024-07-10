@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.RegularExpressions;
 
 namespace ExpressVoituresV2.Models
 {
@@ -9,11 +10,12 @@ namespace ExpressVoituresV2.Models
         public int Id { get; set; }
 
 		[Display(Name = "Code VIN")]
+		[Vin(ErrorMessage = "Le code VIN doit être une chaîne de 17 caractères contenant uniquement des lettres majuscules (à l'exception de I, O, Q) et des chiffres.")]
 		public string? Vin { get; set; }
 
 		[Display(Name = "Année")]
 		[Required(ErrorMessage = "Il manque l'année du véhicule")]
-		[RegularExpression("^[0-9]+$", ErrorMessage = "L'année doit être un nombre")]
+		[YearRange(1990, ErrorMessage = "L'année doit être entre 1990 et l'année en cours.")]
 		public int Year { get; set; }
 
 		[Display(Name = "Date d'achat")]
@@ -23,7 +25,6 @@ namespace ExpressVoituresV2.Models
 
 		[Display(Name = "Prix d'achat")]
 		[Required(ErrorMessage = "Le prix d'achat de la vehicle doit être complétée")]
-        [RegularExpression(@"^[0-9]+(\,[0-9]{1,2})?$", ErrorMessage = "Le prix d'achat doit être un nombre")]
         public decimal PurchasePrice { get; set; }
 
         [Display(Name = "Disponibilité")]
@@ -35,24 +36,21 @@ namespace ExpressVoituresV2.Models
         public DateTime? SaleDate { get; set; }
 
         [Display(Name = "Marque")]
-        public int BrandId { get; set; }
+		[Required(ErrorMessage = "Il manque la marque")]
+		public int BrandId { get; set; }
         [NotMapped]
-        [Display(Name = "Ajouter une marque")]
-        public string? BrandAdd { get; set; }
         public virtual Brand Brand { get; set; }
 
         [Display(Name = "Modèle")]
-        public int ModelId { get; set; }
+		[Required(ErrorMessage = "Il manque le modèle")]
+		public int ModelId { get; set; }
         [NotMapped]
-        [Display(Name = "Ajouter un modèle")]
-        public string? ModelAdd { get; set; }
         public virtual Model Model { get; set; }
 
         [Display(Name = "Finition")]
-        public int TrimLevelId { get; set; }
+		[Required(ErrorMessage = "Il manque la finition")]
+		public int TrimLevelId { get; set; }
         [NotMapped]
-        [Display(Name = "Ajouter une finition")]
-        public string? TrimLevelAdd { get; set; }
         public virtual TrimLevel TrimLevel { get; set; }
 
 		[Display(Name = "Description")]
@@ -69,9 +67,57 @@ namespace ExpressVoituresV2.Models
         [Display(Name = "Prix de vente")]
         public decimal? SalePrice => PurchasePrice + (TotalRepairCost ?? 0) + 500;
 
-		[NotMapped]
         [Display(Name = "Coûts réparations")]
         public decimal? TotalRepairCost { get; set; }
         public ICollection<Repair>? Repairs { get; set; }
     }
+}
+
+public class VinAttribute : ValidationAttribute
+{
+	private const int VinLength = 17;
+	private static readonly Regex VinRegex = new Regex(@"^[A-HJ-NPR-Z0-9]{17}$", RegexOptions.Compiled);
+
+	protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+	{
+		if (value is string vin)
+		{
+			if (vin.Length == VinLength && VinRegex.IsMatch(vin))
+			{
+				return ValidationResult.Success;
+			}
+			else
+			{
+				return new ValidationResult("Le code VIN doit être une chaîne de 17 caractères contenant uniquement des lettres majuscules (à l'exception de I, O, Q) et des chiffres.");
+			}
+		}
+		return new ValidationResult("Valeur du VIN invalide.");
+	}
+}
+
+public class YearRangeAttribute : ValidationAttribute
+{
+	private readonly int _minimumYear;
+
+	public YearRangeAttribute(int minimumYear)
+	{
+		_minimumYear = minimumYear;
+	}
+
+	protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+	{
+		if (value is int year)
+		{
+			int currentYear = DateTime.Now.Year;
+			if (year >= _minimumYear && year <= currentYear)
+			{
+				return ValidationResult.Success;
+			}
+			else
+			{
+				return new ValidationResult($"L'année doit être entre {_minimumYear} et {currentYear}.");
+			}
+		}
+		return new ValidationResult("Valeur invalide.");
+	}
 }
