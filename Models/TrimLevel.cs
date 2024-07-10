@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ExpressVoituresV2.Models
+namespace ExpressVoitures.Models
 {
 	[Display(Name = "Finition")]
 	public class TrimLevel

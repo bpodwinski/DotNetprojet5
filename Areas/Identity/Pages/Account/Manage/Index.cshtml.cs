@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace ExpressVoituresV2.Areas.Identity.Pages.Account.Manage
+namespace ExpressVoitures.Areas.Identity.Pages.Account.Manage
 {
     public class IndexModel : PageModel
     {

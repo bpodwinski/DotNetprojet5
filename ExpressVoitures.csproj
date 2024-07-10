@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>aspnet-ExpressVoituresV2-63a43f1a-d5e2-4348-b7a2-a97bdcfad4b3</UserSecretsId>
+    <UserSecretsId>aspnet-ExpressVoitures-63a43f1a-d5e2-4348-b7a2-a97bdcfad4b3</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

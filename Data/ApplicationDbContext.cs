@@ -1,8 +1,8 @@
-﻿using ExpressVoituresV2.Models;
+﻿using ExpressVoitures.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExpressVoituresV2.Data
+namespace ExpressVoitures.Data
 {
 	public class ApplicationDbContext : IdentityDbContext
 	{
@@ -10,11 +10,11 @@ namespace ExpressVoituresV2.Data
 			: base(options)
 		{
 		}
-	    public DbSet<ExpressVoituresV2.Models.Vehicle> Vehicle { get; set; } = default!;
-	    public DbSet<ExpressVoituresV2.Models.Brand> Brands { get; set; }
-	    public DbSet<ExpressVoituresV2.Models.Model> Models { get; set; }
-	    public DbSet<ExpressVoituresV2.Models.TrimLevel> TrimLevels { get; set; }
-        public DbSet<ExpressVoituresV2.Models.Repair> Repair { get; set; }
+	    public DbSet<ExpressVoitures.Models.Vehicle> Vehicle { get; set; } = default!;
+	    public DbSet<ExpressVoitures.Models.Brand> Brands { get; set; }
+	    public DbSet<ExpressVoitures.Models.Model> Models { get; set; }
+	    public DbSet<ExpressVoitures.Models.TrimLevel> TrimLevels { get; set; }
+        public DbSet<ExpressVoitures.Models.Repair> Repair { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

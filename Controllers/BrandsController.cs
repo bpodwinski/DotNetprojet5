@@ -1,10 +1,10 @@
-﻿using ExpressVoituresV2.Data;
-using ExpressVoituresV2.Models;
+﻿using ExpressVoitures.Data;
+using ExpressVoitures.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExpressVoituresV2.Controllers
+namespace ExpressVoitures.Controllers
 {
 	public class BrandsController : Controller
 	{
