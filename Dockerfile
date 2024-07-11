@@ -1,9 +1,6 @@
-FROM mcr.microsoft.com/dotnet/nightly/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 RUN mkdir /var/keys
-
-RUN apt-get update \
-    && apt-get install -y libgssapi-krb5-2
 
 COPY *.csproj ./
 RUN dotnet restore
@@ -11,7 +8,7 @@ RUN dotnet restore
 COPY . ./
 RUN dotnet publish -c Release -o out
 
-FROM mcr.microsoft.com/dotnet/nightly/aspnet:8.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/out .
 
