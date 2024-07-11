@@ -17,10 +17,8 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
-builder.Services.AddAntiforgery(options => options.SuppressXFrameOptionsHeader = true);
-
 builder.Services.AddDataProtection()
-	.PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(builder.Environment.ContentRootPath, "keys")))
+	.PersistKeysToFileSystem(new DirectoryInfo(@"/var/keys"))
 	.SetApplicationName("ExpressVoitures");
 
 var app = builder.Build();

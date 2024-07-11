@@ -12,6 +12,8 @@ services:
       - ConnectionStrings__DefaultConnection=Server=db;Database=ExpressVoitures;User=sa;Password=Password123;
     depends_on:
       - db
+    volumes:
+      - keys:/var/keys
 
   db:
     image: mcr.microsoft.com/mssql/server:2019-latest
@@ -31,3 +33,4 @@ services:
 
 volumes:
   sqlserver_data:
+  keys:
