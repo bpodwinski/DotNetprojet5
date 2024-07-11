@@ -157,11 +157,16 @@ namespace ExpressVoitures.Controllers
 		/// <param name="vehicle">The updated vehicle information.</param>
 		/// <returns>A redirect to the index view if successful, otherwise the edit view.</returns>
 		[Authorize]
-		[IgnoreAntiforgeryToken]
 		[HttpPost("/admin/vehicle/{id}/edit")]
 		public async Task<IActionResult> Edit(int id, [Bind("Id,Vin,Year,PurchaseDate,PurchasePrice,AvailabilityDate,SaleDate,BrandId,ModelId,TrimLevelId,Description")] Vehicle vehicle, IFormFile ImagePath)
 		{
 			if (id != vehicle.Id)
+			{
+				return NotFound();
+			}
+
+			var existingVehicle = await _context.Vehicle.AsNoTracking().FirstOrDefaultAsync(v => v.Id == id);
+			if (existingVehicle == null)
 			{
 				return NotFound();
 			}
@@ -221,10 +226,15 @@ namespace ExpressVoitures.Controllers
 
 				vehicle.ImagePath = "/images/adverts/" + fileName;
 			}
+			else
+			{
+				vehicle.ImagePath = existingVehicle.ImagePath;
+			}
 
 			ModelState.Remove("Brand");
 			ModelState.Remove("Model");
 			ModelState.Remove("TrimLevel");
+			ModelState.Remove("ImagePath");
 			if (ModelState.IsValid)
 			{
 				try
