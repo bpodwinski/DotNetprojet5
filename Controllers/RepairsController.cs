@@ -22,6 +22,7 @@ namespace ExpressVoitures.Controllers
 		/// <param name="vehicleId">The ID of the vehicle.</param>
 		/// <returns>A view with the list of repairs.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		[HttpGet("/admin/vehicle/{vehicleId}/repair")]
 		public async Task<IActionResult> Index(int vehicleId)
 		{
@@ -50,6 +51,7 @@ namespace ExpressVoitures.Controllers
 		/// <param name="vehicleId">The ID of the vehicle.</param>
 		/// <returns>A view with the create repair form.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		[HttpGet("/admin/vehicle/{vehicleId}/repair/add")]
 		public IActionResult Create(int vehicleId)
 		{
@@ -72,6 +74,7 @@ namespace ExpressVoitures.Controllers
 		/// <param name="repair">The repair to create.</param>
 		/// <returns>A redirect to the index view if successful, otherwise the create view.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		[HttpPost("/admin/vehicle/{vehicleId}/repair/add")]
 		public async Task<IActionResult> Create(int vehicleId, [Bind("Id,Name,Cost,VehicleId")] Repair repair)
 		{
@@ -96,6 +99,7 @@ namespace ExpressVoitures.Controllers
 		/// <param name="id">The ID of the repair.</param>
 		/// <returns>A view with the edit repair form.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		[HttpGet("/admin/vehicle/{vehicleId}/repair/edit/{id}")]
 		public async Task<IActionResult> Edit(int vehicleId, int id)
 		{
@@ -119,6 +123,7 @@ namespace ExpressVoitures.Controllers
 		/// <param name="repair">The updated repair information.</param>
 		/// <returns>A redirect to the index view if successful, otherwise the edit view.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		[HttpPost("/admin/vehicle/{vehicleId}/repair/edit/{id}")]
 		public async Task<IActionResult> Edit(int vehicleId, int id, [Bind("Id,Name,Cost,VehicleId")] Repair repair)
 		{
@@ -161,6 +166,7 @@ namespace ExpressVoitures.Controllers
 		/// <param name="id">The ID of the repair.</param>
 		/// <returns>A view with the delete repair confirmation form.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		[HttpGet("/admin/vehicle/{vehicleId}/repair/delete/{id}")]
 		public async Task<IActionResult> Delete(int vehicleId, int id)
 		{
@@ -183,6 +189,7 @@ namespace ExpressVoitures.Controllers
 		/// <param name="id">The ID of the repair.</param>
 		/// <returns>A redirect to the index view.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		[HttpPost("/admin/vehicle/{vehicleId}/repair/delete/{id}"), ActionName("Delete")]
 		public async Task<IActionResult> DeleteConfirmed(int vehicleId, int id)
 		{

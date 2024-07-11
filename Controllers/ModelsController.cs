@@ -21,6 +21,7 @@ namespace ExpressVoitures.Controllers
 		/// </summary>
 		/// <returns>A view with the list of models.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		public async Task<IActionResult> Index()
 		{
 			var applicationDbContext = _context.Models.Include(m => m.Brand);
@@ -33,6 +34,7 @@ namespace ExpressVoitures.Controllers
 		/// <param name="id">The ID of the model.</param>
 		/// <returns>A partial view with the model details.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		public async Task<IActionResult> Details(int? id)
 		{
 			if (id == null)
@@ -56,6 +58,7 @@ namespace ExpressVoitures.Controllers
 		/// </summary>
 		/// <returns>A partial view with the create model form.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		public IActionResult Create()
 		{
 			ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name");
@@ -68,6 +71,7 @@ namespace ExpressVoitures.Controllers
 		/// <param name="model">The model to create.</param>
 		/// <returns>A redirect to the index view if successful, otherwise the create partial view.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		[HttpPost]
 		public async Task<IActionResult> Create([Bind("Id,Name,BrandId")] Model model)
 		{
@@ -90,6 +94,7 @@ namespace ExpressVoitures.Controllers
 		/// <param name="id">The ID of the model to edit.</param>
 		/// <returns>A partial view with the edit model form.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		public async Task<IActionResult> Edit(int? id)
 		{
 			if (id == null)
@@ -113,6 +118,7 @@ namespace ExpressVoitures.Controllers
 		/// <param name="model">The updated model information.</param>
 		/// <returns>A redirect to the index view if successful, otherwise the edit partial view.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		[HttpPost]
 		public async Task<IActionResult> Edit(int id, [Bind("Id,Name,BrandId")] Model model)
 		{
@@ -151,6 +157,7 @@ namespace ExpressVoitures.Controllers
 		/// <param name="id">The ID of the model to delete.</param>
 		/// <returns>A partial view with the delete model confirmation form.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		public async Task<IActionResult> Delete(int? id)
 		{
 			if (id == null)
@@ -175,6 +182,7 @@ namespace ExpressVoitures.Controllers
 		/// <param name="id">The ID of the model to delete.</param>
 		/// <returns>A redirect to the index view.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		[HttpPost, ActionName("Delete")]
 		public async Task<IActionResult> DeleteConfirmed(int id)
 		{

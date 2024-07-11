@@ -20,6 +20,7 @@ namespace ExpressVoitures.Controllers
 		/// </summary>
 		/// <returns>A view with the list of brands.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		public async Task<IActionResult> Index()
 		{
 			return View(await _context.Brands.ToListAsync());
@@ -31,6 +32,7 @@ namespace ExpressVoitures.Controllers
 		/// <param name="id">The ID of the brand.</param>
 		/// <returns>A partial view with the brand details.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		public async Task<IActionResult> Details(int? id)
 		{
 			if (id == null)
@@ -53,6 +55,7 @@ namespace ExpressVoitures.Controllers
 		/// </summary>
 		/// <returns>A partial view with the create brand form.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		public IActionResult Create()
 		{
 			return PartialView("_CreatePartial");
@@ -83,6 +86,7 @@ namespace ExpressVoitures.Controllers
 		/// <param name="id">The ID of the brand to edit.</param>
 		/// <returns>A partial view with the edit brand form.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		public async Task<IActionResult> Edit(int? id)
 		{
 			if (id == null)
@@ -105,6 +109,7 @@ namespace ExpressVoitures.Controllers
 		/// <param name="brand">The updated brand information.</param>
 		/// <returns>A redirect to the index view if successful, otherwise the edit partial view.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		[HttpPost]
 		public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Brand brand)
 		{
@@ -142,6 +147,7 @@ namespace ExpressVoitures.Controllers
 		/// <param name="id">The ID of the brand to delete.</param>
 		/// <returns>A partial view with the delete brand confirmation form.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		public async Task<IActionResult> Delete(int? id)
 		{
 			if (id == null)
@@ -165,6 +171,7 @@ namespace ExpressVoitures.Controllers
 		/// <param name="id">The ID of the brand to delete.</param>
 		/// <returns>A redirect to the index view.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		[HttpPost, ActionName("Delete")]
 		public async Task<IActionResult> DeleteConfirmed(int id)
 		{

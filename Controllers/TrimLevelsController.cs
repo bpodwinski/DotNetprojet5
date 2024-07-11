@@ -21,6 +21,7 @@ namespace ExpressVoitures
 		/// </summary>
 		/// <returns>A view with the list of trim levels.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		public async Task<IActionResult> Index()
 		{
 			var applicationDbContext = _context.TrimLevels
@@ -36,6 +37,7 @@ namespace ExpressVoitures
 		/// <param name="id">The ID of the trim level.</param>
 		/// <returns>A partial view with the trim level details.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		public async Task<IActionResult> Details(int? id)
 		{
 			if (id == null)
@@ -59,6 +61,7 @@ namespace ExpressVoitures
 		/// </summary>
 		/// <returns>A partial view with the create trim level form.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		public IActionResult Create()
 		{
 			ViewData["ModelId"] = new SelectList(_context.Models, "Id", "Name");
@@ -71,6 +74,7 @@ namespace ExpressVoitures
 		/// <param name="trimLevel">The trim level to create.</param>
 		/// <returns>A redirect to the index view if successful, otherwise the create partial view.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		[HttpPost]
 		public async Task<IActionResult> Create([Bind("Id,Name,ModelId")] TrimLevel trimLevel)
 		{
@@ -92,6 +96,7 @@ namespace ExpressVoitures
 		/// <param name="id">The ID of the trim level to edit.</param>
 		/// <returns>A partial view with the edit trim level form.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		public async Task<IActionResult> Edit(int? id)
 		{
 			if (id == null)
@@ -115,6 +120,7 @@ namespace ExpressVoitures
 		/// <param name="trimLevel">The updated trim level information.</param>
 		/// <returns>A redirect to the index view if successful, otherwise the edit partial view.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		[HttpPost]
 		public async Task<IActionResult> Edit(int id, [Bind("Id,Name,ModelId")] TrimLevel trimLevel)
 		{
@@ -153,6 +159,7 @@ namespace ExpressVoitures
 		/// <param name="id">The ID of the trim level to delete.</param>
 		/// <returns>A partial view with the delete trim level confirmation form.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		public async Task<IActionResult> Delete(int? id)
 		{
 			if (id == null)
@@ -177,6 +184,7 @@ namespace ExpressVoitures
 		/// <param name="id">The ID of the trim level to delete.</param>
 		/// <returns>A redirect to the index view.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		[HttpPost, ActionName("Delete")]
 		public async Task<IActionResult> DeleteConfirmed(int id)
 		{

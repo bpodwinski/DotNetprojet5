@@ -23,6 +23,7 @@ namespace ExpressVoitures.Controllers
 		/// </summary>
 		/// <returns>A view with the list of vehicles.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		[HttpGet("/admin/vehicle")]
 		public async Task<IActionResult> Index()
 		{
@@ -41,6 +42,7 @@ namespace ExpressVoitures.Controllers
 		/// <param name="id">The ID of the vehicle.</param>
 		/// <returns>A partial view with the vehicle details.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		[HttpGet("/admin/vehicle/{id}/details")]
 		public async Task<IActionResult> Details(int id)
 		{
@@ -63,6 +65,7 @@ namespace ExpressVoitures.Controllers
 		/// </summary>
 		/// <returns>A view with the create vehicle form.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		[HttpGet("/admin/vehicle/add")]
 		public IActionResult Create()
 		{
@@ -77,6 +80,7 @@ namespace ExpressVoitures.Controllers
 		/// <param name="ImagePath">The image file to upload.</param>
 		/// <returns>A redirect to the index view if successful, otherwise the create view.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		[HttpPost("/admin/vehicle/add")]
 		public async Task<IActionResult> Create([Bind("Id,Vin,Year,PurchaseDate,PurchasePrice,AvailabilityDate,SaleDate,BrandId,ModelId,TrimLevelId,Description")] Vehicle vehicle, IFormFile ImagePath)
 		{
@@ -129,6 +133,7 @@ namespace ExpressVoitures.Controllers
 		/// <param name="id">The ID of the vehicle.</param>
 		/// <returns>A view with the edit vehicle form.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		[HttpGet("/admin/vehicle/{id}/edit")]
 		public async Task<IActionResult> Edit(int id)
 		{
@@ -151,6 +156,7 @@ namespace ExpressVoitures.Controllers
 		/// <param name="vehicle">The updated vehicle information.</param>
 		/// <returns>A redirect to the index view if successful, otherwise the edit view.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		[HttpPost("/admin/vehicle/{id}/edit")]
 		public async Task<IActionResult> Edit(int id, [Bind("Id,Vin,Year,PurchaseDate,PurchasePrice,AvailabilityDate,SaleDate,BrandId,ModelId,TrimLevelId,Description")] Vehicle vehicle, IFormFile ImagePath)
 		{
@@ -251,6 +257,7 @@ namespace ExpressVoitures.Controllers
 		/// <param name="id">The ID of the vehicle.</param>
 		/// <returns>A partial view with the delete vehicle confirmation form.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		[HttpGet("/admin/vehicle/{id}/delete")]
 		public async Task<IActionResult> Delete(int id)
 		{
@@ -273,6 +280,7 @@ namespace ExpressVoitures.Controllers
 		/// <param name="id">The ID of the vehicle.</param>
 		/// <returns>A redirect to the index view.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		[HttpPost("/admin/vehicle/{id}/delete"), ActionName("Delete")]
 		public async Task<IActionResult> DeleteConfirmed(int id)
 		{
@@ -292,6 +300,7 @@ namespace ExpressVoitures.Controllers
 		/// <param name="id">The ID of the vehicle to check.</param>
 		/// <returns>True if the vehicle exists, otherwise false.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		private bool VehicleExists(int id)
 		{
 			return _context.Vehicle.Any(e => e.Id == id);
@@ -303,6 +312,7 @@ namespace ExpressVoitures.Controllers
 		/// <param name="brandId">The ID of the brand.</param>
 		/// <returns>A JSON result with the list of models.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		public async Task<JsonResult> GetModelsByBrand(int brandId)
 		{
 			var models = await _context.Models.Where(m => m.BrandId == brandId).ToListAsync();
@@ -315,6 +325,7 @@ namespace ExpressVoitures.Controllers
 		/// <param name="modelId">The ID of the model.</param>
 		/// <returns>A JSON result with the list of trim levels.</returns>
 		[Authorize]
+		[IgnoreAntiforgeryToken]
 		public async Task<JsonResult> GetTrimLevelsByModel(int modelId)
 		{
 			var trimLevels = await _context.TrimLevels.Where(t => t.ModelId == modelId).ToListAsync();

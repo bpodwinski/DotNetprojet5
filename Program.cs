@@ -19,6 +19,10 @@ builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
 builder.Services.AddAntiforgery(options => options.SuppressXFrameOptionsHeader = true);
 
+builder.Services.AddDataProtection()
+	.PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(builder.Environment.ContentRootPath, "keys")))
+	.SetApplicationName("ExpressVoitures");
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -33,7 +37,6 @@ else
 	app.UseHsts();
 }
 
-app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
