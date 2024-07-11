@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExpressVoitures.Controllers
 {
+	[IgnoreAntiforgeryToken]
 	public class BrandsController : Controller
 	{
 		private readonly ApplicationDbContext _context;

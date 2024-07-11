@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExpressVoitures
 {
+	[IgnoreAntiforgeryToken]
 	public class TrimLevelsController : Controller
 	{
 		private readonly ApplicationDbContext _context;

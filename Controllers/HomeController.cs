@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExpressVoitures.Controllers
 {
+	[IgnoreAntiforgeryToken]
 	public class HomeController : Controller
 	{
 		private readonly ILogger<HomeController> _logger;

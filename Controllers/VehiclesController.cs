@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExpressVoitures.Controllers
 {
+	[IgnoreAntiforgeryToken]
 	public class VehiclesController : Controller
 	{
 		private readonly ApplicationDbContext _context;

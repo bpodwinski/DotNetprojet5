@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExpressVoitures.Controllers
 {
+	[IgnoreAntiforgeryToken]
 	public class ModelsController : Controller
 	{
 		private readonly ApplicationDbContext _context;
