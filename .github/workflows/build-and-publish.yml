@@ -48,3 +48,5 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/expressvoitures:latest
+          build-args: |
+            DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
