@@ -1,5 +1,7 @@
 ﻿@model ExpressVoitures.Models.Vehicle
 
+<img src="@Model.ImagePath" class="rounded mx-auto d-block img-thumbnail mb-3" alt="Image du véhicule">
+
 <dl class="row">
     <dt class="col-sm-4">
         @Html.DisplayNameFor(model => model.Vin)
@@ -65,7 +67,7 @@
         @Html.DisplayNameFor(model => model.TotalRepairCost)
     </dt>
     <dd class="col-sm-8">
-        @Html.DisplayFor(model => model.TotalRepairCost)
+        @String.Format("{0:C}", @Model.TotalRepairCost)
     </dd>
 </dl>
 

@@ -53,7 +53,8 @@ namespace ExpressVoitures.Controllers
 				.Include(v => v.Brand)
 				.Include(v => v.Model)
 				.Include(v => v.TrimLevel)
-				.FirstOrDefaultAsync(m => m.Id == id);
+                .Include(v => v.Repairs)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
 			if (vehicle == null)
 			{
