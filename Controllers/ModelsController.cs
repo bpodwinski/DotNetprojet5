@@ -1,4 +1,5 @@
-﻿using ExpressVoitures.Data;
+﻿using System.Drawing.Drawing2D;
+using ExpressVoitures.Data;
 using ExpressVoitures.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -76,6 +77,22 @@ namespace ExpressVoitures.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Create([Bind("Id,Name,BrandId")] Model model)
 		{
+			if (model == null || string.IsNullOrWhiteSpace(model.Name))
+			{
+				ModelState.AddModelError("Name", "Le nom du modèle est requis.");
+
+				ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name", model.BrandId);
+				return PartialView("_CreatePartial", model);
+			}
+
+			var existingModel = await _context.Models
+				.FirstOrDefaultAsync(b => b.Name.ToLower() == model.Name.ToLower());
+
+			if (existingModel != null)
+			{
+				ModelState.AddModelError("Name", "Un modèle avec ce nom existe déjà.");
+			}
+
 			ModelState.Remove("Brand");
 			ModelState.Remove("TrimLevels");
 			if (ModelState.IsValid)
@@ -86,7 +103,7 @@ namespace ExpressVoitures.Controllers
 			}
 
 			ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name", model.BrandId);
-			return PartialView("_CreatePartial");
+			return PartialView("_CreatePartial", model);
 		}
 
 		/// <summary>

@@ -72,13 +72,29 @@ namespace ExpressVoitures.Controllers
 		public async Task<IActionResult> Create([Bind("Id,Name")] Brand brand)
 		{
 			ModelState.Remove("Models");
+
+			if (string.IsNullOrWhiteSpace(brand.Name))
+			{
+				ModelState.AddModelError("Name", "Le nom de la marque est requis.");
+				return PartialView("_CreatePartial", brand);
+			}
+
+			var existingBrand = await _context.Brands
+				.FirstOrDefaultAsync(b => b.Name.ToLower() == brand.Name.ToLower());
+
+			if (existingBrand != null)
+			{
+				ModelState.AddModelError("Name", "Une marque avec ce nom existe déjà.");
+			}
+
 			if (ModelState.IsValid)
 			{
 				_context.Add(brand);
 				await _context.SaveChangesAsync();
 				return RedirectToAction(nameof(Index));
 			}
-			return PartialView("_CreatePartial");
+
+			return PartialView("_CreatePartial", brand);
 		}
 
 		/// <summary>

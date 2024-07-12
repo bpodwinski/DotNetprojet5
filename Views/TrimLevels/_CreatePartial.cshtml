@@ -1,6 +1,6 @@
 ﻿@model ExpressVoitures.Models.TrimLevel
 
-<form asp-action="Create">
+<form asp-action="Create" id="createForm" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
     <div class="mb-3 form-group">
@@ -11,7 +11,7 @@
 
     <div class="mb-3 form-group">
         <label asp-for="ModelId" class="form-label"></label>
-        <select asp-for="ModelId" class="selectpicker form-control" data-live-search="true" data-size="20" asp-items="ViewBag.ModelId"></select>
+        <select asp-for="ModelId" class="form-control" data-live-search="true" data-size="20" asp-items="ViewBag.ModelId"></select>
     </div>
 
     <div class="mt-5 d-flex flex-row justify-content-between text-center">

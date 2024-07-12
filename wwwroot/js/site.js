@@ -21,7 +21,11 @@ async function loadModal(action, id = null || 0, title = "Modal Title", selectpi
     }
 
     try {
-        const response = await fetch(url);
+        const response = await fetch(url, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
         const html = await response.text();
 
         document.getElementById('modalLabel').innerText = title; // Set modal title
@@ -33,7 +37,43 @@ async function loadModal(action, id = null || 0, title = "Modal Title", selectpi
         if (selectpicker) {
             $('.selectpicker').selectpicker();
         }
+
+        document.getElementById('createForm').onsubmit = handleCreateFormSubmit;
+
     } catch (error) {
         console.error('Error loading the modal content:', error);
+    }
+}
+
+async function handleCreateFormSubmit(event) {
+    event.preventDefault();
+
+    const form = event.target;
+    const url = form.action;
+    const formData = new FormData(form);
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+        const html = await response.text();
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+
+        if (doc.querySelector('.validation-summary-errors') || doc.querySelector('.field-validation-error')) {
+            const modalBody = document.querySelector('#Modal .modal-body');
+            modalBody.innerHTML = html;
+
+            document.getElementById('createForm').onsubmit = handleCreateFormSubmit;
+        } else {
+            location.reload();
+        }
+    } catch (error) {
+        console.error('Error:', error);
     }
 }

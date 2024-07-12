@@ -1,6 +1,6 @@
 ﻿@model ExpressVoitures.Models.Model
 
-<form asp-action="Create">
+<form asp-action="Create" id="createForm" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
     <div class="mb-3 form-group">
@@ -11,7 +11,7 @@
 
     <div class="mb-3 form-group">
         <label asp-for="BrandId" class="form-label"></label>
-        <select asp-for="BrandId" class="selectpicker form-control" data-live-search="true" data-size="20" asp-items="ViewBag.BrandId"></select>
+        <select asp-for="BrandId" class="form-control" data-live-search="true" data-size="20" asp-items="ViewBag.BrandId"></select>
     </div>
 
     <div class="mt-5 d-flex flex-row justify-content-between text-center">

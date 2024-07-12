@@ -79,6 +79,22 @@ namespace ExpressVoitures
 		[HttpPost]
 		public async Task<IActionResult> Create([Bind("Id,Name,ModelId")] TrimLevel trimLevel)
 		{
+			if (trimLevel == null || string.IsNullOrWhiteSpace(trimLevel.Name))
+			{
+				ModelState.AddModelError("Name", "Le nom de la finition est requis.");
+
+				ViewData["ModelId"] = new SelectList(_context.Models, "Id", "Name", trimLevel.ModelId);
+				return PartialView("_CreatePartial", trimLevel);
+			}
+
+			var existingTrimLevel = await _context.TrimLevels
+				.FirstOrDefaultAsync(b => b.Name.ToLower() == trimLevel.Name.ToLower());
+
+			if (existingTrimLevel != null)
+			{
+				ModelState.AddModelError("Name", "Une finition avec ce nom existe déjà.");
+			}
+
 			ModelState.Remove("Brand");
 			ModelState.Remove("Model");
 			if (ModelState.IsValid)
@@ -87,8 +103,9 @@ namespace ExpressVoitures
 				await _context.SaveChangesAsync();
 				return RedirectToAction(nameof(Index));
 			}
+
 			ViewData["ModelId"] = new SelectList(_context.Models, "Id", "Name", trimLevel.ModelId);
-			return PartialView("_CreatePartial");
+			return PartialView("_CreatePartial", trimLevel);
 		}
 
 		/// <summary>
