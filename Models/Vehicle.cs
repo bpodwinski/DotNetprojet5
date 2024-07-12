@@ -15,13 +15,14 @@ namespace ExpressVoitures.Models
 
 		[Display(Name = "Année*")]
 		[Required(ErrorMessage = "Il manque l'année du véhicule")]
-        [Range(1990, int.MaxValue, ErrorMessage = "L'année doit être entre 1990 et l'année en cours.")]
-        public int Year { get; set; }
+		[ValidYear(1990, ErrorMessage = "L'année doit être entre 1990 et l'année en cours.")]
+		public int Year { get; set; }
 
 		[Display(Name = "Date d'achat*")]
 		[Required(ErrorMessage = "La date d'achat du vehicle doit être complétée.")]
         [DataType(DataType.Date, ErrorMessage = "La date d'achat doit être une date.")]
-        public DateTime PurchaseDate { get; set; }
+		[ValidPurchaseDate]
+		public DateTime PurchaseDate { get; set; }
 
 		[Display(Name = "Prix d'achat*")]
 		[Required(ErrorMessage = "Le prix d'achat du vehicle doit être complétée.")]
@@ -74,5 +75,47 @@ namespace ExpressVoitures.Models
 		[NotMapped]
         [Display(Name = "Prix de vente")]
         public decimal? SalePrice => PurchasePrice + (TotalRepairCost ?? 0) + 500;
+	}
+}
+
+public class ValidYearAttribute : ValidationAttribute
+{
+	private readonly int _minYear;
+
+	public ValidYearAttribute(int minYear)
+	{
+		_minYear = minYear;
+	}
+
+	protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+	{
+		if (value is int year)
+		{
+			int currentYear = DateTime.Now.Year;
+			if (year >= _minYear && year <= currentYear)
+			{
+				return ValidationResult.Success;
+			}
+			else
+			{
+				return new ValidationResult($"L'année doit être entre {_minYear} et l'année en cours.");
+			}
+		}
+		return new ValidationResult("L'année n'est pas valide.");
+	}
+}
+
+public class ValidPurchaseDateAttribute : ValidationAttribute
+{
+	protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+	{
+		if (value is DateTime purchaseDate)
+		{
+			if (purchaseDate > DateTime.Now)
+			{
+				return new ValidationResult("La date d'achat ne peut pas être dans le futur.");
+			}
+		}
+		return ValidationResult.Success;
 	}
 }
