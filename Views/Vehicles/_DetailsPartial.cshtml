@@ -25,7 +25,7 @@
         @Html.DisplayNameFor(model => model.PurchasePrice)
     </dt>
     <dd class="col-sm-8">
-        @Html.DisplayFor(model => model.PurchasePrice)
+        @String.Format("{0:F2} €", @Model.PurchasePrice)
     </dd>
     <dt class="col-sm-4">
         @Html.DisplayNameFor(model => model.AvailabilityDate)
