@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExpressVoitures.Controllers
 {
-	[IgnoreAntiforgeryToken]
 	public class HomeController : Controller
 	{
 		private readonly ILogger<HomeController> _logger;
@@ -18,14 +17,13 @@ namespace ExpressVoitures.Controllers
 			_context = context;
 		}
 
-		[IgnoreAntiforgeryToken]
 		public IActionResult Index()
 		{
 			return View();
 		}
 
-		[IgnoreAntiforgeryToken]
-		public async Task<IActionResult> Adverts()
+        [HttpGet("/adverts")]
+        public async Task<IActionResult> Adverts()
 		{
 			var applicationDbContext = _context.Vehicle
 				.Include(v => v.Brand)
@@ -36,14 +34,12 @@ namespace ExpressVoitures.Controllers
 			return View(await applicationDbContext.ToListAsync());
 		}
 
-		[IgnoreAntiforgeryToken]
 		[HttpGet("/privacy")]
 		public IActionResult Privacy()
 		{
 			return View();
 		}
 
-		[IgnoreAntiforgeryToken]
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 		public IActionResult Error()
 		{
