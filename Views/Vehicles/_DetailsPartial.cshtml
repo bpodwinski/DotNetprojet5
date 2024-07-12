@@ -1,6 +1,11 @@
 ﻿@model ExpressVoitures.Models.Vehicle
 
-<img src="@Model.ImagePath" class="rounded mx-auto d-block img-thumbnail mb-3" alt="Image du véhicule">
+@if (!string.IsNullOrEmpty(Model.ImagePath))
+{
+    <div class="text-center mb-3">
+        <img src="@Model.ImagePath" class="rounded mx-auto d-block img-thumbnail" alt="Image du véhicule">
+    </div>
+}
 
 <dl class="row">
     <dt class="col-sm-4">
