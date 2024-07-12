@@ -1,11 +1,13 @@
-﻿using System.Drawing;
-using System.Drawing.Drawing2D;
-using ExpressVoitures.Data;
+﻿using ExpressVoitures.Data;
 using ExpressVoitures.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace ExpressVoitures.Controllers
 {
@@ -96,16 +98,16 @@ namespace ExpressVoitures.Controllers
 
 				var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/adverts", fileName);
 
-				using (var stream = new MemoryStream())
+				using (var image = await SixLabors.ImageSharp.Image.LoadAsync<Rgba32>(ImagePath.OpenReadStream()))
 				{
-					await ImagePath.CopyToAsync(stream);
-					var image = System.Drawing.Image.FromStream(stream);
-					var resizedImage = new Bitmap(image, new Size(800, 600));
-
-					using (var fileStream = new FileStream(filePath, FileMode.Create))
+					// Redimensionner l'image à 800x600
+					image.Mutate(x => x.Resize(new ResizeOptions
 					{
-						resizedImage.Save(fileStream, System.Drawing.Imaging.ImageFormat.Jpeg);
-					}
+						Size = new Size(800, 600),
+						Mode = ResizeMode.Crop
+					}));
+
+					await image.SaveAsync(filePath, new JpegEncoder());
 				}
 
 				vehicle.ImagePath = "/images/adverts/" + fileName;
@@ -182,11 +184,12 @@ namespace ExpressVoitures.Controllers
 
 				var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/adverts", fileName);
 
-				using (var image = Image.FromStream(ImagePath.OpenReadStream()))
+				using (var image = await Image.LoadAsync<Rgba32>(ImagePath.OpenReadStream()))
 				{
 					var destWidth = 1280;
 					var destHeight = 720;
 
+					// Calculate cropping rectangle
 					var cropRect = new Rectangle(0, 0, image.Width, image.Height);
 					if ((image.Width / (double)image.Height) > (16 / 9.0))
 					{
@@ -201,27 +204,12 @@ namespace ExpressVoitures.Controllers
 						cropRect.Height = newHeight;
 					}
 
-					using (var croppedImage = new Bitmap(cropRect.Width, cropRect.Height))
-					{
-						using (var graphics = Graphics.FromImage(croppedImage))
-						{
-							graphics.DrawImage(image, new Rectangle(0, 0, croppedImage.Width, croppedImage.Height), cropRect, GraphicsUnit.Pixel);
-						}
+					// Crop and resize the image
+					image.Mutate(x => x
+						.Crop(cropRect)
+						.Resize(destWidth, destHeight));
 
-						using (var finalImage = new Bitmap(destWidth, destHeight))
-						{
-							using (var graphics = Graphics.FromImage(finalImage))
-							{
-								graphics.CompositingQuality = CompositingQuality.HighQuality;
-								graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-								graphics.SmoothingMode = SmoothingMode.HighQuality;
-
-								graphics.DrawImage(croppedImage, 0, 0, destWidth, destHeight);
-							}
-
-							finalImage.Save(filePath, image.RawFormat);
-						}
-					}
+					await image.SaveAsync(filePath, new JpegEncoder());
 				}
 
 				vehicle.ImagePath = "/images/adverts/" + fileName;
