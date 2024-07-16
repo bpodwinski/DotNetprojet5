@@ -11,11 +11,6 @@
 	    </a>
 	    <ul class="dropdown-menu">
 		    <li>
-			    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
-				    Compte et paramètres
-			    </a>
-		    </li>
-		    <li>
 			    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">
 				    Créer un compte
 			    </a>
@@ -31,9 +26,6 @@
 }
 else
 {
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
-    </li>
     <li class="nav-item">
         <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
     </li>
