@@ -10,11 +10,11 @@
 			@User.Identity?.Name!
 	    </a>
 	    <ul class="dropdown-menu">
-		    <li>
-			    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">
-				    Créer un compte
-			    </a>
-		    </li>
+			<li>
+				<a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
+					Compte et paramètres
+				</a>
+			</li>
 		    <li><hr class="dropdown-divider"></li>
 		    <li>
 			    <form class="dropdown-item" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
