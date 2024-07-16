@@ -37,21 +37,6 @@ body.home {
     background-position: center center;
 }
 
-body.home .logo:before {
-    content: "";
-    position: absolute;
-    right: 80px;
-    bottom: -80px;
-    display: block;
-    width: 550px;
-    height: 550px;
-    background-image: url("../images/tire.png");
-    background-size: cover;
-    background-position: center center;
-    opacity: 0.6;
-    pointer-events: none;
-}
-
 body.products-list header nav,
 body.page header nav {
     backdrop-filter: blur(12px);
