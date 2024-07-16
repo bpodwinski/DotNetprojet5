@@ -72,24 +72,25 @@ namespace ExpressVoitures.Data
                 // Models relationship
                 entity.HasMany(b => b.Models)
                       .WithOne(m => m.Brand)
-                      .HasForeignKey(m => m.BrandId);
+                      .HasForeignKey(m => m.BrandId)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
 
 
             // Configuration for Model
             modelBuilder.Entity<Model>(entity =>
             {
-                // TrimLevels relationship
-                entity.HasMany(b => b.TrimLevels)
-                      .WithOne(m => m.Model)
-                      .HasForeignKey(m => m.ModelId)
-                      .OnDelete(DeleteBehavior.Restrict);
-
                 // Brands relationship
                 entity.HasOne(m => m.Brand)
                       .WithMany(b => b.Models)
                       .HasForeignKey(m => m.BrandId)
-                      .OnDelete(DeleteBehavior.Restrict);
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                // TrimLevels relationship
+                entity.HasMany(b => b.TrimLevels)
+                      .WithOne(m => m.Model)
+                      .HasForeignKey(m => m.ModelId)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
 
 
@@ -100,7 +101,7 @@ namespace ExpressVoitures.Data
                 entity.HasOne(t => t.Model)
                       .WithMany(m => m.TrimLevels)
                       .HasForeignKey(t => t.ModelId)
-                      .OnDelete(DeleteBehavior.Restrict);
+                      .OnDelete(DeleteBehavior.Cascade);
             });
         }
     }
