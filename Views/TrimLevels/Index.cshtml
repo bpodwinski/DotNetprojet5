@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Les finitions";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var ErrorDeleteMessage = TempData["ErrorDeleteMessage"] as string;
 }
 
 <h1 class="text-center mt-5">Les finitions</h1>
@@ -58,7 +59,7 @@
                     </td>
                     <td class="text-end">
                         <div class="btn-group">
-                                <a href="javascript:void(0);" onclick="loadModal('@Url.Action("Edit", "TrimLevels")', @item.Id, 'Modifier une finition')" class="btn btn-secondary btn-sm">Modifier</a>
+                                <a href="javascript:void(0);" onclick="loadModal('@Url.Action("Edit", "TrimLevels")', @item.Id, 'Modifier une finition', false)" class="btn btn-secondary btn-sm">Modifier</a>
 
                             <button type="button" class="btn btn-secondary btn-sm dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
                                 <span class="visually-hidden">Toggle Dropdown</span>
@@ -66,11 +67,11 @@
 
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="javascript:void(0);" onclick="loadModal('@Url.Action("Details", "TrimLevels")', @item.Id, 'Détail de la finition')" class="dropdown-item">
+                                    <a href="javascript:void(0);" onclick="loadModal('@Url.Action("Details", "TrimLevels")', @item.Id, 'Détail de la finition', false)" class="dropdown-item">
                                     <i class="bi bi-eye-fill"></i> Voir</a>
                                 </li>
                                 <li>
-                                    <a href="javascript:void(0);" onclick="loadModal('@Url.Action("Delete", "TrimLevels")', @item.Id, 'Supprimer la finition')" class="dropdown-item">
+                                    <a href="javascript:void(0);" onclick="loadModal('@Url.Action("Delete", "TrimLevels")', @item.Id, 'Supprimer la finition', false)" class="dropdown-item">
                                     <i class="bi bi-trash-fill"></i> Supprimer</a>
                                 </li>
                             </ul>
@@ -83,14 +84,41 @@
     </div>
 </div>
 
-<div class="modal fade" id="Modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+<div class="modal fade" id="Modal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="modalLabel"></h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                <button type="button" class="btn-close" aria-label="Fermer"></button>
             </div>
-            <div class="modal-body" style="position: relative;"></div>
+            <div class="modal-body"></div>
         </div>
     </div>
 </div>
+
+@if (!string.IsNullOrEmpty(ErrorDeleteMessage))
+{
+    <div class="modal fade" id="ErrorDeleteMessage" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modalLabel">Erreur de suppression</h1>
+                    <button type="button" class="btn-close" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="alert alert-danger" role="alert">
+                        <i class="bi bi-exclamation-circle-fill"></i>
+                        <div>@ErrorDeleteMessage</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            var ErrorDeleteMessage = document.getElementById('ErrorDeleteMessage');
+            var bootstrapModal = new bootstrap.Modal(ErrorDeleteMessage);
+            bootstrapModal.show();
+        });
+    </script>
+}

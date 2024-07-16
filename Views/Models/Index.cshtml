@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Les modèles";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var ErrorDeleteMessage = TempData["ErrorDeleteMessage"] as string;
 }
 
 <h1 class="text-center mt-5">Les modèles</h1>
@@ -88,3 +89,30 @@
         </div>
     </div>
 </div>
+
+@if (!string.IsNullOrEmpty(ErrorDeleteMessage))
+{
+    <div class="modal fade" id="ErrorDeleteMessage" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content panel-warning">
+                <div class="modal-header panel-heading">
+                    <h1 class="modal-title fs-5" id="modalLabel">Erreur de suppression</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="alert alert-danger" role="alert">
+                        <i class="bi bi-exclamation-circle-fill"></i>
+                        <div>@ErrorDeleteMessage</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            var ErrorDeleteMessage = document.getElementById('ErrorDeleteMessage');
+            var bootstrapModal = new bootstrap.Modal(ErrorDeleteMessage);
+            bootstrapModal.show();
+        });
+    </script>
+}

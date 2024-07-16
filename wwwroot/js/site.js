@@ -35,10 +35,15 @@ async function loadModal(action, id = null || 0, title = "Modal Title", selectpi
         modal.show();
 
         if (selectpicker) {
-            $('.selectpicker').selectpicker();
+            document.querySelectorAll('.selectpicker').forEach(element => {
+                new SelectPicker(element);
+            });
         }
 
-        document.getElementById('createForm').onsubmit = handleCreateFormSubmit;
+        const createForm = document.getElementById('createForm');
+        if (createForm) {
+            createForm.onsubmit = handleCreateFormSubmit;
+        }
 
     } catch (error) {
         console.error('Error loading the modal content:', error);

@@ -204,15 +204,23 @@ namespace ExpressVoitures.Controllers
 		[HttpPost, ActionName("Delete")]
 		public async Task<IActionResult> DeleteConfirmed(int id)
 		{
-			var model = await _context.Models.FindAsync(id);
-			if (model != null)
+			try
 			{
-				_context.Models.Remove(model);
-			}
+				var model = await _context.Models.FindAsync(id);
+				if (model != null)
+				{
+					_context.Models.Remove(model);
+				}
 
-			await _context.SaveChangesAsync();
-			return RedirectToAction(nameof(Index));
-		}
+				await _context.SaveChangesAsync();
+				return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorDeleteMessage"] = "Ce modèle ne peut pas être supprimé car il est utilisé pour un ou plusieurs véhicules, ou il est lié à une marque ou contient des finitions. Veuillez supprimer ces éléments avant de procéder.";
+                return RedirectToAction(nameof(Index));
+            }
+        }
 
 		/// <summary>
 		/// Checks if a model exists.

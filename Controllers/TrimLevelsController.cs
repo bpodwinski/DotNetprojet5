@@ -206,15 +206,23 @@ namespace ExpressVoitures
 		[HttpPost, ActionName("Delete")]
 		public async Task<IActionResult> DeleteConfirmed(int id)
 		{
-			var trimLevel = await _context.TrimLevels.FindAsync(id);
-			if (trimLevel != null)
-			{
-				_context.TrimLevels.Remove(trimLevel);
-			}
+            try
+            {
+                var trimLevel = await _context.TrimLevels.FindAsync(id);
+				if (trimLevel != null)
+				{
+					_context.TrimLevels.Remove(trimLevel);
+				}
 
-			await _context.SaveChangesAsync();
+				await _context.SaveChangesAsync();
 			return RedirectToAction(nameof(Index));
-		}
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorDeleteMessage"] = "Cette finition ne peut pas être supprimée car elle est utilisée pour un ou plusieurs véhicules, ou elle est liée à une marque et à un modèle. Veuillez supprimer ces éléments avant de procéder.";
+                return RedirectToAction(nameof(Index));
+            }
+        }
 
 		/// <summary>
 		/// Checks if a trim level exists.

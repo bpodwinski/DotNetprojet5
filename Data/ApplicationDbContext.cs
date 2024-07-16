@@ -83,7 +83,7 @@ namespace ExpressVoitures.Data
                 entity.HasMany(b => b.TrimLevels)
                       .WithOne(m => m.Model)
                       .HasForeignKey(m => m.ModelId)
-                      .OnDelete(DeleteBehavior.Cascade);
+                      .OnDelete(DeleteBehavior.Restrict);
 
                 // Brands relationship
                 entity.HasOne(m => m.Brand)
@@ -100,7 +100,7 @@ namespace ExpressVoitures.Data
                 entity.HasOne(t => t.Model)
                       .WithMany(m => m.TrimLevels)
                       .HasForeignKey(t => t.ModelId)
-                      .OnDelete(DeleteBehavior.Cascade);
+                      .OnDelete(DeleteBehavior.Restrict);
             });
         }
     }

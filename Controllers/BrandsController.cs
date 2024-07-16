@@ -1,7 +1,9 @@
-﻿using ExpressVoitures.Data;
+﻿using System.Drawing.Drawing2D;
+using ExpressVoitures.Data;
 using ExpressVoitures.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExpressVoitures.Controllers
@@ -191,23 +193,30 @@ namespace ExpressVoitures.Controllers
 		[IgnoreAntiforgeryToken]
 		[HttpPost, ActionName("Delete")]
 		public async Task<IActionResult> DeleteConfirmed(int id)
-		{
-			var brand = await _context.Brands.FindAsync(id);
-			if (brand != null)
-			{
-				_context.Brands.Remove(brand);
-			}
+        {
+            try
+            {
+                var brand = await _context.Brands.FindAsync(id);
+                if (brand != null)
+                {
+                    _context.Brands.Remove(brand);
+                    await _context.SaveChangesAsync();
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorDeleteMessage"] = "Cette marque ne peut pas être supprimée car elle est utilisée pour un ou plusieurs véhicules, ou elle contient des modèles et finitions.\n Veuillez supprimer ces éléments avant de procéder.";
+                return RedirectToAction(nameof(Index));
+            }
+        }
 
-			await _context.SaveChangesAsync();
-			return RedirectToAction(nameof(Index));
-		}
-
-		/// <summary>
-		/// Checks if a brand exists.
-		/// </summary>
-		/// <param name="id">The ID of the brand to check.</param>
-		/// <returns>True if the brand exists, otherwise false.</returns>
-		private bool BrandExists(int id)
+        /// <summary>
+        /// Checks if a brand exists.
+        /// </summary>
+        /// <param name="id">The ID of the brand to check.</param>
+        /// <returns>True if the brand exists, otherwise false.</returns>
+        private bool BrandExists(int id)
 		{
 			return _context.Brands.Any(e => e.Id == id);
 		}
